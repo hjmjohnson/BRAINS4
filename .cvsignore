@@ -1,0 +1,13 @@
+SGI
+athlon
+ix86
+alpha
+MaxOSX
+icc
+alpha
+gcc3
+buildlog.*_local
+*_local
+unpackdir
+
+

@@ -1,0 +1,617 @@
+#-----------------------------------------------------------------------------
+project(BRAINS3)
+#-----------------------------------------------------------------------------
+
+#-----------------------------------------------------------------------------
+cmake_minimum_required(VERSION 2.8.2)
+
+find_package(Git REQUIRED)
+
+
+include(ExternalProject)
+#-----------------------------------------------------------------------------
+set(PKG_NAME BRAINS3)
+set(PROJECT_EXTERNAL_SHARED_SOURCE_TREE ${CMAKE_CURRENT_SOURCE_DIR}/../${CMAKE_PROJECT_NAME}-extsrc)
+
+enable_language(C)
+enable_language(CXX)
+
+#-----------------------------------------------------------------------------
+# See http://cmake.org/cmake/help/cmake-2-8-docs.html#section_Policies for details
+#-----------------------------------------------------------------------------
+
+SET(project_policies
+  #CMP0001 # NEW: CMAKE_BACKWARDS_COMPATIBILITY should no longer be used.
+  #CMP0002 # NEW: Logical target names must be globally unique.
+  CMP0003 # NEW: Libraries linked via full path no longer produce linker search paths.
+  #CMP0004 # NEW: Libraries linked may NOT have leading or trailing whitespace.
+  #CMP0005 # NEW: Preprocessor definition values are now escaped automatically.
+  #CMP0006 # NEW: Installing MACOSX_BUNDLE targets requires a BUNDLE DESTINATION.
+  #CMP0007 # NEW: List command no longer ignores empty elements.
+  #CMP0008 # NEW: Libraries linked by full-path must have a valid library file name.
+  #CMP0009 # NEW: FILE GLOB_RECURSE calls should not follow symlinks by default.
+  #CMP0010 # NEW: Bad variable reference syntax is an error.
+  #CMP0011 # NEW: Included scripts do automatic cmake_policy PUSH and POP.
+  #CMP0012 # NEW: if() recognizes numbers and boolean constants.
+  #CMP0013 # NEW: Duplicate binary directories are not allowed.
+  #CMP0014 # NEW: Input directories must have CMakeLists.txt
+  )
+FOREACH(policy ${project_policies})
+  IF(POLICY ${policy})
+    CMAKE_POLICY(SET ${policy} NEW)
+  ENDIF()
+ENDFOREACH()
+
+
+#-----------------------------------------------------------------------------
+# Platform check
+#-----------------------------------------------------------------------------
+
+set(PLATFORM_CHECK true)
+
+if(PLATFORM_CHECK)
+  # See CMake/Modules/Platform/Darwin.cmake)
+  #   6.x == Mac OSX 10.2 (Jaguar)
+  #   7.x == Mac OSX 10.3 (Panther)
+  #   8.x == Mac OSX 10.4 (Tiger)
+  #   9.x == Mac OSX 10.5 (Leopard)
+  #  10.x == Mac OSX 10.6 (Snow Leopard)
+  if (DARWIN_MAJOR_VERSION LESS "9")
+    message(FATAL_ERROR "Only Mac OSX >= 10.5 are supported !")
+  endif()
+endif()
+
+#-----------------------------------------------------------------------------
+# Update CMake module path
+#------------------------------------------------------------------------------
+
+set(CMAKE_MODULE_PATH
+  ${CMAKE_SOURCE_DIR}/CMake
+  ${CMAKE_SOURCE_DIR}/SuperBuild
+  ${CMAKE_BINARY_DIR}/CMake
+  ${CMAKE_CURRENT_SOURCE_DIR}
+  ${CMAKE_CURRENT_SOURCE_DIR}/../CMake #  CMake directory
+  ${CMAKE_CURRENT_SOURCE_DIR}/../src/CMake # CMake directory
+  ${CMAKE_MODULE_PATH}
+  )
+
+#-----------------------------------------------------------------------------
+# Prerequisites
+#------------------------------------------------------------------------------
+#
+# BRAINS3 Addition: install to the common library
+# directory, so that all libs/include etc ends up
+# in one common tree
+set(CMAKE_INSTALL_PREFIX ${CMAKE_CURRENT_BINARY_DIR} CACHE PATH "Where all the prerequisite libraries go" FORCE)
+set(BRAINS_BUILD_TESTING ON CACHE BOOL "Turn on Testing for BRAINS")
+
+# Compute -G arg for configuring external projects with the same CMake generator:
+if(CMAKE_EXTRA_GENERATOR)
+  set(gen "${CMAKE_EXTRA_GENERATOR} - ${CMAKE_GENERATOR}")
+else()
+  set(gen "${CMAKE_GENERATOR}")
+endif()
+
+#-----------------------------------------------------------------------------
+# Always build Shared library
+#------------------------------------------------------------------------------
+set(BUILD_SHARED_LIBS ON)
+
+#-----------------------------------------------------------------------------
+# Setup build type
+#------------------------------------------------------------------------------
+
+# By default, let's build as Debug
+if(NOT DEFINED CMAKE_BUILD_TYPE)
+  set(CMAKE_BUILD_TYPE "Debug")
+endif()
+
+# let a dashboard override the default.
+if(CTEST_BUILD_CONFIGURATION)
+  set(CMAKE_BUILD_TYPE "${CTEST_BUILD_CONFIGURATION}")
+endif()
+
+#-------------------------------------------------------------------------
+# augment compiler flags
+#-------------------------------------------------------------------------
+include(CompilerFlagSettings)
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${C_DEBUG_DESIRED_FLAGS}" )
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CXX_DEBUG_DESIRED_FLAGS}" )
+else() # Release, or anything else
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${C_RELEASE_DESIRED_FLAGS}" )
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CXX_RELEASE_DESIRED_FLAGS}" )
+endif()
+#message("CMAKE_C_FLAGS ${CMAKE_C_FLAGS}")
+#message("CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS}")
+#-----------------------------------------------------------------------------
+# BRAINS3 Options
+#-----------------------------------------------------------------------------
+option(BRAINS3_BUILD_GUI "Build GUI" OFF)
+if(${BRAINS3_BUILD_GUI})
+  option(${CMAKE_PROJECT_NAME}_USE_QT  "Build BRAINS3 Qt GUI" ON)
+else()
+  option(${CMAKE_PROJECT_NAME}_USE_QT  "Build BRAINS3 Qt GUI" OFF)
+endif()
+
+if(${CMAKE_PROJECT_NAME}_USE_QT)
+  set(minimum_required_qt_version "4.6.2")
+  # For Mac OS X 10.6, Apple has started recommending developers to build their applications 64-bit.
+  # The main reason is that there is a small speed increase due to the extra registers on Intel
+  #CPU's, all their machine offerings have been 64-bit since 2007, and there is a cost for reading
+  # all the 32-bit libraries into memory if everything else is 64-bit. If you want to follow this
+  # advice, there is only one choice, 64-bit Cocoa.
+  #
+  # See CMake/Modules/Platform/Darwin.cmake)
+  #   6.x == Mac OSX 10.2 (Jaguar)
+  #   7.x == Mac OSX 10.3 (Panther)
+  #   8.x == Mac OSX 10.4 (Tiger)
+  #   9.x == Mac OSX 10.5 (Leopard)
+  #  10.x == Mac OSX 10.6 (Snow Leopard)
+
+  if(DARWIN_MAJOR_VERSION GREATER "10")
+    set(minimum_required_qt_version "4.7.0")
+  endif()
+
+  find_package(Qt4)
+
+  if(QT4_FOUND)
+
+    set(current_qt_version "${QT_VERSION_MAJOR}.${QT_VERSION_MINOR}.${QT_VERSION_PATCH}")
+
+    if("${current_qt_version}" VERSION_LESS "${minimum_required_qt_version}")
+      message(FATAL_ERROR "error: BRAINS3 requires Qt >= ${minimum_required_qt_version} -- you cannot use Qt ${current_qt_version}.")
+    endif()
+
+    # Enable modules
+    SET(QT_USE_QTNETWORK ON)
+
+    # Includes Qt headers
+    INCLUDE(${QT_USE_FILE})
+
+    option(BRAINS3_USE_PYTHONQT
+      "Integrate a python-QT interpreter into BRAINS3." ON)
+
+  else()
+    MESSAGE(FATAL_ERROR 
+      "error: Qt >= ${minimum_required_qt_version} was not found on your system. You probably need to set the QT_QMAKE_EXECUTABLE variable")
+  endif()
+
+endif()
+
+#------------------------------------------------------------------------------
+# Python option
+#------------------------------------------------------------------------------
+
+option(BRAINS3_USE_PYTHON "Build with Python support" ON)
+
+if(BRAINS3_USE_PYTHON OR BRAINS3_USE_PYTHONQT)
+
+  option(BRAINS3_BUILD_NUMPY "Build BRAINS with NumPy (builds CLapack)." ON)
+
+  # Work in progress ...
+  #if(BRAINS3_BUILD_NUMPY)
+  #  option(BRAINS3_BUILD_SCIPY "Build BRAINS with SciPy (requires NumPy)" ON)
+  #endif()
+
+endif()
+
+#------------------------------------------------------------------------------
+# Additional options
+#------------------------------------------------------------------------------
+
+# Enable VTK Debug Leaks
+option(BRAINS3_USE_VTK_DEBUG_LEAKS
+  "Turn on VTKs Debug Leaks functionality in both VTK and Brains3." ON)
+
+#------------------------------------------------------------------------------
+# Validate options
+#------------------------------------------------------------------------------
+
+if (BRAINS3_USE_PYTHON AND BRAINS3_USE_PYTHONQT)
+  set(err "error: Brains3 SuperBuild doesn't support BRAINS3_USE_PYTHON and BRAINS3_USE_PYTHONQT ON.")
+  message(FATAL_ERROR "${err}")
+endif()
+
+#------------------------------------------------------------------------------
+# Configure the CTest custom file - Used to suppress external project configure/build warnings
+#------------------------------------------------------------------------------
+
+configure_file(
+  ${CMAKE_CURRENT_SOURCE_DIR}/SuperBuild/CTestCustom.cmake.in
+  ${CMAKE_CURRENT_BINARY_DIR}/CTestCustom.cmake
+  @ONLY IMMEDIATE)
+
+#------------------------------------------------------------------------------
+# Establish Target Dependencies based on Selected Options
+#------------------------------------------------------------------------------
+
+set(tcl_DEPENDENCIES)
+set(tk_DEPENDENCIES tcl)
+#set(incrTcl_DEPENDENCIES tcl tk)
+#set(iwidgets_DEPENDENCIES tcl itcl)
+#set(blt_DEPENDENCIES tcl tk)
+set(python_DEPENDENCIES)
+
+set(CLAPACK_DEPENDENCIES)
+set(NUMPY_DEPENDENCIES CLAPACK python)
+set(scipy_DEPENDENCIES NUMPY)
+
+set(VTK_DEPENDENCIES)
+#set(CTK_DEPENDENCIES VTK)
+
+#if(BRAINS3_USE_PYTHONQT)
+#  list(APPEND CTK_DEPENDENCIES python)
+#endif()
+
+
+set(ITK_PROJECT_NAME ITK)
+
+#set(CableSwig_Dependencies tcl)
+set(BatchMake_DEPENDENCIES ${ITK_PROJECT_NAME})
+set(OpenIGTLink_DEPENDENCIES)
+set(teem_DEPENDENCIES VTK)
+set(cmcurl_DEPENDENCIES)
+
+set(${CMAKE_PROJECT_NAME}_DEPENDENCIES VTK ${ITK_PROJECT_NAME} teem cmcurl)
+set(SlicerExecutionModel_DEPENDENCIES ${ITK_PROJECT_NAME})
+
+set(BRAINSCommonLib_DEPENDENCIES ${ITK_PROJECT_NAME})
+
+#------------------------------------------------------------------------------
+# Conditionnaly include ExternalProject Target
+#------------------------------------------------------------------------------
+
+set(ep_common_args
+  --no-warn-unused-cli
+  -DMAKECOMMAND:STRING=${MAKECOMMAND}
+  -DCMAKE_SKIP_RPATH:BOOL=ON
+  -DCMAKE_BUILD_TYPE:STRING=${CMAKE_BUILD_TYPE}
+  -DCMAKE_CXX_FLAGS_RELEASE:STRING=${CMAKE_CXX_FLAGS_RELEASE}
+  -DCMAKE_CXX_FLAGS_DEBUG:STRING=${CMAKE_CXX_FLAGS_DEBUG}
+  -DCMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS}
+  -DCMAKE_C_FLAGS_RELEASE:STRING=${CMAKE_C_FLAGS_RELEASE}
+  -DCMAKE_C_FLAGS_DEBUG:STRING=${CMAKE_C_FLAGS_DEBUG}
+  -DCMAKE_C_FLAGS:STRING=${CMAKE_C_FLAGS}
+  -DBUILD_EXAMPLES:BOOL=OFF
+  -DBUILD_TESTING:BOOL=${BUILD_TESTING}
+  -DCMAKE_GENERATOR:STRING=${CMAKE_GENERATOR}
+  -DCMAKE_EXTRA_GENERATOR:STRING=${CMAKE_EXTRA_GENERATOR}
+  -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_INSTALL_PREFIX}
+  -DCMAKE_LIBRARY_OUTPUT_DIRECTORY:PATH=${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
+  -DCMAKE_ARCHIVE_OUTPUT_DIRECTORY:PATH=${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}
+  -DCMAKE_RUNTIME_OUTPUT_DIRECTORY:PATH=${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
+  -DCMAKE_BUNDLE_OUTPUT_DIRECTORY:PATH=${CMAKE_BUNDLE_OUTPUT_DIRECTORY}
+  -DCTEST_NEW_FORMAT:BOOL=ON
+  -DMEMORYCHECK_COMMAND_OPTIONS:STRING=${MEMORYCHECK_COMMAND_OPTIONS}
+  -DMEMORYCHECK_COMMAND:PATH=${MEMORYCHECK_COMMAND}
+  -DCMAKE_SHARED_LINKER_FLAGS:STRING=${CMAKE_SHARED_LINKER_FLAGS}
+  -DCMAKE_EXE_LINKER_FLAGS:STRING=${CMAKE_EXE_LINKER_FLAGS}
+  -DCMAKE_MODULE_LINKER_FLAGS:STRING=${CMAKE_MODULE_LINKER_FLAGS}
+  -DSITE:STRING=${SITE}
+  -DBUILDNAME:STRING=${BUILDNAME}
+
+)
+
+#------------------------------------------------------------------------------
+# FFTW
+#------------------------------------------------------------------------------
+option(BRAINS3_USE_FFTW "Turn on building and installing FFTW" off)
+mark_as_advanced(BRAINS3_USE_FFTW)
+
+if(BRAINS3_USE_FFTW)
+include(External_FFTW)
+set(FFTW_FLAGS
+-DFFTW_INSTALL_BASE_PATH:PATH="${FFTW_INSTALL_BASE_PATH}"
+-DUSE_FFTWD:BOOL=${USE_FFTWD}
+)
+endif(BRAINS3_USE_FFTW)
+
+if(APPLE)
+  find_package(TCL REQUIRED)
+
+  set(ITK_TCL_ARGS
+    -DTCL_INCLUDE_PATH:PATH=${TCL_INCLUDE_PATH}
+    -DTCL_LIBRARY:FILEPATH=${TCL_LIBRARY}
+    -DTCL_TCLSH:FILEPATH=${TCL_TCLSH}
+    )
+  set(BRAINS3_TCL_ARGS
+    ${ITK_TCL_ARGS}
+    -DTK_INCLUDE_PATH:PATH=${TK_INCLUDE_PATH}
+    -DTK_LIBRARY:FILEPATH=${TK_LIBRARY}
+    )
+  set(Insight_DEPENDENCIES ${Swig_DEPEND} ${CableSwig_DEPEND} ${FFTW_DEPEND})
+else(APPLE)
+  #
+  # code to build tcl/tk needed on 2 branches
+  # of conditional below so put the code into a macro
+  MACRO(BUILD_TCL_TK)
+    if(WIN32)
+      set(${CMAKE_PROJECT_NAME}_TCL_LIB ${CMAKE_INSTALL_PREFIX}/lib/tcl85.lib)
+      set(${CMAKE_PROJECT_NAME}_TK_LIB ${CMAKE_INSTALL_PREFIX}/lib/tk85.lib)
+      set(${CMAKE_PROJECT_NAME}_TCLSH ${CMAKE_INSTALL_PREFIX}/bin/tclsh.exe)
+    else()
+      set(${CMAKE_PROJECT_NAME}_TCL_LIB ${CMAKE_INSTALL_PREFIX}/lib/libtcl8.5.so)
+      set(${CMAKE_PROJECT_NAME}_TK_LIB ${CMAKE_INSTALL_PREFIX}/lib/libtk8.5.so)
+      set(${CMAKE_PROJECT_NAME}_TCLSH ${CMAKE_INSTALL_PREFIX}/bin/tclsh85)
+    endif()
+    ## HACK:  We should use find package, and ONLY if necessary, build a private version of Tcl & Tk
+    find_package(tcl)
+    ## include(External_Tcl)
+    find_package(tk)
+    ##include(External_Tk)
+    set(ITK_TCL_ARGS
+      -DTCL_INCLUDE_PATH:PATH=${CMAKE_INSTALL_PREFIX}/include
+      -DTCL_LIBRARY:FILEPATH=${${CMAKE_PROJECT_NAME}_TCL_LIB}
+      )
+    set(BRAINS3_TCL_ARGS
+      ${ITK_TCL_ARGS}
+      -DTK_INCLUDE_PATH:PATH=${CMAKE_INSTALL_PREFIX}/include
+      -DTK_LIBRARY:FILEPATH=${${CMAKE_PROJECT_NAME}_TK_LIB}
+      -DTCL_TCLSH:FILEPATH=${${CMAKE_PROJECT_NAME}_TCLSH}
+      )
+    set(Insight_DEPENDENCIES ${Swig_DEPEND} ${CableSwig_DEPEND}
+      tcl tk ${FFTW_DEPEND})
+  endmacro(BUILD_TCL_TK)
+
+  #
+  # as per Vince's request, a parameter
+  option(BRAINS_BUILD_TCLTK "Force Building Tcl/Tk" OFF)
+  mark_as_advanced(BRAINS_BUILD_TCLTK)
+  #
+  # if you don't necessarily want/need to build tcl/tk
+  if(NOT ${BRAINS_BUILD_TCLTK})
+    #
+    # try to find a system version
+    find_package(TCL)
+    if (DEFINED TCL_FOUND)
+      set(ITK_TCL_ARGS
+        -DTCL_INCLUDE_PATH:PATH=${TCL_INCLUDE_PATH}
+        -DTCL_LIBRARY:FILEPATH=${TCL_LIBRARY}
+        -DTCL_TCLSH:FILEPATH=${TCL_TCLSH}
+        )
+      set(BRAINS3_TCL_ARGS
+        ${ITK_TCL_ARGS}
+        -DTK_INCLUDE_PATH:PATH=${TK_INCLUDE_PATH}
+        -DTK_LIBRARY:FILEPATH=${TK_LIBRARY}
+        )
+      set(Insight_DEPENDENCIES ${Swig_DEPEND} ${CableSwig_DEPEND} ${FFTW_DEPEND})
+    else (DEFINED TCL_FOUND)
+      #
+      # no system version, build local TCL/TK
+      BUILD_TCL_TK()
+    endif(DEFINED TCL_FOUND)
+  else(NOT ${BRAINS_BUILD_TCLTK})
+    #
+    # ALWAYS build TCL/TK
+    BUILD_TCL_TK()
+  endif(NOT ${BRAINS_BUILD_TCLTK})
+endif(APPLE)
+
+
+
+if(BRAINS3_USE_PYTHON OR BRAINS3_USE_PYTHONQT)
+  include(External_Python26)
+  if(BRAINS3_BUILD_NUMPY)
+    include(External_CLAPACK)
+    include(External_NUMPY)
+    if(BRAINS3_BUILD_SCIPY)
+      include(External_SciPy)
+    endif(BRAINS3_BUILD_SCIPY)
+  endif()
+endif()
+
+
+#-----------------------------------------------------------------------------
+# VTK Settings
+#------------------------------------------------------------------------------
+set(git_protocol "git")
+set(Slicer_VTK_GIT_REPOSITORY "github.com/Slicer/VTK.git" CACHE STRING "repository from which to get VTK")
+MARK_AS_ADVANCED(Slicer_VTK_GIT_REPOSITORY)
+include(External_VTK)
+
+# if(${CMAKE_PROJECT_NAME}_USE_QT)
+#   include(External_CTK)
+# endif()
+
+set(ITK_WRAPPING ON CACHE BOOL "Turn on wrapping ITK with WrapITK")
+
+
+include(External_ITKv4)
+include(External_SimpleITK)
+list(APPEND ${CMAKE_PROJECT_NAME}_DEPENDENCIES SimpleITK)
+
+include(External_teem)
+#include(External_OpenIGTLink)
+#include(External_BatchMake)
+include(External_cmcurl)
+
+include(External_SlicerExecutionModel)
+list(APPEND ${CMAKE_PROJECT_NAME}_DEPENDENCIES ${GenerateCLP_DEPEND})
+
+
+#-----------------------------------------------------------------------------
+# Update external project dependencies
+#------------------------------------------------------------------------------
+if(BRAINS3_USE_PYTHON OR BRAINS3_USE_PYTHONQT)
+  list(APPEND ${CMAKE_PROJECT_NAME}_DEPENDENCIES python)
+  if(BRAINS3_BUILD_NUMPY)
+    list(APPEND ${CMAKE_PROJECT_NAME}_DEPENDENCIES NUMPY)
+    if(BRAINS3_BUILD_SCIPY)
+      list(APPEND ${CMAKE_PROJECT_NAME}_DEPENDENCIES scipy)
+    endif()
+  endif()
+endif()
+
+#------------------------------------------------------------------------------
+# OpenCV
+#------------------------------------------------------------------------------
+set(Build_OpenCV ON CACHE BOOL
+"Set ON to build OpenCV for use with BRAINSCut")
+
+if(Build_OpenCV)
+include(External_OpenCV)
+list(APPEND ${CMAKE_PROJECT_NAME}_DEPENDENCIES ${OpenCV_DEPEND})
+endif(Build_OpenCV)
+
+#-----------------------------------------------------------------------------
+# CMTK
+#-----------------------------------------------------------------------------
+include(External_CMTK)
+list(APPEND ${CMAKE_PROJECT_NAME}_DEPENDENCIES ${CMTK_DEPEND})
+
+#-----------------------------------------------------------------------------
+# BRAINSTracerQT
+#-----------------------------------------------------------------------------
+if (${CMAKE_PROJECT_NAME}_USE_QT)
+set(BRAINSTracerQT_DEPENDENCIES ${ITK_PROJECT_NAME} VTK ${GenerateCLP_DEPEND})
+include(External_BRAINSTracerQT)
+endif()
+
+#-----------------------------------------------------------------------------
+# vv
+#-----------------------------------------------------------------------------
+include(External_vv)
+
+#------------------------------------------------------------------------------
+# BuildName used for dashboard reporting
+#
+set(BUILDNAME "Unknown-build" CACHE STRING "Name of build to report to dashboard")
+
+#------------------------------------------------------------------------------
+# List of external projects
+#------------------------------------------------------------------------------
+
+#set(external_project_list tk tcl incrTcl iwidgets blt
+#python CLAPACK NUMPY scipy VTK CTK KWWidgets CableSwig ${ITK_PROJECT_NAME} BatchMake OpenIGTLink teem cmcurl slicer)
+set(external_project_list tk tcl python CLAPACK NUMPY scipy VTK CableSwig ${ITK_PROJECT_NAME} BatchMake OpenIGTLink teem cmcurl slicer)
+
+#-----------------------------------------------------------------------------
+# Dump external project dependencies
+#------------------------------------------------------------------------------
+
+set(ep_dependency_graph "# External project dependencies")
+foreach(ep ${external_project_list})
+  set(ep_dependency_graph "${ep_dependency_graph}\n${ep}:${${ep}_DEPENDENCIES}")
+endforeach()
+file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/ExternalProjectDependencies.txt "${ep_dependency_graph}\n")
+
+#-----------------------------------------------------------------------------
+# Update external BRAINS* project dependencies
+#------------------------------------------------------------------------------
+include(External_BRAINSCommonLib)
+list(APPEND ${CMAKE_PROJECT_NAME}_DEPENDENCIES ${BRAINSCommonLib_DEPEND})
+
+#-----------------------------------------------------------------------------
+# Configure and build Slicer
+# Note that the Slicer3Version.txt file will be created at configuration time
+#------------------------------------------------------------------------------
+
+if(0) ### HACK:  TURN THIS OFF
+#-----------------------------------------------------------------------------
+# Find the test data
+if(BRAINS_BUILD_TESTING)
+  enable_testing()
+  find_package(BrainsRegressionData)
+  if(NOT BrainsRegressionData_FOUND)
+    message(FATAL_ERROR "Cannot test brains3 without the regressiontest tree.")
+  endif(NOT BrainsRegressionData_FOUND)
+endif(BRAINS_BUILD_TESTING)
+
+
+MESSAGE("BRAINS3 Dependancies:  ${${CMAKE_PROJECT_NAME}_DEPENDENCIES} ")
+set(proj BRAINS3)
+ExternalProject_Add(${proj}
+  DEPENDS ${${CMAKE_PROJECT_NAME}_DEPENDENCIES}
+  DOWNLOAD_COMMAND ""
+  SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/..
+  BINARY_DIR src
+  CMAKE_GENERATOR ${gen}
+  CMAKE_ARGS
+    --no-warn-unused-cli
+    -DBUILDNAME:STRING=${BUILDNAME}
+    -DSITE:STRING=${SITE}
+    -DBRAINS3_USE_ITK4:BOOL=${BRAINS3_USE_ITK4}
+    -D${CMAKE_PROJECT_NAME}_USE_QT:BOOL=${${CMAKE_PROJECT_NAME}_USE_QT}
+    -DBUILD_SHARED_LIBS:BOOL=${BUILD_SHARED_LIBS}
+    -DCMAKE_BUILD_TYPE:STRING=${CMAKE_BUILD_TYPE}
+    -DCMAKE_CXX_COMPILER:STRING=${CMAKE_CXX_COMPILER}
+    -DCMAKE_CXX_COMPILER_ARG1:STRING=${CMAKE_CXX_COMPILER_ARG1}
+    -DCMAKE_C_COMPILER:STRING=${CMAKE_C_COMPILER}
+    -DCMAKE_C_COMPILER_ARG1:STRING=${CMAKE_C_COMPILER_ARG1}
+    -DCMAKE_C_FLAGS:STRING=${CMAKE_C_FLAGS}
+    -DCMAKE_C_FLAGS_RELEASE:STRING=${CMAKE_C_FLAGS_RELEASE}
+    -DCMAKE_C_FLAGS_DEBUG:STRING=${CMAKE_C_FLAGS_DEBUG}
+    -DCMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS}
+    -DCMAKE_CXX_FLAGS_RELEASE:STRING=${CMAKE_CXX_FLAGS_RELEASE}
+    -DCMAKE_CXX_FLAGS_DEBUG:STRING=${CMAKE_CXX_FLAGS_DEBUG}
+    -DSubversion_SVN_EXECUTABLE:FILEPATH=${Subversion_SVN_EXECUTABLE}
+    # SlicerExecutionModel
+    -DGenerateCLP_DIR:PATH=${GenerateCLP_DIR}
+    # BRAINSCommonLib
+    -DBUILD_EXAMPLES:BOOL=OFF
+    -DBRAINSCommonLib_DIR:PATH=${BRAINSCommonLib_DIR}
+    -DBUILD_TESTING:BOOL=${BRAINS_BUILD_TESTING}
+    -DBRAINS_BUILD_TESTING:BOOL=${BRAINS_BUILD_TESTING}
+    -DBrainsRegressionData_DIR:PATH=${BrainsRegressionData_DIR}
+    # ITK
+    -DITK_DIR:PATH=${ITK_DIR}
+    -DWrapITK_DIR:PATH=${WrapITK_DIR}
+    # Teem
+    -DTeem_DIR:PATH=${CMAKE_BINARY_DIR}/teem-build
+    # OpenIGTLink
+    -DSlicer3_USE_OPENIGTLINK:BOOL=ON
+    -DOpenIGTLink_DIR:PATH=${CMAKE_BINARY_DIR}/OpenIGTLink-build
+    # BatchMake
+    -DSlicer3_USE_BatchMake=ON
+    -DBatchMake_DIR:PATH=${CMAKE_BINARY_DIR}/BatchMake-build
+    # VTK
+    -DVTK_DIR:PATH=${VTK_DIR}
+    -DVTK_DEBUG_LEAKS:BOOL=${BRAINS3_USE_VTK_DEBUG_LEAKS}
+    # OpenCV
+    -DOpenCV_DIR:PATH=${OpenCV_DIR}
+    # TCL/Tk
+    ${BRAINS3_TCL_ARGS}
+
+    # cmcurl
+    -DSLICERLIBCURL_DIR:PATH=${CMAKE_BINARY_DIR}/cmcurl-build
+    # Python
+    -DBRAINS3_USE_PYTHON:BOOL=${BRAINS3_USE_PYTHON}
+    -DBRAINS3_USE_PYTHONQT:BOOL=${BRAINS3_USE_PYTHONQT}
+    -DBRAINS3_USE_SYSTEM_PYTHON:BOOL=OFF
+    -DBRAINS3_USE_NUMPY:BOOL=${BRAINS3_BUILD_NUMPY}
+    -DPYTHON_EXECUTABLE:FILEPATH=${${CMAKE_PROJECT_NAME}_PYTHON_EXECUTABLE}
+    -DPYTHON_INCLUDE_DIR:PATH=${${CMAKE_PROJECT_NAME}_PYTHON_INCLUDE}
+    -DPYTHON_LIBRARY:FILEPATH=${${CMAKE_PROJECT_NAME}_PYTHON_LIBRARY}
+    # Qt
+    -DQT_QMAKE_EXECUTABLE:PATH=${QT_QMAKE_EXECUTABLE}
+    -DCTK_DIR:PATH=${CTK_DIR}
+    # OpenCV
+    -DOpenCV_DIR:PATH=${OpenCV_DIR}
+    -DATLAS_NAME:STRING=${ATLAS_NAME}
+    # HDF5
+    -DHDF5_DIR:PATH=${HDF5_DIR}
+  INSTALL_COMMAND ""
+  BUILD_COMMAND ${BUILD_COMMAND_STRING}
+)
+
+ExternalProject_Add_Step(${proj} forcebuild
+  COMMAND ${CMAKE_COMMAND} -E remove
+    ${CMAKE_CURRENT_BUILD_DIR}/${proj}-prefix/src/${proj}-stamp/${proj}-build
+  DEPENDEES configure
+  DEPENDERS build
+  ALWAYS 1
+  )
+
+#
+# target to produce a deployable directory tree
+#
+add_custom_target(BRAINS3_Deploy
+  COMMAND ${CMAKE_COMMAND}
+  -DBRAINS3_BINARY_DIR:PATH="${BRAINS3_BINARY_DIR}"
+  -DCMAKE_INSTALL_PREFIX:PATH="${CMAKE_INSTALL_PREFIX}"
+  -DDEPLOY_SYSTEM_NAME:STRING="${CMAKE_SYSTEM}"
+  -P "${CMAKE_CURRENT_LIST_DIR}/Deploy.cmake"
+)
+add_dependencies(BRAINS3_Deploy BRAINS3)
+endif(0)

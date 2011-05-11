@@ -1,0 +1,157 @@
+=========================================================================================================
+Future Work:
+	Add new AIR 5.03 Options to the BRAINS AIR dialog Box
+    Work on the BRAINS Tissue Classification wizard
+    Make all print statements currently used to be only turned on via ipl_debug calls to test level
+    Fix invalid surface file write to return appropriate values
+    Add data types to the Load Image Open dialog box
+    Add Undo option for tracing. May implement via delta file.
+    Do not allow multiple objects with the same name - Save with a new name should update internal name
+    Fix Save dialog box for images - PLane box does not always become active
+    
+    
+    
+    
+    Port Worsley and Randomization
+    Integrate AFNI and SPM
+    Complete Neural Net port
+    Create a BRAINS Worsley viewing mode
+    Work on NURBS editor
+
+
+=============================================================================================================
+
+GREG: Are goto's necessary in file b2transformLM.c?  There are wanings that cleanup: is not ever referenced.  Are there missing goto's?
+
+ALL: We need to remove warnings from the code.  There are several places where error message should be printed, but never will because of incorrect logic.  I.E. from b1surfIPLfilter.c
+       if ( fwrite ( &curvData[1], sizeof ( F32 ), 1, stdout ) < 0 )
+        {
+            /* fprintf(stderr, "Failed to write depth values.\n"); */
+            return ( FAILURE );
+        }
+The if always evaluates to false because fwrite only returns unsigned values.
+From Man Page:
+size_t fwrite (const void *ptr, size_t size, size_t nitems, FILE *stream);
+
+
+==========================================================================================================
+Approved to do as we have time.
+
+for all *.c *.h files, includes should be in the following order:
+1) local includes i.e.           #include "blah.h"
+2) ipl non-local includes   i.e. #inlucde <iplstuff/iplstuff.h>
+3) system includes i.e.          #include <stdio.h>
+This is expose dependencies very quickly, and they will be easier to resolve.
+
+
+4) Fix spelling of \breif to \brief
+5) Implement common indenting of code, and enforce this with CVS.
+
+
+mv header file gates to the first two lines of the file.  This just makes it easier to do checking with head -2
+
+Move comments from *.c files to *.h files.  the *.h files are public and should define the public interface to the library.  One should be able to completely exctract the documentation with doxygen from the *.h files.
+	All doxygen "file" comments should have $Log$
+	All doxygen "file" comments should have Revision 4.0  2002/11/07 17:24:58  harris
+	All doxygen "file" comments should have Add revision code
+	All doxygen "file" comments should have
+	All doxygen "file" comments should have Revision 3.10  2002/05/09 01:42:37  vince
+	All doxygen "file" comments should have Test of cervisia
+	All doxygen "file" comments should have
+	All doxygen "file" comments should have Revision 3.9  2002/05/02 15:34:36  vince
+	All doxygen "file" comments should have Additional updates
+	All doxygen "file" comments should have
+	All doxygen "file" comments should have Revision 3.8  2002/05/02 15:32:05  vince
+	All doxygen "file" comments should have Added some minor changes that we should implement
+	All doxygen "file" comments should have
+	All doxygen "file" comments should have Revision 3.7  2002/04/26 18:06:58  vince
+	All doxygen "file" comments should have Updated the list
+	All doxygen "file" comments should have
+	All doxygen "file" comments should have Revision 3.6  2002/04/04 19:53:41  hjohnson
+	All doxygen "file" comments should have Updated the information to be more current.
+	All doxygen "file" comments should have
+	All doxygen "file" comments should have Revision 3.5  2002/03/14 22:11:14  harris
+	All doxygen "file" comments should have scaling with zero range takes too long.
+	All doxygen "file" comments should have
+	All doxygen "file" comments should have Revision 3.4  2002/03/14 21:54:29  harris
+	All doxygen "file" comments should have image min/max incorrect after create bounded-image.
+	All doxygen "file" comments should have
+	All doxygen "file" comments should have Revision 3.3  2002/03/13 15:21:32  vince
+	All doxygen "file" comments should have Added some additional changes which need to be made
+	All doxygen "file" comments should have
+	All doxygen "file" comments should have Revision 3.2  2002/02/22 18:34:05  hjohnson
+	All doxygen "file" comments should have Modifications to change old brains3.conf configuration file to be split into a global brains3rc resource file that is located in the same directory as brains3 executable, and a person .brains3rc resource file for making specializations that take precedence over the global parameters.
+	All doxygen "file" comments should have
+	All doxygen "file" comments should have Revision 3.1  2002/01/28 18:10:09  vince
+	All doxygen "file" comments should have Modified the TODO list
+	All doxygen "file" comments should have
+	All doxygen "file" comments should have Revision 3.0  2002/01/27 02:08:54  hjohnson
+	All doxygen "file" comments should have Versioning of all files has been updated to version 3.0 to indicate that this is the first version of brains3 under the new build system.
+	All doxygen "file" comments should have
+	All doxygen "file" comments should have Revision 1.26  2002/01/25 15:36:03  hjohnson
+	All doxygen "file" comments should have More items added to TODO list
+	All doxygen "file" comments should have
+	All doxygen "file" comments should have Revision 1.25  2002/01/21 21:39:25  hjohnson
+	All doxygen "file" comments should have Files changed to remove compiler warnings.
+	All doxygen "file" comments should have
+	All doxygen "file" comments should have Revision 1.24  2002/01/18 21:19:07  hjohnson
+	All doxygen "file" comments should have Updated the TODO list
+	All doxygen "file" comments should have
+	All doxygen "file" comments should have Revision 1.23  2002/01/15 17:13:44  hjohnson
+	All doxygen "file" comments should have Updated TODO list
+	All doxygen "file" comments should have flags set
+Come to a common concensus for a formatting scheme.  Use indent program to enforce the formatting scheme.
+	Decide on .indent.pro file formatting.  i.e. decide on code formats.  Enforce with CVS with input and outputfilters.
+	make file in ~/.indent.pro that contains the following line
+	-nbad -bap -nbc -bbo -bl -bli0 -bls -ncdb -nce -cp1 -cs -hnl -i4 -ip4 -lp -pcs -npsl  -prs -sob
+	Put CVS filter into action.
+
+Make sure that function prototypes in headers are defined as extern.
+	Any function prototype in a header should be defined extern.
+
+	
+Break bkiplIO.h up into separate header files.  Only the "generic section" should stay here.
+src/iplKernel/bkiplIO/bkiplIO.h should be broken up into:
+src/iplKernel/bkiplIO/bkrwBlob.h
+src/iplKernel/bkiplIO/bkrwHistogram.h
+src/iplKernel/bkiplIO/bkrwImage.h
+src/iplKernel/bkiplIO/bkrwLandmark.h
+src/iplKernel/bkiplIO/bkrwLoopMatcher.h
+src/iplKernel/bkiplIO/bkrwMask.h
+src/iplKernel/bkiplIO/bkrwPalette.h
+src/iplKernel/bkiplIO/bkrwROI.h
+src/iplKernel/bkiplIO/bkrwSurface.h
+src/iplKernel/bkiplIO/bkrwTable.h
+src/iplKernel/bkiplIO/bkrwTalBox.h
+src/iplKernel/bkiplIO/bkrwTalMask.h
+src/iplKernel/bkiplIO/bkrwTalairachParameters.h
+src/iplKernel/bkiplIO/bkrwTissueClass.h
+src/iplKernel/bkiplIO/bkrwTransform.h
+
+HANS:(Low Priority) Make obCube, obSlice, obScanline and make Cube,Slice, and Scanline data structures in iplUtils.h
+HANS: figure out how to move pvobModules.h and obModules.h to iplObject/obModules directories.
+==========================================================================================================
+Posssibly move qhull from bkHull to iplFreeware
+
+Improve regression test
+==========================================================================================================
+Cast notes from building regression test.
+In b2 create bounded-image, the resulting image
+has b2 image min/max copied from the original image.
+This is worked around by saving and reloading
+the bounded image;  the analyze filter recomputes it.
+
+When scaling an image that is all one value, make
+sure we don't ask IEEE floating point to divide by
+zero range, as this puts the SGI in the red processing zone.
+
+==========================================================================================================
+
+Make the load and save image dialog boxes contain more information which can be placed on the brains3 command line
+	Data type, Plane
+    
+For saving objects in general the list may get too long to display in the window. Redesign this menu button
+
+Add an undo option for the tracing of ROIs
+
+Add the database functionality to saving of objects
