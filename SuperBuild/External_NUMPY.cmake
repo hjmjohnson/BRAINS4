@@ -3,6 +3,7 @@
 set(NUMPY_binary "${CMAKE_CURRENT_BINARY_DIR}/NUMPY/")
 set(numpy_url http://svn.slicer.org/Slicer3-lib-mirrors/trunk/numpy-1.4.1.tar.gz)
 set(numpy_md5 5c7b5349dc3161763f7f366ceb96516b)
+set(NUMPY_PYTHON_EXECUTABLE "${${CMAKE_PROJECT_NAME}_PYTHON_EXECUTABLE}")
 
 # to configure numpy we run a cmake -P script
 # the script will create a site.cfg file

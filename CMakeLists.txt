@@ -86,8 +86,8 @@ set(CMAKE_MODULE_PATH
   ${CMAKE_SOURCE_DIR}/SuperBuild
   ${CMAKE_BINARY_DIR}/CMake
   ${CMAKE_CURRENT_SOURCE_DIR}
-  ${CMAKE_CURRENT_SOURCE_DIR}/../CMake #  CMake directory
-  ${CMAKE_CURRENT_SOURCE_DIR}/../src/CMake # CMake directory
+  ${CMAKE_CURRENT_SOURCE_DIR}/CMake #  CMake directory
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/CMake # CMake directory
   ${CMAKE_MODULE_PATH}
   )
 
@@ -189,9 +189,9 @@ endif()
 if(${CMAKE_PROJECT_NAME}_USE_PYTHON OR ${CMAKE_PROJECT_NAME}_USE_PYTHONQT)
   option(${CMAKE_PROJECT_NAME}_BUILD_NUMPY "Build BRAINS with NumPy (builds CLapack)." ON)
   # Work in progress ...
-  #if(${CMAKE_PROJECT_NAME}_BUILD_NUMPY)
-  #  option(${CMAKE_PROJECT_NAME}_BUILD_SCIPY "Build BRAINS with SciPy (requires NumPy)" ON)
-  #endif()
+  if(${CMAKE_PROJECT_NAME}_BUILD_NUMPY)
+    option(${CMAKE_PROJECT_NAME}_BUILD_SCIPY "Build BRAINS with SciPy (requires NumPy)" ON)
+  endif()
 endif()
 
 #------------------------------------------------------------------------------
@@ -276,7 +276,6 @@ set(ep_common_args
   -DBUILDNAME:STRING=${BUILDNAME}
 )
 
-
 #------------------------------------------------------------------------------
 # FFTW
 #------------------------------------------------------------------------------
@@ -295,9 +294,9 @@ if(${CMAKE_PROJECT_NAME}_USE_PYTHON OR ${CMAKE_PROJECT_NAME}_USE_PYTHONQT)
   include(External_Python26)
   if(${CMAKE_PROJECT_NAME}_BUILD_NUMPY)
     include(External_CLAPACK)
-    ##HACK    include(External_NUMPY)
+    include(External_NUMPY)
     if(${CMAKE_PROJECT_NAME}_BUILD_SCIPY)
-      ##HACK      include(External_SciPy)
+        include(External_SciPy)
     endif(${CMAKE_PROJECT_NAME}_BUILD_SCIPY)
   endif()
 endif()
@@ -401,44 +400,40 @@ list(APPEND ${CMAKE_PROJECT_NAME}_DEPENDENCIES ${BRAINSCommonLib_DEPEND})
 # Note that the Slicer3Version.txt file will be created at configuration time
 #------------------------------------------------------------------------------
 
-if(0) ### HACK:  TURN THIS OFF
 #-----------------------------------------------------------------------------
 # Find the test data
+if(0)  ## HACK
 if(${CMAKE_PROJECT_NAME}_BUILD_TESTING)
   enable_testing()
-  find_package(BrainsRegressionData)
+  find_package(BrainsRegressionData REQUIRED)
   if(NOT BrainsRegressionData_FOUND)
     message(FATAL_ERROR "Cannot test brains3 without the regressiontest tree.")
   endif(NOT BrainsRegressionData_FOUND)
 endif(${CMAKE_PROJECT_NAME}_BUILD_TESTING)
+endif(0)
 
 
+set(PackageName BRAINS4)
+set(SRCCMDS
+      SVN_REPOSITORY https://www.nitrc.org/svn/brains/BRAINS/trunk/src
+      SVN_USERNAME "slicerbot"
+      SVN_PASSWORD "slicer"
+      SOURCE_DIR ${PROJECT_EXTERNAL_SHARED_SOURCE_TREE}/${PackageName}
+)
 MESSAGE("BRAINS4 Dependancies:  ${${CMAKE_PROJECT_NAME}_DEPENDENCIES} ")
 set(proj BRAINS4)
 ExternalProject_Add(${proj}
+  ${SRCCMDS}
   DEPENDS ${${CMAKE_PROJECT_NAME}_DEPENDENCIES}
-  DOWNLOAD_COMMAND ""
-  SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/..
   BINARY_DIR src
   CMAKE_GENERATOR ${gen}
   CMAKE_ARGS
-    --no-warn-unused-cli
+    ${ep_common_args}
     -DBUILDNAME:STRING=${BUILDNAME}
     -DSITE:STRING=${SITE}
     -D${CMAKE_PROJECT_NAME}_USE_QT:BOOL=${${CMAKE_PROJECT_NAME}_USE_QT}
-    -DBUILD_SHARED_LIBS:BOOL=${BUILD_SHARED_LIBS}
-    -DCMAKE_BUILD_TYPE:STRING=${CMAKE_BUILD_TYPE}
-    -DCMAKE_CXX_COMPILER:STRING=${CMAKE_CXX_COMPILER}
-    -DCMAKE_CXX_COMPILER_ARG1:STRING=${CMAKE_CXX_COMPILER_ARG1}
-    -DCMAKE_C_COMPILER:STRING=${CMAKE_C_COMPILER}
-    -DCMAKE_C_COMPILER_ARG1:STRING=${CMAKE_C_COMPILER_ARG1}
-    -DCMAKE_C_FLAGS:STRING=${CMAKE_C_FLAGS}
-    -DCMAKE_C_FLAGS_RELEASE:STRING=${CMAKE_C_FLAGS_RELEASE}
-    -DCMAKE_C_FLAGS_DEBUG:STRING=${CMAKE_C_FLAGS_DEBUG}
-    -DCMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS}
-    -DCMAKE_CXX_FLAGS_RELEASE:STRING=${CMAKE_CXX_FLAGS_RELEASE}
-    -DCMAKE_CXX_FLAGS_DEBUG:STRING=${CMAKE_CXX_FLAGS_DEBUG}
     -DSubversion_SVN_EXECUTABLE:FILEPATH=${Subversion_SVN_EXECUTABLE}
+    -D${CMAKE_PROJECT_NAME}_CMAKE_HELPER_DIR:PATH=${PROJECT_EXTERNAL_SHARED_SOURCE_TREE}/BuildScripts
     # SlicerExecutionModel
     -DGenerateCLP_DIR:PATH=${GenerateCLP_DIR}
     # BRAINSCommonLib
@@ -489,9 +484,9 @@ ExternalProject_Add_Step(${proj} forcebuild
 add_custom_target(${CMAKE_PROJECT_NAME}_Deploy
   COMMAND ${CMAKE_COMMAND}
   -D${CMAKE_PROJECT_NAME}_BINARY_DIR:PATH="${${CMAKE_PROJECT_NAME}_BINARY_DIR}"
+  -D${CMAKE_PROJECT_NAME}_INSTALL_PREFIX:PATH="${${CMAKE_PROJECT_NAME}_INSTALL_PREFIX}"
   -DCMAKE_INSTALL_PREFIX:PATH="${CMAKE_INSTALL_PREFIX}"
   -DDEPLOY_SYSTEM_NAME:STRING="${CMAKE_SYSTEM}"
   -P "${CMAKE_CURRENT_LIST_DIR}/Deploy.cmake"
 )
 add_dependencies(${CMAKE_PROJECT_NAME}_Deploy BRAINS4)
-endif(0)

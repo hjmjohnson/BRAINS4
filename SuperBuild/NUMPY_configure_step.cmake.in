@@ -31,7 +31,7 @@ lapack_libs = lapack
 ")
 
 execute_process(
-  COMMAND "@${CMAKE_PROJECT_NAME}_PYTHON_EXECUTABLE@" setup.py config
+  COMMAND "@NUMPY_PYTHON_EXECUTABLE@" setup.py config
   WORKING_DIRECTORY "@NUMPY_binary@"
   RESULT_VARIABLE res
   )

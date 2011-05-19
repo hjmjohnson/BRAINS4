@@ -7,8 +7,8 @@ ExternalProject_add(SimpleITK
   SOURCE_DIR SimpleITK
   BINARY_DIR SimpleITK-build
   GIT_REPOSITORY https://github.com/hjmjohnson/SimpleITK.git
-  #  GIT_TAG ConsolodateImageStatMeasurements
-  GIT_TAG master
+  GIT_TAG NeverBranchFromThisTest
+  #GIT_TAG master
   UPDATE_COMMAND ""
   CMAKE_ARGS
     --no-warn-unused-cli

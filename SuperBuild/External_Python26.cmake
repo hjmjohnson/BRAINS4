@@ -5,6 +5,7 @@ set(python_build ${CMAKE_CURRENT_BINARY_DIR}/${proj}-build)
 set(PYVER_SHORT 26)
 set(python_URL http://svn.slicer.org/Slicer3-lib-mirrors/trunk/Python-2.6.6.tgz)
 set(python_MD5 b2f209df270a33315e62c1ffac1937f0)
+set(PYTHON_USE_PYTHONQT_WITH_TCL "${${CMAKE_PROJECT_NAME}_USE_PYTHONQT_WITH_TCL}")
 
 if(WIN32)
 
@@ -16,7 +17,7 @@ if(WIN32)
   
   # point the tkinter build file to the slicer tcl-build
   set(python_PATCH_COMMAND)
-  if(${CMAKE_PROJECT_NAME}_USE_PYTHONQT_WITH_TCL)
+  if(PYTHON_USE_PYTHONQT_WITH_TCL)
     set(python_tkinter ${python_base}/pyproject.vsprops)
     string(REPLACE "/" "\\" python_tkinter ${python_tkinter})
 
@@ -59,7 +60,7 @@ if(WIN32)
   )
 
   # on Win64 we use tcl 8.5
-  if(${CMAKE_PROJECT_NAME}_USE_PYTHONQT_WITH_TCL AND NOT "${CMAKE_SIZEOF_VOID_P}" EQUAL 8)
+  if(PYTHON_USE_PYTHONQT_WITH_TCL AND NOT "${CMAKE_SIZEOF_VOID_P}" EQUAL 8)
     # this must match the version of tcl we are building for slicer.
     ExternalProject_Add_Step(${proj} Patch_tcltk_version
       COMMAND ${CMAKE_COMMAND} -Din=${in} -Dout=${out} -Dfind=85 -Dreplace=84 -P ${script}
@@ -83,7 +84,7 @@ if(WIN32)
   build_python_target(pythoncore Build_w9xpopen)
   build_python_target(_socket Build_pythoncore)
 
-  if(${CMAKE_PROJECT_NAME}_USE_PYTHONQT_WITH_TCL)
+  if(PYTHON_USE_PYTHONQT_WITH_TCL)
     build_python_target(_tkinter Build__socket)
     build_python_target(_testcapi Build__tkinter)
   else()
@@ -128,7 +129,7 @@ if(WIN32)
     DEPENDEES install
     )
 
-  if(${CMAKE_PROJECT_NAME}_USE_PYTHONQT_WITH_TCL)
+  if(PYTHON_USE_PYTHONQT_WITH_TCL)
     ExternalProject_Add_Step(${proj} Copy_tkinterPyd
       COMMAND ${CMAKE_COMMAND} -E copy ${PythonPCBuildDir}/_tkinter.pyd ${CMAKE_BINARY_DIR}/python-build/Lib/_tkinter.pyd
       DEPENDEES install
