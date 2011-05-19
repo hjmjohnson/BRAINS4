@@ -1,0 +1,16 @@
+message("Building MATPLOTLIB:\n@MATPLOTLIB_binary@")
+set(ENV{LD_LIBRARY_PATH} "@CMAKE_CURRENT_BINARY_DIR@/python-build/lib")
+set(ENV{VS_UNICODE_OUTPUT} "")
+
+execute_process(
+  COMMAND "@MATPLOTLIB_PYTHON_EXECUTABLE@" setup.py install
+  WORKING_DIRECTORY "@MATPLOTLIB_binary@"
+  RESULT_VARIABLE res
+  OUTPUT_VARIABLE MATPLOTLIB_OUT
+  OUTPUT_VARIABLE MATPLOTLIB_ERR)
+
+if(NOT ${res} EQUAL 0)
+  message("MATPLOTLIB Errors detected: \n${MATPLOTLIB_OUT}\n${MATPLOTLIB_ERR}")
+  message(FATAL_ERROR "Error in config of MATPLOTLIB")
+endif()
+message("Numpy build worked.")

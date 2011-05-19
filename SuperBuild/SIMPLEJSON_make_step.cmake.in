@@ -1,0 +1,16 @@
+message("Building SIMPLEJSON:\n@SIMPLEJSON_binary@")
+set(ENV{LD_LIBRARY_PATH} "@CMAKE_CURRENT_BINARY_DIR@/python-build/lib")
+set(ENV{VS_UNICODE_OUTPUT} "")
+
+execute_process(
+  COMMAND "@SIMPLEJSON_PYTHON_EXECUTABLE@" setup.py install
+  WORKING_DIRECTORY "@SIMPLEJSON_binary@"
+  RESULT_VARIABLE res
+  OUTPUT_VARIABLE SIMPLEJSON_OUT
+  OUTPUT_VARIABLE SIMPLEJSON_ERR)
+
+if(NOT ${res} EQUAL 0)
+  message("SIMPLEJSON Errors detected: \n${SIMPLEJSON_OUT}\n${SIMPLEJSON_ERR}")
+  message(FATAL_ERROR "Error in config of SIMPLEJSON")
+endif()
+message("Numpy build worked.")

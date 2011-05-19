@@ -1,0 +1,16 @@
+message("Building NETWORKX:\n@NETWORKX_binary@")
+set(ENV{LD_LIBRARY_PATH} "@CMAKE_CURRENT_BINARY_DIR@/python-build/lib")
+set(ENV{VS_UNICODE_OUTPUT} "")
+
+execute_process(
+  COMMAND "@NETWORKX_PYTHON_EXECUTABLE@" setup.py install
+  WORKING_DIRECTORY "@NETWORKX_binary@"
+  RESULT_VARIABLE res
+  OUTPUT_VARIABLE NETWORKX_OUT
+  OUTPUT_VARIABLE NETWORKX_ERR)
+
+if(NOT ${res} EQUAL 0)
+  message("NETWORKX Errors detected: \n${NETWORKX_OUT}\n${NETWORKX_ERR}")
+  message(FATAL_ERROR "Error in config of NETWORKX")
+endif()
+message("Numpy build worked.")

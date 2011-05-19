@@ -14,7 +14,7 @@ if(WIN32)
 
   get_filename_component(python_base ${python_sln} PATH)
   get_filename_component(python_home ${python_base} PATH)
-  
+
   # point the tkinter build file to the slicer tcl-build
   set(python_PATCH_COMMAND)
   if(PYTHON_USE_PYTHONQT_WITH_TCL)
@@ -29,12 +29,12 @@ if(WIN32)
   if("${CMAKE_SIZEOF_VOID_P}" EQUAL 8)
     set(python_configuration "Release|x64")
     set(PythonPCBuildDir ${CMAKE_BINARY_DIR}/python-build/PCbuild/amd64)
-    set(python_PATCH_COMMAND 
+    set(python_PATCH_COMMAND
       ${CMAKE_COMMAND} -Din=${in} -Dout=${out} -Dfind=tcltk64\" -Dreplace=tcl-build\" -P ${script})
   else()
     set(python_configuration "Release|Win32")
     set(PythonPCBuildDir ${CMAKE_BINARY_DIR}/python-build/PCbuild)
-    set(python_PATCH_COMMAND 
+    set(python_PATCH_COMMAND
       ${CMAKE_COMMAND} -Din=${in} -Dout=${out} -Dfind=tcltk\" -Dreplace=tcl-build\" -P ${script})
   endif()
 
@@ -55,7 +55,7 @@ if(WIN32)
     BUILD_COMMAND ${CMAKE_BUILD_TOOL} ${python_sln} /build ${python_configuration} /project select
     BUILD_IN_SOURCE 1
     INSTALL_COMMAND ""
-    DEPENDS 
+    DEPENDS
       ${python_DEPENDENCIES}
   )
 
@@ -68,7 +68,7 @@ if(WIN32)
       DEPENDERS build
       )
   endif()
-  
+
   # Convenient helper macro
   macro(build_python_target target depend)
     ExternalProject_Add_Step(${proj} Build_${target}
@@ -99,7 +99,7 @@ if(WIN32)
   build_python_target(pyexpat Build_winsound)
   build_python_target(pythonw Build_pyexpat)
   build_python_target(_multiprocessing Build_pythonw)
-  
+
   ExternalProject_Add_Step(${proj} Build_python
     COMMAND ${CMAKE_BUILD_TOOL} ${python_sln} /build ${python_configuration} /project python
     DEPENDEES Build__multiprocessing
@@ -135,23 +135,23 @@ if(WIN32)
       DEPENDEES install
       )
   endif()
-    
+
 elseif(UNIX)
   set(python_SOURCE_DIR python)
   set(python_BUILD_IN_SOURCE 1)
-  
+
   configure_file(SuperBuild/python_patch_step.cmake.in
     ${CMAKE_CURRENT_BINARY_DIR}/python_patch_step.cmake
     @ONLY)
-    
+
   configure_file(SuperBuild/python_configure_step.cmake.in
     ${CMAKE_CURRENT_BINARY_DIR}/python_configure_step.cmake
     @ONLY)
-  
+
   configure_file(SuperBuild/python_make_step.cmake.in
     ${CMAKE_CURRENT_BINARY_DIR}/python_make_step.cmake
     @ONLY)
-    
+
   configure_file(SuperBuild/python_install_step.cmake.in
     ${CMAKE_CURRENT_BINARY_DIR}/python_install_step.cmake
     @ONLY)
@@ -160,7 +160,7 @@ elseif(UNIX)
   set(python_CONFIGURE_COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/python_configure_step.cmake)
   set(python_BUILD_COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/python_make_step.cmake)
   set(python_INSTALL_COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/python_install_step.cmake)
-  
+
   ExternalProject_Add(${proj}
     URL ${python_URL}
     URL_MD5 ${python_MD5}
@@ -172,10 +172,10 @@ elseif(UNIX)
     BUILD_COMMAND ${python_BUILD_COMMAND}
     UPDATE_COMMAND ""
     INSTALL_COMMAND ${python_INSTALL_COMMAND}
-    DEPENDS 
+    DEPENDS
       ${python_DEPENDENCIES}
     )
-    
+
 endif()
 
 #-----------------------------------------------------------------------------
@@ -191,13 +191,13 @@ if(WIN32)
   set(${CMAKE_PROJECT_NAME}_PYTHON_LIBRARY ${PythonPCBuildDir}/python${PYVER_SHORT}.lib)
   set(${CMAKE_PROJECT_NAME}_PYTHON_EXECUTABLE ${PythonPCBuildDir}/python.exe)
 elseif(APPLE)
-  set(${CMAKE_PROJECT_NAME}_PYTHON_INCLUDE ${CMAKE_BINARY_DIR}/python-build/include/python2.6)
-  set(${CMAKE_PROJECT_NAME}_PYTHON_LIBRARY ${CMAKE_BINARY_DIR}/python-build/lib/libpython2.6.dylib)
-  set(${CMAKE_PROJECT_NAME}_PYTHON_EXECUTABLE ${CMAKE_BINARY_DIR}/python-build/bin/python)
+  set(${CMAKE_PROJECT_NAME}_PYTHON_INCLUDE ${CMAKE_BINARY_DIR}/include/python2.6)
+  set(${CMAKE_PROJECT_NAME}_PYTHON_LIBRARY ${CMAKE_BINARY_DIR}/lib/libpython2.6.dylib)
+  set(${CMAKE_PROJECT_NAME}_PYTHON_EXECUTABLE ${CMAKE_BINARY_DIR}/bin/python)
 else()
-  set(${CMAKE_PROJECT_NAME}_PYTHON_INCLUDE ${CMAKE_BINARY_DIR}/python-build/include/python2.6)
-  set(${CMAKE_PROJECT_NAME}_PYTHON_LIBRARY ${CMAKE_BINARY_DIR}/python-build/lib/libpython2.6.so)
-  set(${CMAKE_PROJECT_NAME}_PYTHON_EXECUTABLE ${CMAKE_BINARY_DIR}/python-build/bin/python)
+  set(${CMAKE_PROJECT_NAME}_PYTHON_INCLUDE ${CMAKE_BINARY_DIR}/include/python2.6)
+  set(${CMAKE_PROJECT_NAME}_PYTHON_LIBRARY ${CMAKE_BINARY_DIR}/lib/libpython2.6.so)
+  set(${CMAKE_PROJECT_NAME}_PYTHON_EXECUTABLE ${CMAKE_BINARY_DIR}/bin/python)
 endif()
 
 

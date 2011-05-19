@@ -1,0 +1,16 @@
+message("Building NIPYPE:\n@NIPYPE_binary@")
+set(ENV{LD_LIBRARY_PATH} "@CMAKE_CURRENT_BINARY_DIR@/python-build/lib")
+set(ENV{VS_UNICODE_OUTPUT} "")
+
+execute_process(
+  COMMAND "@NIPYPE_PYTHON_EXECUTABLE@" setup.py install
+  WORKING_DIRECTORY "@NIPYPE_binary@"
+  RESULT_VARIABLE res
+  OUTPUT_VARIABLE NIPYPE_OUT
+  OUTPUT_VARIABLE NIPYPE_ERR)
+
+if(NOT ${res} EQUAL 0)
+  message("NIPYPE Errors detected: \n${NIPYPE_OUT}\n${NIPYPE_ERR}")
+  message(FATAL_ERROR "Error in config of NIPYPE")
+endif()
+message("Numpy build worked.")

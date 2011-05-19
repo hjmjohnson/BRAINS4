@@ -15,7 +15,7 @@ if(UNIX)
   endif()
   
   EXECUTE_PROCESS( 
-    COMMAND sh configure --prefix=@CMAKE_CURRENT_BINARY_DIR@/python-build ${with_tcl_param} --enable-unicode=ucs2 --enable-shared
+    COMMAND sh configure --prefix=@CMAKE_CURRENT_BINARY_DIR@ ${with_tcl_param} --enable-unicode=ucs2 --enable-shared
     WORKING_DIRECTORY "@python_base@"
     RESULT_VARIABLE rv
     )
