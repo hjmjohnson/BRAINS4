@@ -1,5 +1,7 @@
 message("Configuring NIBABEL:\n@NIBABEL_binary@")
 set(ENV{LD_LIBRARY_PATH} "@CMAKE_CURRENT_BINARY_DIR@/python-build/lib")
+set(ENV{DYLD_LIBRARY_PATH} "@CMAKE_CURRENT_BINARY_DIR@/python-build/lib")
+
 set(ENV{VS_UNICODE_OUTPUT} "")
 
 # As explained in site.cfg.example - See http://projects.scipy.org/NIBABEL/browser/trunk/site.cfg.example
@@ -9,26 +11,6 @@ set(path_sep ":")
 if(WIN32)
   set(path_sep ";")
 endif()
-
-# As explained in site.cfg.example, the library name without the prefix "lib" should be used.
-# Nevertheless, on windows, only "libf2c" leads to a successful configuration and 
-# installation of NIBABEL
-set(f2c_libname "f2c")
-if(WIN32)
-  set(f2c_libname "libf2c")
-endif()
-
-# setup the site.cfg file
-file(WRITE "@NIBABEL_binary@/site.cfg"
-"
-[blas]
-library_dirs = @CLAPACK_binary@/BLAS/SRC/${CONFIG_TYPE}/${path_sep}@CLAPACK_binary@/F2CLIBS/libf2c/${CONFIG_TYPE}/
-libraries = blas,${f2c_libname}
-
-[lapack]
-library_dirs = @CLAPACK_binary@/SRC/${CONFIG_TYPE}/
-lapack_libs = lapack
-")
 
 execute_process(
   COMMAND "@NIBABEL_PYTHON_EXECUTABLE@" setup.py config

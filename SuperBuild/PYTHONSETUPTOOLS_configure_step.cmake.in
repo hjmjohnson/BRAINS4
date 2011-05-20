@@ -1,15 +1,15 @@
-message("Configuring IPYTHON:\n@IPYTHON_binary@")
+message("Configuring PYTHONSETUPTOOLS:\n@PYTHONSETUPTOOLS_binary@")
 set(ENV{LD_LIBRARY_PATH} "@CMAKE_CURRENT_BINARY_DIR@/python-build/lib")
 set(ENV{DYLD_LIBRARY_PATH} "@CMAKE_CURRENT_BINARY_DIR@/python-build/lib")
 set(ENV{VS_UNICODE_OUTPUT} "")
 
 execute_process(
-  COMMAND "@IPYTHON_PYTHON_EXECUTABLE@" setup.py config
-  WORKING_DIRECTORY "@IPYTHON_binary@"
+  COMMAND "@PYTHONSETUPTOOLS_PYTHON_EXECUTABLE@" setup.py install
+  WORKING_DIRECTORY "@PYTHONSETUPTOOLS_binary@"
   RESULT_VARIABLE res
   )
 
 if(NOT ${res} EQUAL 0)
-  message(FATAL_ERROR "Error in config of IPYTHON")
+  message(FATAL_ERROR "Error in config of PYTHONSETUPTOOLS")
 endif()
 message("Numpy config worked.")
