@@ -67,7 +67,7 @@ macro(BuildExtPackage PackageName PackageRepo REVISIONCODE PACKAGE_DEPENDANCIES)
 endmacro(BuildExtPackage)
 
 BuildExtPackage(BuildScripts
-  https://www.nitrc.org/svn/brains/BuildScripts/trunk "{20110515}" "" )
+  https://www.nitrc.org/svn/brains/BuildScripts/trunk "{20110520}" "" )
 
 ### HACK:  Need to change name of BuildScripts to BRAINSBuildScripts
 ### HACK:  Need to remove BRAINS_CMAKE_HELPER_DIR in favor of BRAINSBuildScripts
