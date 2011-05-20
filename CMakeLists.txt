@@ -433,7 +433,7 @@ endif(0)
 
 set(PackageName BRAINS4)
 set(SRCCMDS
-      SVN_REPOSITORY https://www.nitrc.org/svn/brains/BRAINS/trunk/src
+      SVN_REPOSITORY https://www.nitrc.org/svn/brains/BRAINS/branches/BRAINS4_v0
       SVN_USERNAME "slicerbot"
       SVN_PASSWORD "slicer"
       SOURCE_DIR ${PROJECT_EXTERNAL_SHARED_SOURCE_TREE}/${PackageName}
