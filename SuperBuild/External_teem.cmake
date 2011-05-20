@@ -23,7 +23,7 @@ ExternalProject_Add(${proj}
   CMAKE_GENERATOR ${gen}
   CMAKE_ARGS
     ${ep_common_args}
-    -DBUILD_SHARED_LIBS:BOOL=ON
+    -DBUILD_SHARED_LIBS:BOOL=${BUILD_SHARED_LIBS}
     -DTeem_USE_LIB_INSTALL_SUBDIR:BOOL=ON
     #-DCMAKE_CXX_FLAGS:STRING=${ep_common_cxx_flags} # Unused
     -DCMAKE_C_FLAGS:STRING=${ep_common_c_flags}

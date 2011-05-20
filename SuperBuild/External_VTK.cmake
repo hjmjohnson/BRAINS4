@@ -17,10 +17,10 @@ if(NOT DEFINED VTK_DIR OR NOT DEFINED VTK_SOURCE_DIR)
 #  message(STATUS "Adding project:${proj}")
 
   set(VTK_WRAP_TCL OFF)
-  set(VTK_WRAP_PYTHON ON)
+  set(VTK_WRAP_PYTHON ${BUILD_SHARED_LIBS})
 
   if (${CMAKE_PROJECT_NAME}_USE_PYTHONQT)
-    set(VTK_WRAP_PYTHON ON)
+    set(VTK_WRAP_PYTHON ${BUILD_SHARED_LIBS})
     set(VTK_WRAP_PYTHON_SIP OFF)
     list(APPEND VTK_DEPENDENCIES python)
   else()
@@ -91,7 +91,7 @@ if(NOT DEFINED VTK_DIR OR NOT DEFINED VTK_SOURCE_DIR)
       -DTCL_TCLSH:FILEPATH=${${CMAKE_PROJECT_NAME}_TCLSH}
       )
   endif()
-  
+
   set(VTK_BUILD_STEP "")
   if(UNIX)
     configure_file(SuperBuild/vtk_build_step.cmake.in
@@ -99,7 +99,7 @@ if(NOT DEFINED VTK_DIR OR NOT DEFINED VTK_SOURCE_DIR)
       @ONLY)
     set(VTK_BUILD_STEP ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/vtk_build_step.cmake)
   endif()
-  
+
   ExternalProject_Add(${proj}
     SOURCE_DIR ${CMAKE_BINARY_DIR}/${proj}
     BINARY_DIR ${proj}-build
@@ -109,7 +109,7 @@ if(NOT DEFINED VTK_DIR OR NOT DEFINED VTK_SOURCE_DIR)
     CMAKE_ARGS
       ${ep_common_args}
       -DBUILD_EXAMPLES:BOOL=OFF
-      -DBUILD_SHARED_LIBS:BOOL=ON
+      -DBUILD_SHARED_LIBS:BOOL=${BUILD_SHARED_LIBS}
       -DCMAKE_CXX_FLAGS:STRING=${ep_common_cxx_flags}
       -DCMAKE_C_FLAGS:STRING=${ep_common_c_flags}
       ##  HACK VTK_USE_GLSL_SHADERS was on in Slicer4
@@ -127,14 +127,14 @@ if(NOT DEFINED VTK_DIR OR NOT DEFINED VTK_SOURCE_DIR)
       ${VTK_MAC_ARGS}
     BUILD_COMMAND ${VTK_BUILD_STEP}
     INSTALL_COMMAND ""
-    DEPENDS 
+    DEPENDS
       ${VTK_DEPENDENCIES}
     )
   set(VTK_DIR ${CMAKE_BINARY_DIR}/${proj}-build)
   set(VTK_SOURCE_DIR ${CMAKE_BINARY_DIR}/${proj})
 
 else()
-  # The project is provided using VTK_DIR and VTK_SOURCE_DIR, nevertheless since other 
+  # The project is provided using VTK_DIR and VTK_SOURCE_DIR, nevertheless since other
   # project may depend on VTK, let's add an 'empty' one
   SlicerMacroEmptyExternalProject(${proj} "${VTK_DEPENDENCIES}")
 endif()

@@ -12,7 +12,7 @@ ExternalProject_Add(${proj}
     ${ep_common_args}
     #-DCMAKE_CXX_FLAGS:STRING=${ep_common_cxx_flags} # Unused
     -DCMAKE_C_FLAGS:STRING=${ep_common_c_flags}
-    -DBUILD_SHARED_LIBS:BOOL=ON
+    -DBUILD_SHARED_LIBS:BOOL=${BUILD_SHARED_LIBS}
   INSTALL_COMMAND ""
   DEPENDS 
     ${cmcurl_DEPENDENCIES}

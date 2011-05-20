@@ -111,7 +111,7 @@ endif()
 #-----------------------------------------------------------------------------
 # Always build Shared library
 #------------------------------------------------------------------------------
-set(BUILD_SHARED_LIBS ON)
+set(BUILD_SHARED_LIBS OFF)
 
 #-----------------------------------------------------------------------------
 # Setup build type
@@ -184,14 +184,10 @@ endif()
 #------------------------------------------------------------------------------
 # Python option
 #------------------------------------------------------------------------------
-## THIS IS NOT NEEDED option(${CMAKE_PROJECT_NAME}_USE_PYTHON "Build with Python support" ON)
-## WHEN REMOVED, REMOVE ALL THE ${CMAKE_PROJECT_NAME}_USE_PYTHON TO !
-if(${CMAKE_PROJECT_NAME}_USE_PYTHON OR ${CMAKE_PROJECT_NAME}_USE_PYTHONQT)
-  option(${CMAKE_PROJECT_NAME}_BUILD_NUMPY "Build BRAINS with NumPy (builds CLapack)." ON)
-  # Work in progress ...
-  if(${CMAKE_PROJECT_NAME}_BUILD_NUMPY)
+option(${CMAKE_PROJECT_NAME}_BUILD_NUMPY "Build BRAINS with NumPy (builds CLapack)." ON)
+# Work in progress ...
+if(${CMAKE_PROJECT_NAME}_BUILD_NUMPY)
     option(${CMAKE_PROJECT_NAME}_BUILD_SCIPY "Build BRAINS with SciPy (requires NumPy)" ON)
-  endif()
 endif()
 
 #------------------------------------------------------------------------------
@@ -298,22 +294,20 @@ set(FFTW_FLAGS
 )
 endif(${CMAKE_PROJECT_NAME}_USE_FFTW)
 
-if(${CMAKE_PROJECT_NAME}_USE_PYTHON OR ${CMAKE_PROJECT_NAME}_USE_PYTHONQT)
-  include(External_Python26)
-  if(${CMAKE_PROJECT_NAME}_BUILD_NUMPY)
-    include(External_CLAPACK)
-    include(External_NUMPY)
-    include(External_NETWORKX)
-    include(External_SIMPLEJSON)
-    include(External_IPYTHON)
-    include(External_NIBABEL)
-    include(External_PYTHONSETUPTOOLS)
-    include(External_ETSTraits)
-    include(External_MATPLOTLIB)
-    if(${CMAKE_PROJECT_NAME}_BUILD_SCIPY)
-        include(External_SciPy)
-    endif(${CMAKE_PROJECT_NAME}_BUILD_SCIPY)
-  endif()
+include(External_Python26)
+if(${CMAKE_PROJECT_NAME}_BUILD_NUMPY)
+  include(External_CLAPACK)
+  include(External_NUMPY)
+  include(External_NETWORKX)
+  include(External_SIMPLEJSON)
+  include(External_IPYTHON)
+  include(External_NIBABEL)
+  include(External_PYTHONSETUPTOOLS)
+  include(External_ETSTraits)
+  include(External_MATPLOTLIB)
+  if(${CMAKE_PROJECT_NAME}_BUILD_SCIPY)
+      include(External_SciPy)
+  endif(${CMAKE_PROJECT_NAME}_BUILD_SCIPY)
 endif()
 
 
@@ -336,6 +330,7 @@ set(ITK_WRAPPING ON CACHE BOOL "Turn on wrapping ITK with WrapITK")
 
 include(External_ITKv4)
 list(APPEND ${CMAKE_PROJECT_NAME}_DEPENDENCIES ITK)
+include(External_Swig)
 include(External_SimpleITK)
 list(APPEND ${CMAKE_PROJECT_NAME}_DEPENDENCIES SimpleITK)
 
