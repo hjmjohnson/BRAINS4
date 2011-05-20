@@ -1,0 +1,7 @@
+Hans: To run the pipeline, from this directory:
+
+./BrainsAutoWorkup.py tmp/0326/37977
+
+Note that while it's not currently in the pipeline, it'd be trivial to have
+it generate a graph now if you'd like.
+
