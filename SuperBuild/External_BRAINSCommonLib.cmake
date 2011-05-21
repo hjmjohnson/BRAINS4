@@ -1,6 +1,6 @@
 ## TODO:  KENT:  Every one of the options listed in should be configurable as build time of wether to include them or not.
 ##       This one file should have if(BUILD_BRAINSFIT) around the brainsfit to deterimine if it gets built or not.
-##       It is my hope that I can include this one external file in Slicer3, and BRAINS3, and the configure which tools are build with options.
+##       It is my hope that I can include this one external file in Slicer3, and ${CMAKE_PROJECT_NAME}, and the configure which tools are build with options.
 
 set(MIDAS_REST_URL
   "http://midas.kitware.com/api/rest"
@@ -46,10 +46,10 @@ macro(BuildExtPackage PackageName PackageRepo REVISIONCODE PACKAGE_DEPENDANCIES)
     -DBRAINS_BUILD:BOOL=${BRAINS_BUILD}
     -DBRAINS_CMAKE_HELPER_DIR:PATH=${BRAINS_CMAKE_HELPER_DIR}
     -DBRAINSLogo:PATH=${BRAINSLogo}
-    -DBRAINS3_USE_QT:BOOL=${BRAINS3_USE_QT}
-    -DBRAINS3_USE_ITK4:BOOL=${BRAINS3_USE_ITK4}
+    -D${CMAKE_PROJECT_NAME}_USE_QT:BOOL=${${CMAKE_PROJECT_NAME}_USE_QT}
+    -D${CMAKE_PROJECT_NAME}_USE_ITK4:BOOL=${${CMAKE_PROJECT_NAME}_USE_ITK4}
     #INSTALL_COMMAND ""
-    INSTALL_DIR ${CMAKE_CURRENT_BINARY_DIR}
+    #INSTALL_DIR ${CMAKE_CURRENT_BINARY_DIR}
     )
 
   ExternalProject_Add_Step(${PackageName} forcebuild
@@ -61,9 +61,11 @@ macro(BuildExtPackage PackageName PackageRepo REVISIONCODE PACKAGE_DEPENDANCIES)
     )
 
   set(${PackageName}_DEPEND "${proj}")
-  set(${PackageName}_DIR ${BRAINS3_INSTALL_PREFIX}/lib/${PackageName})
+  set(${PackageName}_DIR ${CMAKE_INSTALL_PREFIX}/lib/${PackageName})
   set(${PackageName}_SOURCE_DIR ${PROJECT_EXTERNAL_SHARED_SOURCE_TREE}/${PackageName} )
-  message(STATUS "${PackageName}_DIR = ${${PackageName}_DIR}")
+  message(STATUS "${CMAKE_PROJECT_NAME}")
+  message(STATUS "${PackageName}_DIR = ${CMAKE_INSTALL_PREFIX}/lib/${PackageName})
+  message(STATUS "${PackageName}_DIR = ${${PackageName}_DIR}})
 endmacro(BuildExtPackage)
 
 BuildExtPackage(BuildScripts
@@ -77,7 +79,7 @@ BuildExtPackage(BRAINSCommonLib
   http://www.nitrc.org/svn/brains/BRAINSCommonLib/trunk "{20110515}" "BuildScripts;SlicerExecutionModel")
 
 #set(BRAINSCommonLib_DEPEND "${proj}")
-#set(BRAINSCommonLib_DIR ${BRAINS3_INSTALL_PREFIX}/lib/BRAINSCommonLib)
+#set(BRAINSCommonLib_DIR ${CMAKE_INSTALL_PREFIX}/lib/BRAINSCommonLib)
 #  message(STATUS "BRAINSCommonLib_DIR = ${BRAINSCommonLib_DIR}")
 
 BuildExtPackage(BRAINSFit
@@ -109,19 +111,19 @@ if("${ITK_VERSION_MAJOR}" EQUAL "3")
     https://www.nitrc.org/svn/brains/BRAINS/trunk/BRAINSTools/DicomSignature  "{20110515}" "BRAINSCommonLib" )
 endif("${ITK_VERSION_MAJOR}" EQUAL "3")
 
-if(${BRAINS3_USE_QT})
-  BuildExtPackage(BRAINSImageEval
-    http://www.nitrc.org/svn/brainsimageeval  "{20110515}" "BRAINSCommonLib" )
-endif(${BRAINS3_USE_QT})
+## HACK if(${${CMAKE_PROJECT_NAME}_USE_QT})
+## HACK   BuildExtPackage(BRAINSImageEval
+## HACK     http://www.nitrc.org/svn/brainsimageeval  "{20110515}" "BRAINSCommonLib" )
+## HACK endif(${${CMAKE_PROJECT_NAME}_USE_QT})
 
 #-----------------------------------------------------------------------------
 # ReferenceAtlas
 #-----------------------------------------------------------------------------
 # Define the atlas subdirectory in one place
-set(BRAINS3_RUNTIME_DIR ${CMAKE_CURRENT_BINARY_DIR}/src/bin)
+set(${CMAKE_PROJECT_NAME}_RUNTIME_DIR ${CMAKE_CURRENT_BINARY_DIR}/src/bin)
 
 include(External_ReferenceAtlas)
-list(APPEND brains3_DEPENDENCIES ${ReferenceAtlas_DEPEND})
+list(APPEND ${CMAKE_PROJECT_NAME}_DEPENDENCIES ${ReferenceAtlas_DEPEND})
 
 #-----------------------------------------------------------------------------
 # BRAINSABC
@@ -134,9 +136,9 @@ BuildExtPackage(BRAINSABC
 #-----------------------------------------------------------------------------
 # HDF5
 #-----------------------------------------------------------------------------
-if(NOT BRAINS3_USE_ITK4)
+if(NOT ${CMAKE_PROJECT_NAME}_USE_ITK4)
   include(External_HDF5)
-endif(NOT BRAINS3_USE_ITK4)
+endif(NOT ${CMAKE_PROJECT_NAME}_USE_ITK4)
 
 #-----------------------------------------------------------------------------
 # BRAINSABC

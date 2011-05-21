@@ -9,7 +9,6 @@ find_package(Git REQUIRED)
 
 include(ExternalProject)
 #-----------------------------------------------------------------------------
-set(PKG_NAME BRAINS4)
 set(PROJECT_EXTERNAL_SHARED_SOURCE_TREE ${CMAKE_CURRENT_SOURCE_DIR}/../${CMAKE_PROJECT_NAME}-extsrc)
 
 set(BUILDNAME "NoBuldNameGiven")
@@ -230,8 +229,9 @@ set(NIBABEL_DEPENDANCIES python)
 set(PYTHONSETUPTOOLS_DEPENDANCIES python)
 set(ETSTraits_DEPENDANCIES python PYTHONSETUPTOOLS)
 set(SIMPLEJSON_DEPENDANCIES python)
-set(MATPLOTLIB_DEPENDANCIES python)
-set(NIPYPE_DEPENDANCIES SIMPLEJSON NETWORKX IPYTHON NIBABEL ETSTraits PYTHONSETUPTOOLS NUMPY scipy python MATPLOTLIB)
+#set(MATPLOTLIB_DEPENDANCIES python)
+set(NIPYPE_DEPENDANCIES SIMPLEJSON NETWORKX IPYTHON NIBABEL ETSTraits PYTHONSETUPTOOLS NUMPY scipy python) # MATPLOTLIB)
+set(SPYDER_DEPENDANCIES NIPYPE)
 
 set(VTK_DEPENDENCIES)
 #set(CTK_DEPENDENCIES VTK)
@@ -304,14 +304,14 @@ if(${CMAKE_PROJECT_NAME}_BUILD_NUMPY)
   include(External_NIBABEL)
   include(External_PYTHONSETUPTOOLS)
   include(External_ETSTraits)
-  include(External_MATPLOTLIB)
+  #include(External_MATPLOTLIB)
   if(${CMAKE_PROJECT_NAME}_BUILD_SCIPY)
       include(External_SciPy)
   endif(${CMAKE_PROJECT_NAME}_BUILD_SCIPY)
 endif()
 
-
 include(External_NIPYPE)
+include(External_SPYDER)
 
 
 #-----------------------------------------------------------------------------
@@ -406,7 +406,7 @@ file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/ExternalProjectDependencies.txt "${ep_dep
 # Update external BRAINS* project dependencies
 #------------------------------------------------------------------------------
 include(External_BRAINSCommonLib)
-list(APPEND ${CMAKE_PROJECT_NAME}_DEPENDENCIES ${BRAINSCommonLib_DEPEND})
+list(APPEND ${CMAKE_PROJECT_NAME}_DEPENDENCIES BRAINSCommonLib BRAINSFit BRAINSDemonWarp)
 
 #-----------------------------------------------------------------------------
 # Configure and build Slicer
@@ -420,7 +420,7 @@ if(${CMAKE_PROJECT_NAME}_BUILD_TESTING)
   enable_testing()
   find_package(BrainsRegressionData REQUIRED)
   if(NOT BrainsRegressionData_FOUND)
-    message(FATAL_ERROR "Cannot test brains3 without the regressiontest tree.")
+    message(FATAL_ERROR "Cannot test ${CMAKE_PROJECT_NAME} without the regressiontest tree.")
   endif(NOT BrainsRegressionData_FOUND)
 endif(${CMAKE_PROJECT_NAME}_BUILD_TESTING)
 endif(0)
@@ -434,7 +434,7 @@ set(SRCCMDS
       SOURCE_DIR ${PROJECT_EXTERNAL_SHARED_SOURCE_TREE}/${PackageName}
 )
 MESSAGE("BRAINS4 Dependancies:  ${${CMAKE_PROJECT_NAME}_DEPENDENCIES} ")
-set(proj BRAINS4Cmd)
+set(proj BRAINS4)
 ExternalProject_Add(${proj}
   ${SRCCMDS}
   DEPENDS ${${CMAKE_PROJECT_NAME}_DEPENDENCIES}
@@ -497,7 +497,6 @@ ExternalProject_Add_Step(${proj} forcebuild
 add_custom_target(${CMAKE_PROJECT_NAME}_Deploy
   COMMAND ${CMAKE_COMMAND}
   -D${CMAKE_PROJECT_NAME}_BINARY_DIR:PATH="${${CMAKE_PROJECT_NAME}_BINARY_DIR}"
-  -D${CMAKE_PROJECT_NAME}_INSTALL_PREFIX:PATH="${${CMAKE_PROJECT_NAME}_INSTALL_PREFIX}"
   -DCMAKE_INSTALL_PREFIX:PATH="${CMAKE_INSTALL_PREFIX}"
   -DDEPLOY_SYSTEM_NAME:STRING="${CMAKE_SYSTEM}"
   -P "${CMAKE_CURRENT_LIST_DIR}/Deploy.cmake"

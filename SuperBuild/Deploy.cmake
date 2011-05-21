@@ -63,18 +63,18 @@ endforeach(dir_to_copy)
 #
 # patch the setup scripts
 foreach(setup_ext csh sh)
-  message("Patching ${Deploy_DIR}/bin/brains3_setup.${setup_ext}")
+  message("Patching ${Deploy_DIR}/bin/${CMAKE_PROJECT_NAME}_setup.${setup_ext}")
   # execute_process(COMMAND sed
   #   -e "s@${CMAKE_INSTALL_PREFIX}@${CMAKE_INSTALL_PREFIX}@"
-  #   INPUT_FILE "${Deploy_DIR}/bin/brains3_setup.${setup_ext}"
-  #   OUTPUT_FILE "${Deploy_DIR}/bin/brains3_setup.tmp")
+  #   INPUT_FILE "${Deploy_DIR}/bin/${CMAKE_PROJECT_NAME}_setup.${setup_ext}"
+  #   OUTPUT_FILE "${Deploy_DIR}/bin/${CMAKE_PROJECT_NAME}_setup.tmp")
   # execute_process(COMMAND ${CMAKE_COMMAND} -E
-  #   copy "${Deploy_DIR}/bin/brains3_setup.tmp"
-  #   "${Deploy_DIR}/bin/brains3_setup.${setup_ext}"
+  #   copy "${Deploy_DIR}/bin/${CMAKE_PROJECT_NAME}_setup.tmp"
+  #   "${Deploy_DIR}/bin/${CMAKE_PROJECT_NAME}_setup.${setup_ext}"
   #   )
   # execute_process(COMMAND ${CMAKE_COMMAND} -E
-  #   remove "${Deploy_DIR}/bin/brains3_setup.tmp")
-  set(fixfile "${Deploy_DIR}/bin/brains3_setup.${setup_ext}")
+  #   remove "${Deploy_DIR}/bin/${CMAKE_PROJECT_NAME}_setup.tmp")
+  set(fixfile "${Deploy_DIR}/bin/${CMAKE_PROJECT_NAME}_setup.${setup_ext}")
   file(READ ${fixfile} fixed)
   string(REPLACE "${CMAKE_INSTALL_PREFIX}"
     "${CMAKE_INSTALL_PREFIX}" fixed "${fixed}")
