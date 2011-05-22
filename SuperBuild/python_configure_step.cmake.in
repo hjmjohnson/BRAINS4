@@ -14,9 +14,14 @@ if(UNIX)
     set(ENV{CPPFLAGS} "-I@CMAKE_CURRENT_BINARY_DIR@/tcl-build/include")
     set(with_tcl_param "--with-tcl=@CMAKE_CURRENT_BINARY_DIR@/tcl-build")
   endif()
+  if(APPLE)
+     set(LIBTYPE_BUILD_FLAGS --enable-framework=@CMAKE_CURRENT_BINARY_DIR@/Library/Framework ) # options --enable-toolbox-glue --enable-universalsdk)
+  else()
+    set(LIBTYPE_BUILD_FLAGS --enable-shared)
+  endif(APPLE)
 
   EXECUTE_PROCESS(
-    COMMAND sh configure --prefix=@CMAKE_CURRENT_BINARY_DIR@ ${with_tcl_param} --enable-unicode=ucs2 --enable-shared
+    COMMAND sh configure --prefix=@CMAKE_CURRENT_BINARY_DIR@ ${with_tcl_param} --enable-unicode=ucs2 ${LIBTYPE_BUILD_FLAGS}
     WORKING_DIRECTORY "@python_base@"
     RESULT_VARIABLE rv
     )

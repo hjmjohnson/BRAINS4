@@ -1,29 +1,38 @@
 cmake_minimum_required(VERSION 2.8)
 
 set(SPYDER_binary ${SPYDER_GLOBAL_ROOT}/SPYDER)
+if(APPLE)
+  set(SPYDER_EASY_INSTALL_EXECUTABLE ${SPYDER_GLOBAL_ROOT}/Library/Framework/Python.framework/Versions/2.6/bin/easy_install-2.6)
+  set(SPYDER_PYTHON_EXECUTABLE ${SPYDER_GLOBAL_ROOT}/Library/Framework/Python.framework/Versions/2.6/bin/python2.6)
+else()
+  set(SPYDER_EASY_INSTALL_EXECUTABLE ${SPYDER_GLOBAL_ROOT}/bin/easy_install-2.6)
+  set(SPYDER_PYTHON_EXECUTABLE ${SPYDER_GLOBAL_ROOT}/bin/python2.6)
+endif()
 
 FILE(WRITE ${SPYDER_binary}/spyder_config.sh  "
 #!/bin/bash -x
 
-${SPYDER_GLOBAL_ROOT}/bin/easy_install-2.6 pip
 
-${SPYDER_GLOBAL_ROOT}/bin/pip-2.6 install  sphinx
-${SPYDER_GLOBAL_ROOT}/bin/pip-2.6 install  rope
-${SPYDER_GLOBAL_ROOT}/bin/pip-2.6 install  pyflakes
+${SPYDER_EASY_INSTALL_EXECUTABLE} pip
+${SPYDER_EASY_INSTALL_EXECUTABLE}  mercurial
+${SPYDER_EASY_INSTALL_EXECUTABLE}  sphinx
+${SPYDER_EASY_INSTALL_EXECUTABLE}  rope
+${SPYDER_EASY_INSTALL_EXECUTABLE}  pyflakes
 #pip install  IPython
-${SPYDER_GLOBAL_ROOT}/bin/pip-2.6 install  pylint
-${SPYDER_GLOBAL_ROOT}/bin/pip-2.6 install  readline
-${SPYDER_GLOBAL_ROOT}/bin/pip-2.6 install  nose
-${SPYDER_GLOBAL_ROOT}/bin/pip-2.6 install  DateUtils
-#${SPYDER_GLOBAL_ROOT}/bin/pip-2.6 install  pydicom
-#${SPYDER_GLOBAL_ROOT}/bin/pip-2.6 install  pyxnat
+${SPYDER_EASY_INSTALL_EXECUTABLE}  pylint
+${SPYDER_EASY_INSTALL_EXECUTABLE}  readline
+${SPYDER_EASY_INSTALL_EXECUTABLE}  nose
+${SPYDER_EASY_INSTALL_EXECUTABLE}  DateUtils
+#${SPYDER_EASY_INSTALL_EXECUTABLE}  pydicom
+#${SPYDER_EASY_INSTALL_EXECUTABLE}  pyxnat
 
 cd ${SPYDER_binary}
-if [ ! -f sip-4.12.2.tar.gz ]; then
-  curl -O http://www.riverbankcomputing.co.uk/static/Downloads/sip4/sip-4.12.2.tar.gz
-  tar -xzvf sip-4.12.2.tar.gz
+if [ ! -f sip-4.12.3.tar.gz ]; then
+  curl -O http://www.riverbankcomputing.co.uk/static/Downloads/sip4/sip-4.12.3.tar.gz
+  tar -xzvf sip-4.12.3.tar.gz
 fi
-cd ${SPYDER_binary}/sip-4.12.2
+cd ${SPYDER_binary}/sip-4.12.3
+#${SPYDER_PYTHON_EXECUTABLE} configure.py
 ${SPYDER_PYTHON_EXECUTABLE} configure.py
 make
 make install
@@ -34,7 +43,9 @@ if [ ! -f PyQt-mac-gpl-4.8.4.tar.gz ]; then
   tar -xzvf PyQt-mac-gpl-4.8.4.tar.gz
 fi
 cd PyQt-mac-gpl-4.8.4/
-${SPYDER_PYTHON_EXECUTABLE} configure.py --qmake=/usr/bin/qmake
+${SPYDER_PYTHON_EXECUTABLE} configure.py --qmake=/usr/bin/qmake << EOF
+yes
+EOF
 make -j 8 -k ; make
 make install
 

@@ -3,14 +3,22 @@ if(UNIX)
 
   if(APPLE)
     set(ENV{DYLD_LIBRARY_PATH} "@CMAKE_CURRENT_BINARY_DIR@/python-build/lib")
+    set(PYTHON_INSTALL_CMD fullinstall)
   else(APPLE)
     set(ENV{LD_LIBRARY_PATH} "@CMAKE_CURRENT_BINARY_DIR@/python-build/lib")
+    set(PYTHON_INSTALL_CMD install)
   endif(APPLE)
 
   EXECUTE_PROCESS(
     COMMAND make install
     WORKING_DIRECTORY "@python_base@"
     )
+  if(APPLE)
+    EXECUTE_PROCESS(
+      COMMAND make frameworkinstall
+      WORKING_DIRECTORY "@python_base@"
+      )
+  endif()
 
   EXECUTE_PROCESS(
     COMMAND @CMAKE_CURRENT_BINARY_DIR@/python-build/bin/python setup.py install
