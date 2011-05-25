@@ -183,11 +183,11 @@ endif()
 #------------------------------------------------------------------------------
 # Python option
 #------------------------------------------------------------------------------
-option(${CMAKE_PROJECT_NAME}_BUILD_NUMPY "Build BRAINS with NumPy (builds CLapack)." ON)
+#option(${CMAKE_PROJECT_NAME}_BUILD_NUMPY "Build BRAINS with NumPy (builds CLapack)." ON)
 # Work in progress ...
-if(${CMAKE_PROJECT_NAME}_BUILD_NUMPY)
+#HACK  if(${CMAKE_PROJECT_NAME}_BUILD_NUMPY)
     option(${CMAKE_PROJECT_NAME}_BUILD_SCIPY "Build BRAINS with SciPy (requires NumPy)" ON)
-endif()
+#HACK  endif()
 
 #------------------------------------------------------------------------------
 # Additional options
@@ -221,16 +221,17 @@ configure_file(
 
 set(python_DEPENDENCIES)
 set(CLAPACK_DEPENDENCIES)
-set(NUMPY_DEPENDENCIES CLAPACK python)
-set(scipy_DEPENDENCIES NUMPY)
-set(NETWORKX_DEPENDENCIES python)
-set(NIBABEL_DEPENDANCIES python)
 set(PYTHONSETUPTOOLS_DEPENDANCIES python)
-set(ETSTraits_DEPENDANCIES python PYTHONSETUPTOOLS)
-set(SIMPLEJSON_DEPENDANCIES python)
+
+#set(NUMPY_DEPENDENCIES CLAPACK python)
+#set(scipy_DEPENDENCIES NUMPY)
+#set(NETWORKX_DEPENDENCIES python)
+#set(NIBABEL_DEPENDANCIES python)
+#set(ETSTraits_DEPENDANCIES python PYTHONSETUPTOOLS)
+#set(SIMPLEJSON_DEPENDANCIES python)
 #set(MATPLOTLIB_DEPENDANCIES python)
-set(NIPYPE_DEPENDANCIES SIMPLEJSON NETWORKX NIBABEL ETSTraits PYTHONSETUPTOOLS NUMPY scipy python) # MATPLOTLIB)
-set(SPYDER_DEPENDANCIES PYTHONSETUPTOOLS NIPYPE)
+#set(NIPYPE_DEPENDANCIES SIMPLEJSON NETWORKX NIBABEL ETSTraits PYTHONSETUPTOOLS NUMPY scipy python) # MATPLOTLIB)
+set(SPYDER_DEPENDANCIES PYTHONSETUPTOOLS)
 
 set(VTK_DEPENDENCIES)
 #set(CTK_DEPENDENCIES VTK)
@@ -294,21 +295,21 @@ set(FFTW_FLAGS
 endif(${CMAKE_PROJECT_NAME}_USE_FFTW)
 
 include(External_Python26)
-if(${CMAKE_PROJECT_NAME}_BUILD_NUMPY)
+#if(${CMAKE_PROJECT_NAME}_BUILD_NUMPY)
   include(External_CLAPACK)
-  include(External_NUMPY)
-  include(External_NETWORKX)
-  include(External_SIMPLEJSON)
-  include(External_NIBABEL)
-  include(External_PYTHONSETUPTOOLS)
-  include(External_ETSTraits)
+  #  include(External_NUMPY)
+  #  include(External_NETWORKX)
+  #  include(External_SIMPLEJSON)
+  #  include(External_NIBABEL)
+  #  include(External_PYTHONSETUPTOOLS)
+#  include(External_ETSTraits)
   #include(External_MATPLOTLIB)
-  if(${CMAKE_PROJECT_NAME}_BUILD_SCIPY)
-      include(External_SciPy)
-  endif(${CMAKE_PROJECT_NAME}_BUILD_SCIPY)
-endif()
+  #  if(${CMAKE_PROJECT_NAME}_BUILD_SCIPY)
+  #      include(External_SciPy)
+  #  endif(${CMAKE_PROJECT_NAME}_BUILD_SCIPY)
+  #endif()
 
-include(External_NIPYPE)
+#include(External_NIPYPE)
 include(External_SPYDER)
 
 
@@ -339,15 +340,15 @@ list(APPEND ${CMAKE_PROJECT_NAME}_DEPENDENCIES ${GenerateCLP_DEPEND})
 #-----------------------------------------------------------------------------
 # Update external project dependencies
 #------------------------------------------------------------------------------
-if(${CMAKE_PROJECT_NAME}_USE_PYTHON OR ${CMAKE_PROJECT_NAME}_USE_PYTHONQT)
+#if(${CMAKE_PROJECT_NAME}_USE_PYTHON OR ${CMAKE_PROJECT_NAME}_USE_PYTHONQT)
   list(APPEND ${CMAKE_PROJECT_NAME}_DEPENDENCIES python)
-  if(${CMAKE_PROJECT_NAME}_BUILD_NUMPY)
-    list(APPEND ${CMAKE_PROJECT_NAME}_DEPENDENCIES NUMPY)
-    if(${CMAKE_PROJECT_NAME}_BUILD_SCIPY)
-      list(APPEND ${CMAKE_PROJECT_NAME}_DEPENDENCIES scipy)
-    endif()
-  endif()
-endif()
+#  if(${CMAKE_PROJECT_NAME}_BUILD_NUMPY)
+#    list(APPEND ${CMAKE_PROJECT_NAME}_DEPENDENCIES NUMPY)
+#    if(${CMAKE_PROJECT_NAME}_BUILD_SCIPY)
+#      list(APPEND ${CMAKE_PROJECT_NAME}_DEPENDENCIES scipy)
+#    endif()
+#  endif()
+#endif()
 
 #------------------------------------------------------------------------------
 # OpenCV
@@ -388,7 +389,7 @@ set(BUILDNAME "Unknown-build" CACHE STRING "Name of build to report to dashboard
 # List of external projects
 #------------------------------------------------------------------------------
 
-set(external_project_list  python CLAPACK NUMPY scipy VTK ITK )
+set(external_project_list  python CLAPACK VTK ITK )
 
 #-----------------------------------------------------------------------------
 # Dump external project dependencies
