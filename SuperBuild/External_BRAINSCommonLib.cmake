@@ -69,51 +69,51 @@ macro(BuildExtPackage PackageName PackageRepo REVISIONCODE PACKAGE_DEPENDANCIES)
 endmacro(BuildExtPackage)
 
 BuildExtPackage(BuildScripts
-  https://www.nitrc.org/svn/brains/BuildScripts/trunk "{20110525}" "" )
+  https://www.nitrc.org/svn/brains/BuildScripts/trunk "{20110526}" "" )
 
 ### HACK:  Need to change name of BuildScripts to BRAINSBuildScripts
 ### HACK:  Need to remove BRAINS_CMAKE_HELPER_DIR in favor of BRAINSBuildScripts
 set(BRAINS_CMAKE_HELPER_DIR ${BuildScripts_SOURCE_DIR})
 
 BuildExtPackage(BRAINSCommonLib
-  http://www.nitrc.org/svn/brains/BRAINSCommonLib/trunk "{20110525}" "BuildScripts;SlicerExecutionModel")
+  http://www.nitrc.org/svn/brains/BRAINSCommonLib/trunk "{20110526}" "BuildScripts;SlicerExecutionModel")
 
 #set(BRAINSCommonLib_DEPEND "${proj}")
 #set(BRAINSCommonLib_DIR ${CMAKE_INSTALL_PREFIX}/lib/BRAINSCommonLib)
 #  message(STATUS "BRAINSCommonLib_DIR = ${BRAINSCommonLib_DIR}")
 
 BuildExtPackage(BRAINSFit
-  https://www.nitrc.org/svn/multimodereg/trunk  "{20110525}" "BRAINSCommonLib" )
+  https://www.nitrc.org/svn/multimodereg/trunk  "{20110526}" "BRAINSCommonLib" )
 BuildExtPackage(BRAINSMush
-  https://www.nitrc.org/svn/brainsmush/trunk  "{20110525}" "BRAINSCommonLib" )
+  https://www.nitrc.org/svn/brainsmush/trunk  "{20110526}" "BRAINSCommonLib" )
 BuildExtPackage(BRAINSDemonWarp
-  https://www.nitrc.org/svn/brainsdemonwarp/trunk  "{20110525}" "BRAINSCommonLib" )
+  https://www.nitrc.org/svn/brainsdemonwarp/trunk  "{20110526}" "BRAINSCommonLib" )
 BuildExtPackage(BRAINSROIAuto
-  https://www.nitrc.org/svn/brainsroiauto/trunk  "{20110525}" "BRAINSCommonLib" )
+  https://www.nitrc.org/svn/brainsroiauto/trunk  "{20110526}" "BRAINSCommonLib" )
 BuildExtPackage(BRAINSCut
-  https://www.nitrc.org/svn/brainscut/trunk  "{20110525}" "BRAINSCommonLib" )
+  https://www.nitrc.org/svn/brainscut/trunk  "{20110526}" "BRAINSCommonLib" )
 BuildExtPackage(GTRACT
-  https://www.nitrc.org/svn/vmagnotta/GTRACT  "{20110525}" "BRAINSCommonLib" )
+  https://www.nitrc.org/svn/vmagnotta/GTRACT  "{20110526}" "BRAINSCommonLib" )
 
 BuildExtPackage(BRAINSMultiModeSegment
-  https://www.nitrc.org/svn/brains/BRAINS/trunk/BRAINSTools/BRAINSMultiModeSegment  "{20110525}" "BRAINSCommonLib" )
+  https://www.nitrc.org/svn/brains/BRAINS/trunk/BRAINSTools/BRAINSMultiModeSegment  "{20110526}" "BRAINSCommonLib" )
 BuildExtPackage(BRAINSResample
-  https://www.nitrc.org/svn/brains/BRAINS/trunk/BRAINSTools/BRAINSResample  "{20110525}" "BRAINSCommonLib" )
+  https://www.nitrc.org/svn/brains/BRAINS/trunk/BRAINSTools/BRAINSResample  "{20110526}" "BRAINSCommonLib" )
 BuildExtPackage(BRAINSInitilizedControlPoints
-  https://www.nitrc.org/svn/brains/BRAINS/trunk/BRAINSTools/BRAINSInitilizedControlPoints  "{20110525}" "BRAINSCommonLib" )
+  https://www.nitrc.org/svn/brains/BRAINS/trunk/BRAINSTools/BRAINSInitilizedControlPoints  "{20110526}" "BRAINSCommonLib" )
 
 if("${ITK_VERSION_MAJOR}" EQUAL "3")
   BuildExtPackage(DicomToNrrdConverter
-    http://svn.slicer.org/Slicer3/trunk/Applications/CLI/DicomToNrrdConverter  "{20110525}" "BRAINSCommonLib" )
+    http://svn.slicer.org/Slicer3/trunk/Applications/CLI/DicomToNrrdConverter  "{20110526}" "BRAINSCommonLib" )
   #
   # DicomSignature won't work with ITK4
   BuildExtPackage(DicomSignature
-    https://www.nitrc.org/svn/brains/BRAINS/trunk/BRAINSTools/DicomSignature  "{20110525}" "BRAINSCommonLib" )
+    https://www.nitrc.org/svn/brains/BRAINS/trunk/BRAINSTools/DicomSignature  "{20110526}" "BRAINSCommonLib" )
 endif("${ITK_VERSION_MAJOR}" EQUAL "3")
 
 ## HACK if(${${CMAKE_PROJECT_NAME}_USE_QT})
 ## HACK   BuildExtPackage(BRAINSImageEval
-## HACK     http://www.nitrc.org/svn/brainsimageeval  "{20110525}" "BRAINSCommonLib" )
+## HACK     http://www.nitrc.org/svn/brainsimageeval  "{20110526}" "BRAINSCommonLib" )
 ## HACK endif(${${CMAKE_PROJECT_NAME}_USE_QT})
 
 #-----------------------------------------------------------------------------
@@ -129,7 +129,7 @@ list(APPEND ${CMAKE_PROJECT_NAME}_DEPENDENCIES ${ReferenceAtlas_DEPEND})
 # BRAINSABC
 #-----------------------------------------------------------------------------
 BuildExtPackage(BRAINSABC
-  https://www.nitrc.org/svn/brains/BRAINS/trunk/BRAINSTools/BRAINSABC  "{20110525}" "BRAINSCommonLib;${ReferenceAtlas_DEPEND}" )
+  https://www.nitrc.org/svn/brains/BRAINS/trunk/BRAINSTools/BRAINSABC  "{20110526}" "BRAINSCommonLib;${ReferenceAtlas_DEPEND}" )
 
 
 #-----------------------------------------------------------------------------
@@ -143,6 +143,6 @@ endif(NOT ${CMAKE_PROJECT_NAME}_USE_ITK4)
 # BRAINSABC
 #-----------------------------------------------------------------------------
 BuildExtPackage(BRAINSConstellationDetector
-  https://www.nitrc.org/svn/brainscdetector/trunk  "{20110525}" "BRAINSCommonLib;HDF5" )
+  https://www.nitrc.org/svn/brainscdetector/trunk  "{20110526}" "BRAINSCommonLib;HDF5" )
 
 
