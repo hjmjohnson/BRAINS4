@@ -1,6 +1,8 @@
 #!/bin/bash -x
 
 
+cd @SPYDER_BINARY_DIR@
+
 ## HACK -- NEED SOME FALL_THOUGH_LOGIC to prevent re-installs
 ## HACK -- only needed for APPLE
 ## Adapted from SuperPack
@@ -10,6 +12,7 @@ SERVER=http://dl.dropbox.com/u/233041/PyMC
 ## A wrapper script to make installing python packages only occur once
 easy_install_wrapper ()
 {
+cd @SPYDER_BINARY_DIR@
 PKG_NAME=$1
 PKG_GET=$2
 
@@ -20,13 +23,14 @@ if [ ! -f ${PKG_SENTINAL} ]; then
   @SPYDER_EASY_INSTALL_EXECUTABLE@ -Z ${PKG_GET}
   if [ $? -eq 0 ]; then
     echo "Successful Install of ${PKG_NAME}"
-    echo "DONE ${PKG_NAME}" >> ${PKG_SENTINAL}
+  else
+    echo "NON-SUCCESS STATUS INSTALL OF ${PKG_NAME}"
   fi
+  echo "DONE ${PKG_NAME}" >> ${PKG_SENTINAL}
 fi
 
 }
 
-echo 'Would you like to install gFortran (required if not already installed)? (y/n)'
 if [ ! -f gfortran-42-5664.pkg ];then
   echo 'Downloading gFortran ...'
   curl -o gfortran-42-5664.pkg http://r.research.att.com/gfortran-42-5664.pkg
@@ -59,41 +63,45 @@ easy_install_wrapper sphinx     sphinx
 easy_install_wrapper rope       rope
 easy_install_wrapper pyflakes   pyflakes
 easy_install_wrapper pygments   pygments
+easy_install_wrapper networkx   networkx
+easy_install_wrapper simplejson simplejson
+easy_install_wrapper simplejson simplejson
 
 easy_install_wrapper pylint     pylint
 easy_install_wrapper lxml       lxml
 #easy_install_wrapper pyxnat     pyxnat
-#easy_install_wrapper pydicom     pydicom
+easy_install_wrapper pydicom    pydicom
+easy_install_wrapper nibabel    nibabel  ## needs pydicom
 
 cd @SPYDER_BINARY_DIR@
 if [ ! -f sip-4.12.3.tar.gz ]; then
   curl -O http://www.riverbankcomputing.co.uk/static/Downloads/sip4/sip-4.12.3.tar.gz
   tar -xzvf sip-4.12.3.tar.gz
+  cd /scratch/johnsonhj/src/BRAINS4-buld/SPYDER/sip-4.12.3
+  #/scratch/johnsonhj/src/BRAINS4-buld/Library/Framework/Python.framework/Versions/2.6/bin/python2.6 configure.py
+  /scratch/johnsonhj/src/BRAINS4-buld/Library/Framework/Python.framework/Versions/2.6/bin/python2.6 configure.py
+  make
+  make install
 fi
-cd @SPYDER_BINARY_DIR@/sip-4.12.3
-#@SPYDER_PYTHON_EXECUTABLE@ configure.py
-@SPYDER_PYTHON_EXECUTABLE@ configure.py
-make
-make install
 
 cd @SPYDER_BINARY_DIR@
 if [ ! -f PyQt-mac-gpl-4.8.4.tar.gz ]; then
   curl -O http://www.riverbankcomputing.co.uk/static/Downloads/PyQt4/PyQt-mac-gpl-4.8.4.tar.gz
   tar -xzvf PyQt-mac-gpl-4.8.4.tar.gz
-fi
-cd PyQt-mac-gpl-4.8.4/
-## HACK:  Need to propogate from CMake the path to qmake
-@SPYDER_PYTHON_EXECUTABLE@ configure.py --qmake=/usr/bin/qmake << EOF
+  cd PyQt-mac-gpl-4.8.4/
+  ## HACK:  Need to propogate from CMake the path to qmake
+  /scratch/johnsonhj/src/BRAINS4-buld/Library/Framework/Python.framework/Versions/2.6/bin/python2.6 configure.py --qmake=/usr/bin/qmake << EOF
 yes
 EOF
-make -j 8 -k ; make
-make install
+  make -j 8 -k ; make
+  make install
+fi
 
 cd @SPYDER_BINARY_DIR@
 if [ ! -f spyder-2.0.11.zip ]; then
   curl -O http://spyderlib.googlecode.com/files/spyder-2.0.11.zip
   unzip spyder-2.0.11.zip
+  cd spyder-2.0.11
+  /scratch/johnsonhj/src/BRAINS4-buld/Library/Framework/Python.framework/Versions/2.6/bin/python2.6 setup.py install
 fi
-cd spyder-2.0.11
-@SPYDER_PYTHON_EXECUTABLE@ setup.py install
 

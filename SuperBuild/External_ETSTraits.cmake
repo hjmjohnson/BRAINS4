@@ -30,6 +30,5 @@ ExternalProject_Add(ETSTraits
     -P ${CMAKE_CURRENT_BINARY_DIR}/ETSTraits_make_step.cmake
   UPDATE_COMMAND ""
   INSTALL_COMMAND ""
-  DEPENDS 
-    ${ETSTraits_DEPENDENCIES}
+  DEPENDS ${ETSTraits_DEPENDENCIES}
   )

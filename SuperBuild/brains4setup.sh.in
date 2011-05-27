@@ -1,0 +1,50 @@
+#!/bin/bash
+# Necessary environmental settings for setting the paths to brains3 tools
+#
+
+export BASEDIR=$(dirname @CMAKE_RUNTIME_OUTPUT_DIRECTORY@)
+export PATH="${BASEDIR}/bin:${BASEDIR}/Library/Framework/Python.framework/Versions/2.6/bin:${PATH}"
+LIBDIR="${BASEDIR}/lib"
+while getopts ":x:" Option
+do
+  case $Option in
+    x)  launchProg=$OPTARG;shift 2;;
+  esac
+done
+
+
+VTKDIR=vtk-@VTK_MAJOR_VERSION@.@VTK_MINOR_VERSION@
+
+if [ "$@OS_VARNAME_FOR_LIBRARY_PATH@" == "" ]
+then
+    export @OS_VARNAME_FOR_LIBRARY_PATH@="${LIBDIR}"
+else
+    export @OS_VARNAME_FOR_LIBRARY_PATH@="${LIBDIR}:${@OS_VARNAME_FOR_LIBRARY_PATH@}"
+fi
+
+export @OS_VARNAME_FOR_LIBRARY_PATH@="${LIBDIR}/cmake/@INSIGHT_TOOLKIT_INSTALL_PATH@/WrapITK/lib:${@OS_VARNAME_FOR_LIBRARY_PATH@}"
+export @OS_VARNAME_FOR_LIBRARY_PATH@="${LIBDIR}/${VTKDIR}:${@OS_VARNAME_FOR_LIBRARY_PATH@}"
+export @OS_VARNAME_FOR_LIBRARY_PATH@="${LIBDIR}/ModuleDescriptionParser:${@OS_VARNAME_FOR_LIBRARY_PATH@}"
+export @OS_VARNAME_FOR_LIBRARY_PATH@="${LIBDIR}/BRAINSCommonLib:${@OS_VARNAME_FOR_LIBRARY_PATH@}"
+
+export PYTHONPATH="${BASEDIR}/SimpleITK-build/Wrapping:${BASEDIR}/bin:${BASEDIR}/lib"
+
+# Required by BRAINSTracerQt
+export BRAINS_BIN_DIR="${BASEDIR}/bin"
+
+#
+# If invoked to launch a program 
+#  Launch the program with specified arguements.
+#  Return with status of program 
+if [ "$launchProg" != "" ] ; then
+  $launchProg $@
+  exit $?
+fi
+
+# Return variable requested 
+exeTest=`echo $0 | grep brains3_setup.sh`
+if [ $# -gt 0 ] && [ "$exeTest" != "" ]
+then
+    echo `printenv ${1}`
+fi
+

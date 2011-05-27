@@ -17,6 +17,16 @@ configure_file(
   ${SPYDER_BINARY_DIR}/spyder_config.sh
   @ONLY IMMEDIATE)
 
+if(APPLE)
+  set(OS_VARNAME_FOR_LIBRARY_PATH "DYLD_LIBRARY_PATH")
+else(APPLE)
+  set(OS_VARNAME_FOR_LIBRARY_PATH "LD_LIBRARY_PATH")
+endif(APPLE)
+configure_file(
+  ${CMAKE_CURRENT_SOURCE_DIR}/SuperBuild/brains4setup.sh.in
+  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/brains4setup.sh
+  @ONLY IMMEDIATE)
+
 # create an external project to download SPYDER,
 # and configure and build it
 ExternalProject_Add(SPYDER

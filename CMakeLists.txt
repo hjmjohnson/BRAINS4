@@ -221,17 +221,17 @@ configure_file(
 
 set(python_DEPENDENCIES)
 set(CLAPACK_DEPENDENCIES)
-set(PYTHONSETUPTOOLS_DEPENDANCIES python)
+#set(PYTHONSETUPTOOLS_DEPENDANCIES python)
 
 #set(NUMPY_DEPENDENCIES CLAPACK python)
 #set(scipy_DEPENDENCIES NUMPY)
 #set(NETWORKX_DEPENDENCIES python)
-#set(NIBABEL_DEPENDANCIES python)
-#set(ETSTraits_DEPENDANCIES python PYTHONSETUPTOOLS)
 #set(SIMPLEJSON_DEPENDANCIES python)
 #set(MATPLOTLIB_DEPENDANCIES python)
-#set(NIPYPE_DEPENDANCIES SIMPLEJSON NETWORKX NIBABEL ETSTraits PYTHONSETUPTOOLS NUMPY scipy python) # MATPLOTLIB)
-set(SPYDER_DEPENDANCIES PYTHONSETUPTOOLS)
+#set(NIBABEL_DEPENDANCIES python)
+set(SPYDER_DEPENDANCIES python)
+set(ETSTraits_DEPENDANCIES python SPYDER_DEPENDANCIES)
+set(NIPYPE_DEPENDANCIES SPYDER ETSTraits python)
 
 set(VTK_DEPENDENCIES)
 #set(CTK_DEPENDENCIES VTK)
@@ -300,18 +300,17 @@ include(External_Python26)
   #  include(External_NUMPY)
   #  include(External_NETWORKX)
   #  include(External_SIMPLEJSON)
-  #  include(External_NIBABEL)
   #  include(External_PYTHONSETUPTOOLS)
-#  include(External_ETSTraits)
   #include(External_MATPLOTLIB)
   #  if(${CMAKE_PROJECT_NAME}_BUILD_SCIPY)
   #      include(External_SciPy)
   #  endif(${CMAKE_PROJECT_NAME}_BUILD_SCIPY)
   #endif()
+#include(External_NIBABEL)
 
-#include(External_NIPYPE)
 include(External_SPYDER)
-
+include(External_ETSTraits)
+include(External_NIPYPE)
 
 #-----------------------------------------------------------------------------
 # VTK Settings
@@ -334,7 +333,7 @@ include(External_SimpleITK)
 list(APPEND ${CMAKE_PROJECT_NAME}_DEPENDENCIES SimpleITK)
 
 include(External_SlicerExecutionModel)
-list(APPEND ${CMAKE_PROJECT_NAME}_DEPENDENCIES ${GenerateCLP_DEPEND})
+list(APPEND ${CMAKE_PROJECT_NAME}_DEPENDENCIES ${GenerateCLP_DEPEND} NIPYPE)
 
 
 #-----------------------------------------------------------------------------
@@ -424,6 +423,7 @@ if(${CMAKE_PROJECT_NAME}_BUILD_TESTING)
 endif(${CMAKE_PROJECT_NAME}_BUILD_TESTING)
 endif(0)
 
+if(0)
 
 set(PackageName BRAINS4)
 set(SRCCMDS
@@ -501,3 +501,5 @@ add_custom_target(${CMAKE_PROJECT_NAME}_Deploy
   -P "${CMAKE_CURRENT_LIST_DIR}/Deploy.cmake"
 )
 add_dependencies(${CMAKE_PROJECT_NAME}_Deploy BRAINS4)
+
+endif()
