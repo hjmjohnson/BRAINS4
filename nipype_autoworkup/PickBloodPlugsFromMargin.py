@@ -1,8 +1,7 @@
 from nipype.interfaces.base import CommandLine, CommandLineInputSpec, TraitedSpec
 import enthought.traits.api as traits
 import os
-from nipype.interfaces.traits import File
-from nipype.utils.misc import isdefined
+from nipype.interfaces.base import File
 
 class PickBloodPlugsFromMarginInputSpec(CommandLineInputSpec):
     brainMaskFile = File(argstr='%s', desc = "BrainMaskFile", exists = True, mandatory = True, position = 0)

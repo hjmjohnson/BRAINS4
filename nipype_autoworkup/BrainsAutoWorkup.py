@@ -29,12 +29,13 @@ import enthought.traits.api as traits
 
 from nipype.interfaces.base import BaseInterface, TraitedSpec
 
+from BRAINSConstellationDetector import *
+"""
 from AutoTalairachParameters import *
 from BRAINSABC import *
 from BRAINSApplySurfaceLabels import *
 from BRAINSClassify import *
 from BRAINSClassPlugs import *
-from BRAINSConstellationDetector import *
 from BRAINSCut import *
 from BRAINSDemonWarp import *
 from BRAINSDiscreteClass import *
@@ -74,6 +75,7 @@ from QuadMeshSmoothing import *
 from runBRAINSCut import *
 from ScalarTalairachMeasures import *
 from StandardizeImageIntensity import *
+"""
 
 import os, sys, string, shutil, glob, re
 
@@ -375,6 +377,9 @@ def WorkupT1T2(ScanDir, T1Images, T2Images, Version=110, InterpolationMode="Line
   ## if the first image listed is a directory, assume dicom, else assume nifti
   if os.path.isdir(T1Images[0]):
     ImageType = "DICOM"
+    print( "ERROR: DICOM to Nifti conversion not yet supported. {0}".format(T1Images))
+    print( "ERROR: DICOM to Nifti conversion not yet supported. {0}".format(T1Images[0]))
+    sys.exit(1)
   else:
     ImageType = "Nifti"
 
@@ -497,8 +502,8 @@ def WorkupT1T2(ScanDir, T1Images, T2Images, Version=110, InterpolationMode="Line
   BRAINSConstellationDetectorT1 = pe.Node(interface=BRAINSConstellationDetector(), name="BRAINSConstellationDetectorT1")
   BRAINSConstellationDetectorT1.inputs.inputVolume = T1NiftiImageList[0]
   BRAINSConstellationDetectorT1.inputs.inputTemplateModel = T1ACPCModelFile
-  BRAINSConstellationDetectorT1.inputs.resultsDir = Stage1ResultsDir
-  BRAINSConstellationDetectorT1.inputs.outputResampledVolume = Stage1ResultsDir + "/" + T1Basename + "_ACPC.nii.gz"            #$# T1AcpcImage / T1AcpcImageList
+  BRAINSConstellationDetectorT1.outputs.resultsDir = Stage1ResultsDir
+  BRAINSConstellationDetectorT1.outputs.outputResampledVolume = Stage1ResultsDir + "/" + T1Basename + "_ACPC.nii.gz"            #$# T1AcpcImage / T1AcpcImageList
   BRAINSConstellationDetectorT1.inputs.outputTransform = Stage1ResultsDir + "/" + T1Basename + "_ACPC_transform.mat"            #$# T1TransformFile
   BRAINSConstellationDetectorT1.inputs.outputLandmarksInInputSpace = Stage1ResultsDir + "/" + T1Basename + "_ACPC_Original.fcsv"        #$# T1OriginalFile
   BRAINSConstellationDetectorT1.inputs.outputLandmarksInACPCAlignedSpace = Stage1ResultsDir + "/" + T1Basename + "_ACPC_Landmarks.fcsv"    #$# T1LandmarkFile
@@ -513,9 +518,9 @@ def WorkupT1T2(ScanDir, T1Images, T2Images, Version=110, InterpolationMode="Line
 
   BRAINSConstellationDetectorT1Batch = pe.MapNode(interface=BRAINSConstellationDetector(), name="BRAINSConstellationDetectorT1Batch", iterfield=["inputVolume"])
   BRAINSConstellationDetectorT1Batch.inputs.inputTemplateModel = T1ACPCModelFile
-  BRAINSConstellationDetectorT1Batch.inputs.resultsDir = Stage1ResultsDir
-  BRAINSConstellationDetectorT1Batch.inputs.outputVolume = Stage1ResultsDir + "/" + T1Basename + "_ACPC_InPlace.nii.gz"                #$# T1AcpcImageList
-  BRAINSConstellationDetectorT1Batch.inputs.outputTransform = Stage1ResultsDir + "/" + T1Basename + "_ACPC_transform.mat"
+  BRAINSConstellationDetectorT1Batch.outputs.resultsDir = Stage1ResultsDir
+  BRAINSConstellationDetectorT1Batch.outputs.outputVolume = Stage1ResultsDir + "/" + T1Basename + "_ACPC_InPlace.nii.gz"                #$# T1AcpcImageList
+  BRAINSConstellationDetectorT1Batch.outputs.outputTransform = Stage1ResultsDir + "/" + T1Basename + "_ACPC_transform.mat"
   BRAINSConstellationDetectorT1Batch.inputs.outputLandmarksInInputSpace = Stage1ResultsDir + "/" + T1Basename + "_ACPC_Original.fcsv"
   BRAINSConstellationDetectorT1Batch.inputs.outputLandmarksInACPCAlignedSpace = Stage1ResultsDir + "/" + T1Basename + "_ACPC_Landmarks.fcsv"
   BRAINSConstellationDetectorT1Batch.inputs.outputMRML = Stage1ResultsDir + "/" + T1Basename + "_ACPC_Scene.mrml"
@@ -530,7 +535,7 @@ def WorkupT1T2(ScanDir, T1Images, T2Images, Version=110, InterpolationMode="Line
 
   BRAINSConstellationDetectorT2Batch = pe.MapNode(interface=BRAINSConstellationDetector(), name="BRAINSConstellationDetectorT2Batch", iterfield=["inputVolume"])
   BRAINSConstellationDetectorT2Batch.inputs.inputTemplateModel = T2ACPCModelFile
-  BRAINSConstellationDetectorT2Batch.inputs.resultsDir = Stage1ResultsDir
+#  BRAINSConstellationDetectorT2Batch.inputs.resultsDir = Stage1ResultsDir
   BRAINSConstellationDetectorT2Batch.inputs.outputResampledVolume = Stage1ResultsDir + "/" + T2Basename + "_ACPC_InPlace.nii.gz"                #$# T2AcpcImageList
   BRAINSConstellationDetectorT2Batch.inputs.outputTransform = Stage1ResultsDir + "/" + T2Basename + "_ACPC_transform.mat"
   BRAINSConstellationDetectorT2Batch.inputs.outputLandmarksInInputSpace = Stage1ResultsDir + "/" + T2Basename + "_ACPC_Original.fcsv"
@@ -1133,198 +1138,15 @@ def WorkupT1T2(ScanDir, T1Images, T2Images, Version=110, InterpolationMode="Line
   # (node1, node2, [(out_source1, out_dest1), (out_source2, out_dest2), ...])
   pipeline.connect([
                   (BRAINSConstellationDetectorT1Batch, T1T2ImageList, [('outputVolume', 'T1ImageList')]),
-                  (BRAINSConstellationDetectorT2Batch, T1T2ImageList, [('outputResampledVolume', 'T2ImageList')]),
-                  (T1T2ImageList, BRAINSABCNode, [('outputList', 'inputVolumes')]),
-                  (T1T2ImageList, BRAINSABCNode, [('outputTypesList', 'inputVolumeTypes')]),
-                  (BRAINSABCNode, itkBinaryThresholdImageEms, [('emsLabelImage', 'inFilename')]),
-                  (itkBinaryThresholdImageEms, itkBinaryImageMorphology_erodeMask, [('outFilename', 'inFilename')]),
-                  (itkBinaryImageMorphology_erodeMask, itkRelabelComponentImage_node, [('outFilename', 'inFilename')]),
-                  (itkRelabelComponentImage_node, itkBinaryImageMorphology_dilateMask, [('outFilename', 'inFilename')]),
-                  (itkBinaryThresholdImageEms, itkAndImage_BrainMask, [('outFilename', 'inFilename1')]),
-                  (itkBinaryImageMorphology_dilateMask, itkAndImage_BrainMask, [('outFilename', 'inFilename2')]),
-                  (BRAINSABCNode, CorrectedImageFilenames, [('outputDir', 'outputDir')]),
-                  (BRAINSConstellationDetectorT1Batch, CorrectedImageFilenames, [('outputVolume', 'T1AcpcImageList')]),
-                  (BRAINSConstellationDetectorT2Batch, CorrectedImageFilenames, [('outputResampledVolume', 'T2AcpcImageList')]),
-                  (CorrectedImageFilenames, ClipAndAverageTwo_node, [('T1CorrectedImageFileNames', 'activeImagesToDefineClipMask')]),
-                  (CorrectedImageFilenames, ClipAndAverageTwo_node, [('T2CorrectedImageFileNames', 'passiveImagesToClip')]),
-                  (itkAndImage_BrainMask, StandardizeImageIntensity_T1, [('outFilename', 'brainLabelImageFilename')]),
-                  (ClipAndAverageTwo_node, StandardizeImageIntensity_T1, [('outputAverageOfActiveImages', 'imageFilename')]),
-                  (itkAndImage_BrainMask, StandardizeImageIntensity_T2, [('outFilename', 'brainLabelImageFilename')]),
-                  (ClipAndAverageTwo_node, StandardizeImageIntensity_T2, [('outputAverageOfPassiveImages', 'imageFilename')]),
-                  (BRAINSConstellationDetectorT1, AutoTalairachParameters_node, [('outputLandmarksInACPCAlignedSpace', 'ACPCLandmarkFile')]),
-                  (itkAndImage_BrainMask, AutoTalairachParameters_node, [('outFilename', 'brainMask')]),
-                  (itkAndImage_BrainMask, PickBloodPlugsFromMargin_node, [('outFilename', 'brainMaskFile')]),
-                  (StandardizeImageIntensity_T1, PickBloodPlugsFromMargin_node, [('resultImageFilename', 'T1File')]),
-                  (StandardizeImageIntensity_T2, PickBloodPlugsFromMargin_node, [('resultImageFilename', 'T2File')]),
-                  (BRAINSABCNode, PickBloodPlugsFromMargin_node, [('emsLabelImage', 'emsLabelImage')]),
-                  (StandardizeImageIntensity_T1, BRAINSClassPlugs_node, [('resultImageFilename', 't1Volume')]),
-                  (StandardizeImageIntensity_T2, BRAINSClassPlugs_node, [('resultImageFilename', 't2Volume')]),
-                  (itkAndImage_BrainMask, BRAINSClassPlugs_node, [('outFilename', 'searchVolume')]),
-                  (PickBloodPlugsFromMargin_node, BRAINSClassPlugs_node, [('VbPlugFile', 'vbPlugs')]),
-                  (StandardizeImageIntensity_T1, BRAINSClassify_node, [('resultImageFilename', 't1Volume')]),
-                  (StandardizeImageIntensity_T2, BRAINSClassify_node, [('resultImageFilename', 't2Volume')]),
-                  (itkAndImage_BrainMask, BRAINSClassify_node, [('outFilename', 'BrainVolume')]),
-                  (BRAINSClassPlugs_node, BRAINSClassify_node, [('gmPlugs', 'gmPlugs')]),
-                  (BRAINSClassPlugs_node, BRAINSClassify_node, [('wmPlugs', 'wmPlugs')]),
-                  (BRAINSClassPlugs_node, BRAINSClassify_node, [('csfPlugs', 'csfPlugs')]),
-                  (PickBloodPlugsFromMargin_node, BRAINSClassify_node, [('VbPlugFile', 'bloodPlugs')]),
-                  (StandardizeImageIntensity_T1, BRAINSTalairachMask_Basal, [('resultImageFilename', 'inputVolume')]),
-                  (AutoTalairachParameters_node, BRAINSTalairachMask_Basal, [('talairachGridFile', 'talairachParameters')]),
-                  (BRAINSClassify_node, BRAINSDiscreteClass_node, [('classVolume', 'inputVolume')]),
-                  (BRAINSTalairachMask_Basal, BRAINSDiscreteClass_node, [('outputVolume', 'subcorticalMask')]),
-                  (StandardizeImageIntensity_T1, GenerateSummedGradientImage_node, [('resultImageFilename', 'inputVolume1')]),
-                  (StandardizeImageIntensity_T2, GenerateSummedGradientImage_node, [('resultImageFilename', 'inputVolume2')]),
-                  (StandardizeImageIntensity_T1, BRAINSCutMaps, [('resultImageFilename', 'T1Image')]),
-                  (StandardizeImageIntensity_T2, BRAINSCutMaps, [('resultImageFilename', 'T2Image')]),
-                  (GenerateSummedGradientImage_node, BRAINSCutMaps, [('outputFileName', 'SGImage')]),
-                  (BRAINSCutMaps, runBRAINSCut_caudate, [('imageMap', 'imageMap')]),
-                  (BRAINSCutMaps, runBRAINSCut_caudate, [('atlasMap', 'atlasMap')]),
-                  (BRAINSCutMaps, runBRAINSCut_caudate, [('caudateProbabilityMap', 'probabilityMap')]),
-                  (BRAINSCutMaps, runBRAINSCut_caudate, [('caudateList', 'outputList')]),
-                  (BRAINSCutMaps, runBRAINSCut_putamen, [('imageMap', 'imageMap')]),
-                  (BRAINSCutMaps, runBRAINSCut_putamen, [('atlasMap', 'atlasMap')]),
-                  (BRAINSCutMaps, runBRAINSCut_putamen, [('putamenProbabilityMap', 'probabilityMap')]),
-                  (BRAINSCutMaps, runBRAINSCut_putamen, [('putamenList', 'outputList')]),
-                  (BRAINSCutMaps, runBRAINSCut_thalamus, [('imageMap', 'imageMap')]),
-                  (BRAINSCutMaps, runBRAINSCut_thalamus, [('atlasMap', 'atlasMap')]),
-                  (BRAINSCutMaps, runBRAINSCut_thalamus, [('thalamusProbabilityMap', 'probabilityMap')]),
-                  (BRAINSCutMaps, runBRAINSCut_thalamus, [('thalamusList', 'outputList')]),
-                  (BRAINSCutMaps, runBRAINSCut_hippocampus, [('imageMap', 'imageMap')]),
-                  (BRAINSCutMaps, runBRAINSCut_hippocampus, [('atlasMap', 'atlasMap')]),
-                  (BRAINSCutMaps, runBRAINSCut_hippocampus, [('hippocampusProbabilityMap', 'probabilityMap')]),
-                  (BRAINSCutMaps, runBRAINSCut_hippocampus, [('hippocampusList', 'outputList')]),
-                  (BRAINSCutMaps, runBRAINSCut_accumbens, [('imageMap', 'imageMap')]),
-                  (BRAINSCutMaps, runBRAINSCut_accumbens, [('atlasMap', 'atlasMap')]),
-                  (BRAINSCutMaps, runBRAINSCut_accumbens, [('accumbensProbabilityMap', 'probabilityMap')]),
-                  (BRAINSCutMaps, runBRAINSCut_accumbens, [('accumbensList', 'outputList')]),
-                  (BRAINSCutMaps, runBRAINSCut_globus, [('imageMap', 'imageMap')]),
-                  (BRAINSCutMaps, runBRAINSCut_globus, [('atlasMap', 'atlasMap')]),
-                  (BRAINSCutMaps, runBRAINSCut_globus, [('globusProbabilityMap', 'probabilityMap')]),
-                  (BRAINSCutMaps, runBRAINSCut_globus, [('globusList', 'outputList')]),
-                  (itkAndImage_BrainMask, imageMeasureResults, [('outFilename', 'brainMaskFile')]),
-                  (BRAINSClassify_node, imageMeasureResults, [('classVolume', 'classImageFile')]),
-                  (BRAINSDiscreteClass_node, imageMeasureResults, [('outputVolume', 'discreteImageFile')]),
-                  (AutoTalairachParameters_node, imageMeasureResults, [('talairachGridFile', 'talairachBounds')]),
-                  (StandardizeImageIntensity_T1, itkMaskImage_clipT1, [('resultImageFilename', 'inImageFilename')]),
-                  (itkAndImage_BrainMask, itkMaskImage_clipT1, [('outFilename', 'inMaskFilename')]),
-                  (itkMaskImage_clipT1, BRAINSFit_T1, [('outFilename', 'fixedVolume')]),
-                  (itkMaskImage_clipT1, BRAINSDemonWarp_node, [('outFilename', 'fixedVolume')]),
-                  (BRAINSFit_T1, BRAINSDemonWarp_node, [('outputTransform', 'initializeWithTransform')]),
-                  (itkMaskImage_clipT1, BRAINSResample_leftHemisphere, [('outFilename', 'referenceVolume')]),
-                  (BRAINSDemonWarp_node, BRAINSResample_leftHemisphere, [('outputDeformationFieldVolume', 'deformationVolume')]),
-                  (itkMaskImage_clipT1, BRAINSResample_rightHemisphere, [('outFilename', 'referenceVolume')]),
-                  (BRAINSDemonWarp_node, BRAINSResample_rightHemisphere, [('outputDeformationFieldVolume', 'deformationVolume')]),
-                  (itkMaskImage_clipT1, BRAINSResample_cerebellum, [('outFilename', 'referenceVolume')]),
-                  (BRAINSDemonWarp_node, BRAINSResample_cerebellum, [('outputDeformationFieldVolume', 'deformationVolume')]),
-                  (itkMaskImage_clipT1, BRAINSResample_ventricles, [('outFilename', 'referenceVolume')]),
-                  (BRAINSDemonWarp_node, BRAINSResample_ventricles, [('outputDeformationFieldVolume', 'deformationVolume')]),
-                  (itkAndImage_BrainMask, CreateBrainSurface_leftHemisphere, [('outFilename', 'brainMaskFile')]),
-                  (BRAINSResample_cerebellum, CreateBrainSurface_leftHemisphere, [('outputVolume', 'warpedCerebellumFile')]),
-                  (BRAINSResample_leftHemisphere, CreateBrainSurface_leftHemisphere, [('outputVolume', 'hemisphereMaskFile')]),
-                  (BRAINSClassify_node, CreateBrainSurface_leftHemisphere, [('classVolume', 'tissueClassFile')]),
-                  (itkAndImage_BrainMask, CreateBrainSurface_rightHemisphere, [('outFilename', 'brainMaskFile')]),
-                  (BRAINSResample_cerebellum, CreateBrainSurface_rightHemisphere, [('outputVolume', 'warpedCerebellumFile')]),
-                  (BRAINSResample_rightHemisphere, CreateBrainSurface_rightHemisphere, [('outputVolume', 'hemisphereMaskFile')]),
-                  (BRAINSClassify_node, CreateBrainSurface_rightHemisphere, [('classVolume', 'tissueClassFile')]),
-                  (itkAndImage_BrainMask, CreateAutoLabelBrainSurface_leftHemisphere, [('outFilename', 'brainMaskFile')]),
-                  (BRAINSResample_cerebellum, CreateAutoLabelBrainSurface_leftHemisphere, [('outputVolume', 'warpedCerebellumFile')]),
-                  (BRAINSResample_leftHemisphere, CreateAutoLabelBrainSurface_leftHemisphere, [('outputVolume', 'hemisphereMaskFile')]),
-                  (BRAINSClassify_node, CreateAutoLabelBrainSurface_leftHemisphere, [('classVolume', 'tissueClassFile')]),
-                  (CreateBrainSurface_leftHemisphere, CreateAutoLabelBrainSurface_leftHemisphere, [('outputImageFilename', 'outputImageFilename')]),
-                  (CreateBrainSurface_leftHemisphere, CreateAutoLabelBrainSurface_leftHemisphere, [('outputSurfaceFilename', 'outputSurfaceFilename')]),
-                  (itkAndImage_BrainMask, CreateAutoLabelBrainSurface_rightHemisphere, [('outFilename', 'brainMaskFile')]),
-                  (BRAINSResample_cerebellum, CreateAutoLabelBrainSurface_rightHemisphere, [('outputVolume', 'warpedCerebellumFile')]),
-                  (BRAINSResample_rightHemisphere, CreateAutoLabelBrainSurface_rightHemisphere, [('outputVolume', 'hemisphereMaskFile')]),
-                  (BRAINSClassify_node, CreateAutoLabelBrainSurface_rightHemisphere, [('classVolume', 'tissueClassFile')]),
-                  (CreateBrainSurface_rightHemisphere, CreateAutoLabelBrainSurface_rightHemisphere, [('outputImageFilename', 'outputImageFilename')]),
-                  (CreateBrainSurface_rightHemisphere, CreateAutoLabelBrainSurface_rightHemisphere, [('outputSurfaceFilename', 'outputSurfaceFilename')]),
-                  (BRAINSTalairachMask_ClassVolume, itkConstantImageMath_LabelMap, [('outputVolume', 'inFilename')]),
-                  (BRAINSTalairachMask_ClassVolume, itkNaryMaximumImageFilter_LabelMap, [('outputVolume', 'inImageList')]),
-                  (BRAINSClassify_node, BRAINSTalairachMask_ClassVolume, [('classVolume', 'inputVolume')]),
-                  (AutoTalairachParameters_node, BRAINSTalairachMask_ClassVolume, [('talairachGridFile', 'talairachParameters')]),
-                  (AutoTalairachParameters_node,   BRAINSTalairachMask_ClassVolume, [('talairachBoxFile', 'talairachBox')]),
-                  (itkNaryMaximumImageFilter_LabelMap, BRAINSApplySurfaceLabels_left, [('outFilename', 'inputLabelMap')]),
-                  (CreateBrainSurface_leftHemisphere, BRAINSApplySurfaceLabels_left, [('outputSurfaceFilename', 'inputSurface')]),
-                  (itkNaryMaximumImageFilter_LabelMap, BRAINSApplySurfaceLabels_right, [('outFilename', 'inputLabelMap')]),
-                  (CreateBrainSurface_rightHemisphere, BRAINSApplySurfaceLabels_right, [('outputSurfaceFilename', 'inputSurface')]),
-                  (BRAINSApplySurfaceLabels_left, BRAINSMeasureSurface_left, [('outputSurface', 'inputSurface')]),
-                  (BRAINSApplySurfaceLabels_right, BRAINSMeasureSurface_right, [('outputSurface', 'inputSurface')]),
-                  (BRAINSResample_ventricles, itkBinaryThresholdImage_warpedVentricles, [('outputVolume', 'inFilename')]),
-                  (BRAINSCutMaps, itkBinaryThresholdImage_rightCaudate, [('rightCaudate', 'inFilename')]),
-                  (BRAINSCutMaps, itkBinaryThresholdImage_leftCaudate, [('leftCaudate', 'inFilename')]),
-                  (BRAINSCutMaps, itkBinaryThresholdImage_rightPutamen, [('rightPutamen', 'inFilename')]),
-                  (BRAINSCutMaps, itkBinaryThresholdImage_leftPutamen, [('leftPutamen', 'inFilename')]),
-                  (BRAINSCutMaps, itkBinaryThresholdImage_rightThalamus, [('rightThalamus', 'inFilename')]),
-                  (BRAINSCutMaps, itkBinaryThresholdImage_leftThalamus, [('leftThalamus', 'inFilename')]),
-                  (itkBinaryThresholdImage_rightCaudate, itkOrImage_binaryCaudate, [('outFilename', 'inFilename1')]),
-                  (itkBinaryThresholdImage_leftCaudate, itkOrImage_binaryCaudate, [('outFilename', 'inFilename2')]),
-                  (itkBinaryThresholdImage_rightPutamen, itkOrImage_binaryPutamen, [('outFilename', 'inFilename1')]),
-                  (itkBinaryThresholdImage_leftPutamen, itkOrImage_binaryPutamen, [('outFilename', 'inFilename2')]),
-                  (itkBinaryThresholdImage_rightThalamus, itkOrImage_binaryThalamus, [('outFilename', 'inFilename1')]),
-                  (itkBinaryThresholdImage_leftThalamus, itkOrImage_binaryThalamus, [('outFilename', 'inFilename2')]),
-                  (itkOrImage_binaryCaudate, itkOrImage_binaryBasalGanglia, [('outFilename', 'inFilename1')]),
-                  (itkOrImage_binaryPutamen, itkOrImage_binaryBasalGanglia, [('outFilename', 'inFilename2')]),
-                  (itkOrImage_binaryThalamus, itkOrImage_binarySubcortical, [('outFilename', 'inFilename1')]),
-                  (itkOrImage_binaryBasalGanglia, itkOrImage_binarySubcortical, [('outFilename', 'inFilename2')]),
-                  (itkOrImage_binarySubcortical, itkOrImage_binaryCombinedRegion, [('outFilename', 'inFilename1')]),
-                  (itkBinaryThresholdImage_warpedVentricles, itkOrImage_binaryCombinedRegion, [('outFilename', 'inFilename2')]),
-                  (itkOrImage_binaryCombinedRegion, itkObjectMorphology_fillRegion, [('outFilename', 'inFilename')]),
-                  (itkObjectMorphology_fillRegion, itkConstantImageMath2, [('outFilename', 'inFilename')]),
-                  (itkConstantImageMath2, Merge_ScaledFillRegion_ClassVolume, [('outFilename', 'in1')]),
-                  (BRAINSClassify_node, Merge_ScaledFillRegion_ClassVolume, [('classVolume', 'in2')]),
-                  (Merge_ScaledFillRegion_ClassVolume, itkNaryMaximumImageFilter2, [('out', 'inImageList')]),
-                  (BRAINSClassify_node, itkBinaryThresholdImage_brainMask, [('classVolume', 'inFilename')]),
-                  (itkBinaryThresholdImage_brainMask, itkObjectMorphology_brainMask, [('outFilename', 'inFilename')]),
-                  (itkObjectMorphology_brainMask, CreateGenusZeroBrainSurface_left, [('outFilename', 'BrainMaskFile')]),
-                  (BRAINSResample_cerebellum, CreateGenusZeroBrainSurface_left, [('outputVolume', 'WarpedCerebellumFile')]),
-                  (BRAINSResample_leftHemisphere, CreateGenusZeroBrainSurface_left, [('outputVolume', 'HemisphereMaskFile')]),
-                  (itkNaryMaximumImageFilter2, CreateGenusZeroBrainSurface_left, [('outFilename', 'TissueClassFile')]),
-                  (CreateBrainSurface_leftHemisphere, CreateGenusZeroBrainSurface_left, [('outputImageFilename', 'SurfaceImageFilename')]),
-                  (itkObjectMorphology_brainMask, CreateGenusZeroBrainSurface_right, [('outFilename', 'BrainMaskFile')]),
-                  (BRAINSResample_cerebellum, CreateGenusZeroBrainSurface_right, [('outputVolume', 'WarpedCerebellumFile')]),
-                  (BRAINSResample_rightHemisphere, CreateGenusZeroBrainSurface_right, [('outputVolume', 'HemisphereMaskFile')]),
-                  (itkNaryMaximumImageFilter2, CreateGenusZeroBrainSurface_right, [('outFilename', 'TissueClassFile')]),
-                  (CreateBrainSurface_rightHemisphere, CreateGenusZeroBrainSurface_right, [('outputImageFilename', 'SurfaceImageFilename')]),
-                  (CreateGenusZeroBrainSurface_left, QuadMeshDecimation_left, [('OutputSurfaceFilename', 'inputSurface')]),
-                  (CreateGenusZeroBrainSurface_right, QuadMeshDecimation_right, [('OutputSurfaceFilename', 'inputSurface')]),
-                  (QuadMeshDecimation_left, QuadMeshSmoothing_left, [('outputSurface', 'inputSurface')]),
-                  (QuadMeshDecimation_right, QuadMeshSmoothing_right, [('outputSurface', 'inputSurface')]),
-                  (gtractConcatDwi_node, gtractTensor_node, [('outputVolume', 'inputVolume')]),
-                  (gtractTensor_node, gtractAnisotropyMap_FA, [('outputVolume', 'inputTensorVolume')]),
-                  (gtractTensor_node, gtractAnisotropyMap_ADC, [('outputVolume', 'inputTensorVolume')]),
-                  (gtractTensor_node, gtractAnisotropyMap_AD, [('outputVolume', 'inputTensorVolume')]),
-                  (gtractTensor_node, gtractAnisotropyMap_RD, [('outputVolume', 'inputTensorVolume')]),
-                  (gtractConcatDwi_node, extractNrrVectorIndex_node, [('outputVolume', 'inputVolume')]),
-                  (extractNrrVectorIndex_node, DtiSkullStripB0_node, [('outputVolume', 'B0File')]),
-                  (StandardizeImageIntensity_T1, itkMaskImage_clippedT1, [('resultImageFilename', 'inImageFilename')]),
-                  (itkAndImage_BrainMask, itkMaskImage_clippedT1, [('outFilename', 'inMaskFilename')]),
-                  (DtiSkullStripB0_node, BRAINSFit_B0, [('ClippedB0File', 'movingVolume')]),
-                  (itkMaskImage_clippedT1, BRAINSFit_B0, [('outFilename', 'fixedVolume')]),
-                  (gtractAnisotropyMap_FA, BRAINSResample_faFile, [('outputVolume', 'inputVolume')]),
-                  (itkMaskImage_clippedT1, BRAINSResample_faFile, [('outFilename', 'referenceVolume')]),
-                  (BRAINSFit_B0, BRAINSResample_faFile, [('outputTransform', 'warpTransform')]),
-                  (gtractAnisotropyMap_ADC, BRAINSResample_adcFile, [('outputVolume', 'inputVolume')]),
-                  (itkMaskImage_clippedT1, BRAINSResample_adcFile, [('outFilename', 'referenceVolume')]),
-                  (BRAINSFit_B0, BRAINSResample_adcFile, [('outputTransform', 'warpTransform')]),
-                  (gtractAnisotropyMap_AD, BRAINSResample_adFile, [('outputVolume', 'inputVolume')]),
-                  (itkMaskImage_clippedT1, BRAINSResample_adFile, [('outFilename', 'referenceVolume')]),
-                  (BRAINSFit_B0, BRAINSResample_adFile, [('outputTransform', 'warpTransform')]),
-                  (gtractAnisotropyMap_RD, BRAINSResample_rdFile, [('outputVolume', 'inputVolume')]),
-                  (itkMaskImage_clippedT1, BRAINSResample_rdFile, [('outFilename', 'referenceVolume')]),
-                  (BRAINSFit_B0, BRAINSResample_rdFile, [('outputTransform', 'warpTransform')]),
-                  (BRAINSResample_faFile, Merge_FA_ADC_AD_RD, [('outputVolume', 'in1')]),
-                  (BRAINSResample_adcFile, Merge_FA_ADC_AD_RD, [('outputVolume', 'in2')]),
-                  (BRAINSResample_adFile, Merge_FA_ADC_AD_RD, [('outputVolume', 'in3')]),
-                  (BRAINSResample_rdFile, Merge_FA_ADC_AD_RD, [('outputVolume', 'in4')]),
-                  (Merge_FA_ADC_AD_RD, ScalarTalairachMeasures_node, [('out', 'ScalarFileList')]),
-                  (itkAndImage_BrainMask, ScalarTalairachMeasures_node, [('outFilename', 'BrainMaskFile')]),
-                  (BRAINSClassify_node, ScalarTalairachMeasures_node, [('classVolume', 'ClassImageFile')]),
-                  (AutoTalairachParameters_node, ScalarTalairachMeasures_node, [('talairachGridFile', 'TalairachBounds')]),
-                  (AutoTalairachParameters_node, ScalarTalairachMeasures_node, [('talairachBoxFile', 'TalairachDir')])
+                  (BRAINSConstellationDetectorT2Batch, T1T2ImageList, [('outputResampledVolume', 'T2ImageList')])
   ])
 
   pipeline.run()
 
+############################  MAIN
+## ../../BRAINS4-buld/Library/Framework/Python.framework/Versions/2.6/bin/python BrainsAutoWorkup.py /hjohnson/NAMIC/ReferenceAtlas_20110511/ /hjohnson/NAMIC/ReferenceAtlas_20110511/template_t1.nii.gz /hjohnson/NAMIC/ReferenceAtlas_20110511/template_t2.nii.gz
+OUTDIR=os.path.realpath(sys.argv[1])
+T1s=[os.path.realpath(sys.argv[2]) ]
+T2s=[os.path.realpath(sys.argv[3]) ]
 
-
-WorkupANONRAW(os.path.realpath(sys.argv[1]))
+WorkupT1T2(OUTDIR,T1s,T2s)

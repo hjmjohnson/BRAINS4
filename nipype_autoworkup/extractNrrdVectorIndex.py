@@ -1,26 +1,26 @@
 from nipype.interfaces.base import CommandLine, CommandLineInputSpec, TraitedSpec
 import enthought.traits.api as traits
 import os
-from nipype.interfaces.traits import File
-from nipype.interfaces.traits import Directory
-from nipype.utils.misc import isdefined
+from nipype.interfaces.base import File
+from nipype.interfaces.base import Directory
+
 
 class extractNrrdVectorIndexInputSpec(CommandLineInputSpec):
-    inputVolume = File( exists = "True",argstr = "--inputVolume %s")
-    vectorIndex = traits.Int( argstr = "--vectorIndex %d")
-    setImageOrientation = traits.Enum("AsAcquired","Axial","Coronal","Sagittal", argstr = "--setImageOrientation %s")
-    outputVolume = traits.Either(traits.Bool, File, argstr = "--outputVolume %s")
+	inputVolume = File( exists = "True",argstr = "--inputVolume %s")
+	vectorIndex = traits.Int( argstr = "--vectorIndex %d")
+	setImageOrientation = traits.Enum("AsAcquired","Axial","Coronal","Sagittal", argstr = "--setImageOrientation %s")
+	outputVolume = traits.Either(traits.Bool, File, argstr = "--outputVolume %s")
 
 
 class extractNrrdVectorIndexOutputSpec(TraitedSpec):
-    outputVolume = File(exists=True, argstr = "--outputVolume %s")
+	outputVolume = File(exists=True, argstr = "--outputVolume %s")
 
 
 class extractNrrdVectorIndex(CommandLine):
 
     input_spec = extractNrrdVectorIndexInputSpec
     output_spec = extractNrrdVectorIndexOutputSpec
-    _cmd = "/scratch/brains/BRAINS3-build/src/bin/extractNrrdVectorIndex "
+    _cmd = "Slicer3 --launch extractNrrdVectorIndex "
     _outputs_filenames = {'outputVolume':'outputVolume.nii'}
 
     def _list_outputs(self):

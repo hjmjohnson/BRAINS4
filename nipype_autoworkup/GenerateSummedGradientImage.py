@@ -1,26 +1,26 @@
 from nipype.interfaces.base import CommandLine, CommandLineInputSpec, TraitedSpec
 import enthought.traits.api as traits
 import os
-from nipype.interfaces.traits import File
-from nipype.interfaces.traits import Directory
-from nipype.utils.misc import isdefined
+from nipype.interfaces.base import File
+from nipype.interfaces.base import Directory
+
 
 class GenerateSummedGradientImageInputSpec(CommandLineInputSpec):
-    inputVolume1 = File( exists = "True",argstr = "--inputVolume1 %s")
-    inputVolume2 = File( exists = "True",argstr = "--inputVolume2 %s")
-    outputFileName = traits.Either(traits.Bool, File, argstr = "--outputFileName %s")
-    MaximumGradient = traits.Bool( argstr = "--MaximumGradient ")
+	inputVolume1 = File( exists = "True",argstr = "--inputVolume1 %s")
+	inputVolume2 = File( exists = "True",argstr = "--inputVolume2 %s")
+	outputFileName = traits.Either(traits.Bool, File, argstr = "--outputFileName %s")
+	MaximumGradient = traits.Bool( argstr = "--MaximumGradient ")
 
 
 class GenerateSummedGradientImageOutputSpec(TraitedSpec):
-    outputFileName = File(exists=True, argstr = "--outputFileName %s")
+	outputFileName = File(exists=True, argstr = "--outputFileName %s")
 
 
 class GenerateSummedGradientImage(CommandLine):
 
     input_spec = GenerateSummedGradientImageInputSpec
     output_spec = GenerateSummedGradientImageOutputSpec
-    _cmd = "/scratch/brains/BRAINS3-build/src/bin/GenerateSummedGradientImage "
+    _cmd = "Slicer3 --launch GenerateSummedGradientImage "
     _outputs_filenames = {'outputFileName':'outputFileName'}
 
     def _list_outputs(self):

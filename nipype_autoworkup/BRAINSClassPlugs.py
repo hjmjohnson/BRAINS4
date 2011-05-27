@@ -1,9 +1,8 @@
 from nipype.interfaces.base import CommandLine, CommandLineInputSpec, TraitedSpec
 import enthought.traits.api as traits
 import os
-from nipype.interfaces.traits import File
-from nipype.interfaces.traits import Directory
-from nipype.utils.misc import isdefined
+from nipype.interfaces.base import File
+from nipype.interfaces.base import Directory
 
 class BRAINSClassPlugsInputSpec(CommandLineInputSpec):
     t1Volume = File( exists = "True",argstr = "--t1Volume %s")

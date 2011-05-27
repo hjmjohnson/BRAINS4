@@ -3,7 +3,6 @@ import os
 from nipype.interfaces.base import (CommandLine, CommandLineInputSpec,
                                     TraitedSpec, File,
                                     InputMultiPath, traits)
-from nipype.utils.misc import isdefined
 from nipype.utils.filemanip import fname_presuffix
 
 class itkNaryMaximumImageFilterInputSpec(CommandLineInputSpec):
@@ -39,8 +38,7 @@ class itkNaryMaximumImageFilter(CommandLine):
 #from nipype.interfaces.base import CommandLine, CommandLineInputSpec, TraitedSpec
 #import enthought.traits.api as traits
 #import os
-#from nipype.interfaces.traits import File
-#from nipype.utils.misc import isdefined
+#from nipype.interfaces.base import File
 #
 #class itkNaryMaximumImageFilterInputSpec(CommandLineInputSpec):
 #    inImageList = traits.List("traits.Str", sep=",", desc = "inImageList", exists = True, mandatory = True, position = 0)

@@ -1,30 +1,31 @@
 from nipype.interfaces.base import CommandLine, CommandLineInputSpec, TraitedSpec
 import enthought.traits.api as traits
 import os
-from nipype.interfaces.traits import File
-from nipype.utils.misc import isdefined
+from nipype.interfaces.base import File
+from nipype.interfaces.base import Directory
+
 
 class BRAINSROIAutoInputSpec(CommandLineInputSpec):
-    inputVolume = File( exists = "True",argstr = "--inputVolume %s")
-    outputROIMaskVolume = traits.Either(traits.Bool, File, argstr = "--outputROIMaskVolume %s")
-    outputClippedVolumeROI = traits.Either(traits.Bool, File, argstr = "--outputClippedVolumeROI %s")
-    otsuPercentileThreshold = traits.Float( argstr = "--otsuPercentileThreshold %f")
-    thresholdCorrectionFactor = traits.Float( argstr = "--thresholdCorrectionFactor %f")
-    closingSize = traits.Float( argstr = "--closingSize %f")
-    ROIAutoDilateSize = traits.Float( argstr = "--ROIAutoDilateSize %f")
-    outputVolumePixelType = traits.Enum("float","short","ushort","int","uint","uchar", argstr = "--outputVolumePixelType %s")
+	inputVolume = File( exists = "True",argstr = "--inputVolume %s")
+	outputROIMaskVolume = traits.Either(traits.Bool, File, argstr = "--outputROIMaskVolume %s")
+	outputClippedVolumeROI = traits.Either(traits.Bool, File, argstr = "--outputClippedVolumeROI %s")
+	otsuPercentileThreshold = traits.Float( argstr = "--otsuPercentileThreshold %f")
+	thresholdCorrectionFactor = traits.Float( argstr = "--thresholdCorrectionFactor %f")
+	closingSize = traits.Float( argstr = "--closingSize %f")
+	ROIAutoDilateSize = traits.Float( argstr = "--ROIAutoDilateSize %f")
+	outputVolumePixelType = traits.Enum("float","short","ushort","int","uint","uchar", argstr = "--outputVolumePixelType %s")
 
 
 class BRAINSROIAutoOutputSpec(TraitedSpec):
-    outputROIMaskVolume = File(exists=True, argstr = "--outputROIMaskVolume %s")
-    outputClippedVolumeROI = File(exists=True, argstr = "--outputClippedVolumeROI %s")
+	outputROIMaskVolume = File(exists=True, argstr = "--outputROIMaskVolume %s")
+	outputClippedVolumeROI = File(exists=True, argstr = "--outputClippedVolumeROI %s")
 
 
 class BRAINSROIAuto(CommandLine):
 
     input_spec = BRAINSROIAutoInputSpec
     output_spec = BRAINSROIAutoOutputSpec
-    _cmd = "/scratch/brains/BRAINS3-build/src/bin/BRAINSROIAuto "
+    _cmd = "Slicer3 --launch BRAINSROIAuto "
     _outputs_filenames = {'outputROIMaskVolume':'outputROIMaskVolume.nii','outputClippedVolumeROI':'outputClippedVolumeROI.nii'}
 
     def _list_outputs(self):

@@ -1,31 +1,33 @@
 from nipype.interfaces.base import CommandLine, CommandLineInputSpec, TraitedSpec
 import enthought.traits.api as traits
 import os
-from nipype.interfaces.traits import File
-from nipype.interfaces.traits import Directory
-from nipype.utils.misc import isdefined
+from nipype.interfaces.base import File
+from nipype.interfaces.base import Directory
+
 
 class gtractTensorInputSpec(CommandLineInputSpec):
-    inputVolume = File( exists = "True",argstr = "--inputVolume %s")
-    outputVolume = traits.Either(traits.Bool, File, argstr = "--outputVolume %s")
-    medianFilterSize = traits.List("traits.Int", sep = ",",argstr = "--medianFilterSize %d")
-    backgroundSuppressingThreshold = traits.Int( argstr = "--backgroundSuppressingThreshold %d")
-    resampleIsotropic = traits.Bool( argstr = "--resampleIsotropic ")
-    voxelSize = traits.Float( argstr = "--size %f")
-    b0Index = traits.Int( argstr = "--b0Index %d")
-    applyMeasurementFrame = traits.Bool( argstr = "--applyMeasurementFrame ")
-    ignoreIndex = traits.List("traits.Int", sep = ",",argstr = "--ignoreIndex %d")
+	inputVolume = File( exists = "True",argstr = "--inputVolume %s")
+	outputVolume = traits.Either(traits.Bool, File, argstr = "--outputVolume %s")
+	medianFilterSize = traits.List("traits.Int", sep = ",",argstr = "--medianFilterSize %d")
+	maskProcessingMode = traits.Enum("NOMASK","ROIAUTO","ROI", argstr = "--maskProcessingMode %s")
+	maskVolume = File( exists = "True",argstr = "--maskVolume %s")
+	backgroundSuppressingThreshold = traits.Int( argstr = "--backgroundSuppressingThreshold %d")
+	resampleIsotropic = traits.Bool( argstr = "--resampleIsotropic ")
+	voxelSize = traits.Float( argstr = "--size %f")
+	b0Index = traits.Int( argstr = "--b0Index %d")
+	applyMeasurementFrame = traits.Bool( argstr = "--applyMeasurementFrame ")
+	ignoreIndex = traits.List("traits.Int", sep = ",",argstr = "--ignoreIndex %d")
 
 
 class gtractTensorOutputSpec(TraitedSpec):
-    outputVolume = File(exists=True, argstr = "--outputVolume %s")
+	outputVolume = File(exists=True, argstr = "--outputVolume %s")
 
 
 class gtractTensor(CommandLine):
 
     input_spec = gtractTensorInputSpec
     output_spec = gtractTensorOutputSpec
-    _cmd = "/scratch/brains/BRAINS3-build/src/bin/gtractTensor "
+    _cmd = "Slicer3 --launch gtractTensor "
     _outputs_filenames = {'outputVolume':'outputVolume.nrrd'}
 
     def _list_outputs(self):
