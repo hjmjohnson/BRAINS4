@@ -7,7 +7,7 @@ import subprocess as sub
 
 from nipype.interfaces.base import (CommandLine, CommandLineInputSpec,
                                     DynamicTraitedSpec, traits, Undefined,
-                                    File, isdefined)
+                                    File, Directory, isdefined)
 
 class BRAINS4CommandLineInputSpec(DynamicTraitedSpec, CommandLineInputSpec):
     module = traits.Str(desc="name of the BRAINS command line module you want to use")
@@ -77,7 +77,7 @@ class BRAINS4CommandLine(CommandLine):
                     traitsParams["argstr"] = "--" + name + " "
 
 
-                argsDict = {'file': '%s', 'integer': "%d", 'double': "%f", 'float': "%f", 'image': "%s", 'transform': "%s", 'boolean': '', 'string-enumeration': '%s', 'string': "%s"}
+                argsDict = {'directory': '%s', 'file': '%s', 'integer': "%d", 'double': "%f", 'float': "%f", 'image': "%s", 'transform': "%s", 'boolean': '', 'string-enumeration': '%s', 'string': "%s"}
 
                 if param.nodeName.endswith('-vector'):
                     traitsParams["argstr"] += argsDict[param.nodeName[:-7]]
@@ -94,7 +94,7 @@ class BRAINS4CommandLine(CommandLine):
 
                 name = param.getElementsByTagName('name')[0].firstChild.nodeValue
 
-                typesDict = {'integer': traits.Int, 'double': traits.Float, 'float': traits.Float, 'image': File, 'transform': File, 'boolean': traits.Bool, 'string': traits.Str, 'file':File}
+                typesDict = {'integer': traits.Int, 'double': traits.Float, 'float': traits.Float, 'image': File, 'transform': File, 'boolean': traits.Bool, 'string': traits.Str, 'file':File, 'directory':Directory }
 
                 if param.nodeName == 'string-enumeration':
                     type = traits.Enum
@@ -139,7 +139,7 @@ class BRAINS4CommandLine(CommandLine):
         if fileExtensions:
             ext = fileExtensions
         else:
-            ext = {'image': '.nii', 'transform': '.txt', 'file': ''}[param.nodeName]
+            ext = {'image': '.nii', 'transform': '.mat', 'file': '', 'directory':''}[param.nodeName]
         return base + ext
 
     def _list_outputs(self):
