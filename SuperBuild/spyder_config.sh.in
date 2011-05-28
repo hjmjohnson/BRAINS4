@@ -77,9 +77,9 @@ cd @SPYDER_BINARY_DIR@
 if [ ! -f sip-4.12.3.tar.gz ]; then
   curl -O http://www.riverbankcomputing.co.uk/static/Downloads/sip4/sip-4.12.3.tar.gz
   tar -xzvf sip-4.12.3.tar.gz
-  cd /scratch/johnsonhj/src/BRAINS4-buld/SPYDER/sip-4.12.3
-  #/scratch/johnsonhj/src/BRAINS4-buld/Library/Framework/Python.framework/Versions/2.6/bin/python2.6 configure.py
-  /scratch/johnsonhj/src/BRAINS4-buld/Library/Framework/Python.framework/Versions/2.6/bin/python2.6 configure.py
+  cd @SPYDER_BINARY_DIR@/sip-4.12.3
+  #${PYTHON} configure.py
+  ${PYTHON} configure.py
   make
   make install
 fi
@@ -90,7 +90,7 @@ if [ ! -f PyQt-mac-gpl-4.8.4.tar.gz ]; then
   tar -xzvf PyQt-mac-gpl-4.8.4.tar.gz
   cd PyQt-mac-gpl-4.8.4/
   ## HACK:  Need to propogate from CMake the path to qmake
-  /scratch/johnsonhj/src/BRAINS4-buld/Library/Framework/Python.framework/Versions/2.6/bin/python2.6 configure.py --qmake=/usr/bin/qmake << EOF
+  ${PYTHON} configure.py --qmake=/usr/bin/qmake << EOF
 yes
 EOF
   make -j 8 -k ; make
@@ -102,6 +102,6 @@ if [ ! -f spyder-2.0.11.zip ]; then
   curl -O http://spyderlib.googlecode.com/files/spyder-2.0.11.zip
   unzip spyder-2.0.11.zip
   cd spyder-2.0.11
-  /scratch/johnsonhj/src/BRAINS4-buld/Library/Framework/Python.framework/Versions/2.6/bin/python2.6 setup.py install
+  ${PYTHON} setup.py install
 fi
 
