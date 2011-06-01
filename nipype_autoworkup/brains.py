@@ -37,7 +37,7 @@ class BRAINS4CommandLine(CommandLine):
         p = sub.Popen([fullpath,"--xml"],stdout=sub.PIPE,stderr=sub.PIPE)
         output, errors = p.communicate()
         xmlString = output
-        print("======\n{0}\n=======".format(xmlString))
+        #print("======\n{0}\n=======".format(xmlString))
         return xml.dom.minidom.parseString(xmlString)
 
     def _outputs(self):
@@ -165,15 +165,40 @@ class BRAINS4CommandLine(CommandLine):
 
 if __name__ == "__main__":
 ## ../../BRAINS4-buld/Library/Framework/Python.framework/Versions/2.6/bin/python BrainsAutoWorkup.py /hjohnson/NAMIC/ReferenceAtlas_20110511/ /hjohnson/NAMIC/ReferenceAtlas_20110511/template_t1.nii.gz /hjohnson/NAMIC/ReferenceAtlas_20110511/template_t2.nii.gz
-    test = BRAINS4CommandLine(module="../../BRAINS4-buld/bin/BRAINSFit")
-    test.inputs.fixedVolume = "/hjohnson/NAMIC/ReferenceAtlas_20110511/template_t1.nii.gz"
-    test.inputs.movingVolume = "/hjohnson/NAMIC/ReferenceAtlas_20110511/template_t2.nii.gz"
+    """
+    test = BRAINS4CommandLine(module="/scratch/johnsonhj/src/BRAINS4-build/bin/BRAINSFit")
+    test.inputs.fixedVolume = "/scratch/data/t1.nrrd"
+    test.inputs.movingVolume = "/scratch/data/t1.nrrd"
     test.inputs.outputTransform = True
-    test.inputs.transformType = ["Affine"]
+    test.inputs.transformType = ["Rigid","Affine"]
     print test.cmdline
     print test.inputs
     print test._outputs()
     ret = test.run()
+    """
+    
+    import nipype.pipeline.engine as pe          # pypeline engine
+    
+    BRAINSFitAlignT2T1 = pe.Node(interface=BRAINS4CommandLine(
+    module="/scratch/johnsonhj/src/BRAINS4-build/bin/BRAINSFit"), name='BRAINSFitAlignT2T1')
+    BRAINSFitAlignT2T1.inputs.fixedVolume = "/scratch/data/t1.nrrd"
+    BRAINSFitAlignT2T1.inputs.movingVolume = "/scratch/data/t2.nrrd"
+    BRAINSFitAlignT2T1.inputs.outputVolume = "/tmp/BRAINSFit.nrrd"
+    BRAINSFitAlignT2T1.inputs.transformType = ["Rigid","Affine"]
+    BRAINSFitAlignT2T1.inputs.outputTransform = True
+    print("="*80)
+    print BRAINSFitAlignT2T1.interface.cmdline
+    print("="*80)
+    #BRAINSFitAlignT2T1.run()
+    
+    workflow = pe.Workflow(name = 'SimpleWorkflowTest')
+    workflow.base_dir = "/tmp"
+    workflow.add_nodes([BRAINSFitAlignT2T1])
+    workflow.run()
+    
+
+    
+    
 
 #    test = BRAINS4CommandLine(name="BRAINSResample")
 #    test.inputs.referenceVolume = "/home/filo/workspace/fmri_tumour/data/pilot1/10_co_COR_3D_IR_PREP.nii"

@@ -50,7 +50,8 @@ easy_install_wrapper matplotlib ${SERVER}/matplotlib-1.1.0-py2.6-macosx-10.6-uni
 easy_install_wrapper scipy      ${SERVER}/scipy-0.10.0.dev_20110325-py2.6-macosx-10.6-universal.egg
 easy_install_wrapper pymc       ${SERVER}/pymc-2.2alpha-py2.6-macosx-10.6-universal.egg
 easy_install_wrapper readline   readline
-easy_install_wrapper ipython    ${SERVER}/ipython-0.11.dev-py2.6.egg
+#  ipython v 11 is incompatible with nipype easy_install_wrapper ipython    ${SERVER}/ipython-0.11.dev-py2.6.egg
+easy_install_wrapper ipython    ipython
 easy_install_wrapper nose       nose
 easy_install_wrapper DateUtils  DateUtils
 easy_install_wrapper pip        pip
