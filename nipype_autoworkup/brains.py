@@ -178,9 +178,14 @@ if __name__ == "__main__":
     """
     
     import nipype.pipeline.engine as pe          # pypeline engine
+    import nipype.interfaces.slicer as slicer
     
-    BRAINSFitAlignT2T1 = pe.Node(interface=BRAINS4CommandLine(
-    module="/scratch/johnsonhj/src/BRAINS4-build/bin/BRAINSFit"), name='BRAINSFitAlignT2T1')
+    #BRAINSFitAlignT2T1 = pe.Node(interface=BRAINS4CommandLine(
+    #module="/scratch/johnsonhj/src/BRAINS4-build/bin/BRAINSFit"), name='BRAINSFitAlignT2T1')
+    
+    BRAINSFitAlignT2T1 = pe.Node(interface=slicer.SlicerCommandLine(
+    module="BRAINSFit"), name='BRAINSFitAlignT2T1')
+    
     BRAINSFitAlignT2T1.inputs.fixedVolume = "/scratch/data/t1.nrrd"
     BRAINSFitAlignT2T1.inputs.movingVolume = "/scratch/data/t2.nrrd"
     BRAINSFitAlignT2T1.inputs.outputVolume = "/tmp/BRAINSFit.nrrd"
@@ -189,8 +194,13 @@ if __name__ == "__main__":
     print("="*80)
     print BRAINSFitAlignT2T1.interface.cmdline
     print("="*80)
+    
+    ## The following line works
     #BRAINSFitAlignT2T1.run()
     
+    ### The following set of lines do no properly call
+    ### the full command.   The program is executed, but
+    ### the arguments are not.
     workflow = pe.Workflow(name = 'SimpleWorkflowTest')
     workflow.base_dir = "/tmp"
     workflow.add_nodes([BRAINSFitAlignT2T1])
