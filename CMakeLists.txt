@@ -219,8 +219,8 @@ configure_file(
 # Establish Target Dependencies based on Selected Options
 #------------------------------------------------------------------------------
 
-set(python_DEPENDENCIES)
 set(CLAPACK_DEPENDENCIES)
+set(python_DEPENDENCIES)
 #set(PYTHONSETUPTOOLS_DEPENDANCIES python)
 
 #set(NUMPY_DEPENDENCIES CLAPACK python)
@@ -230,8 +230,8 @@ set(CLAPACK_DEPENDENCIES)
 #set(MATPLOTLIB_DEPENDANCIES python)
 #set(NIBABEL_DEPENDANCIES python)
 set(SPYDER_DEPENDANCIES python)
-set(ETSTraits_DEPENDANCIES python SPYDER)
-set(NIPYPE_DEPENDANCIES SPYDER ETSTraits python)
+#set(ETSTraits_DEPENDANCIES python SPYDER)
+set(NIPYPE_DEPENDANCIES SPYDER python)
 
 set(VTK_DEPENDENCIES)
 #set(CTK_DEPENDENCIES VTK)
@@ -309,7 +309,7 @@ include(External_Python26)
 #include(External_NIBABEL)
 
 include(External_SPYDER)
-include(External_ETSTraits)
+#include(External_ETSTraits)
 include(External_NIPYPE)
 
 #-----------------------------------------------------------------------------

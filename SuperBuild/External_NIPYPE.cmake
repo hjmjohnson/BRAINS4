@@ -1,7 +1,8 @@
 # The Numpy external project 
 
 set(NIPYPE_binary "${CMAKE_CURRENT_BINARY_DIR}/NIPYPE/")
-set(NIPYPE_url git://github.com/nipy/nipype.git)
+#set(NIPYPE_url https://github.com/chrisfilo/nipype.git)
+set(NIPYPE_url https://github.com/hjmjohnson/nipype.git)
 set(NIPYPE_PYTHON_EXECUTABLE "${${CMAKE_PROJECT_NAME}_PYTHON_EXECUTABLE}")
 
 # to configure NIPYPE we run a cmake -P script
@@ -21,7 +22,7 @@ configure_file(
 # and configure and build it
 ExternalProject_Add(NIPYPE
   GIT_REPOSITORY ${NIPYPE_url}
-  GIT_TAG 7bad7e143d78e65f4beaa5cf0200f3e8c30876f8
+  GIT_TAG cfslicer
   DOWNLOAD_DIR ${CMAKE_CURRENT_BINARY_DIR}
   SOURCE_DIR ${CMAKE_CURRENT_BINARY_DIR}/NIPYPE
   BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR}/NIPYPE

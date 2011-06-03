@@ -45,9 +45,9 @@ if [ ! -f ez_setup.py ]; then
   @SPYDER_PYTHON_EXECUTABLE@ ez_setup.py -U setuptools
 fi
 
-easy_install_wrapper numpy      ${SERVER}/numpy-2.0.0.dev_ac2c160_20110325-py2.6-macosx-10.6-universal.egg
+easy_install_wrapper numpy      ${SERVER}/numpy-2.0.0.dev_3071eab_20110527-py2.6-macosx-10.6-universal.egg
 easy_install_wrapper matplotlib ${SERVER}/matplotlib-1.1.0-py2.6-macosx-10.6-universal.egg
-easy_install_wrapper scipy      ${SERVER}/scipy-0.10.0.dev_20110325-py2.6-macosx-10.6-universal.egg
+easy_install_wrapper scipy      ${SERVER}/scipy-0.10.0.dev_20110527-py2.6-macosx-10.6-universal.egg
 easy_install_wrapper pymc       ${SERVER}/pymc-2.2alpha-py2.6-macosx-10.6-universal.egg
 easy_install_wrapper readline   readline
 #  ipython v 11 is incompatible with nipype easy_install_wrapper ipython    ${SERVER}/ipython-0.11.dev-py2.6.egg

@@ -1,6 +1,7 @@
-message("Configuring NIPYPE:\n@NIPYPE_binary@")
 set(ENV{LD_LIBRARY_PATH} "@CMAKE_CURRENT_BINARY_DIR@/python-build/lib")
 set(ENV{DYLD_LIBRARY_PATH} "@CMAKE_CURRENT_BINARY_DIR@/python-build/lib")
+
+message("Configuring NIPYPE:\ncd @NIPYPE_binary@; @NIPYPE_PYTHON_EXECUTABLE@ setup.py config")
 
 execute_process(
   COMMAND "@NIPYPE_PYTHON_EXECUTABLE@" setup.py config
