@@ -23,8 +23,6 @@ class BRAINS4CommandLine(CommandLine):
 
 
     def _grab_xml(self, module):
-        fullpath=module   ## store the full path for command processing
-        module=os.path.basename(module)  ## Overwrite module with the shortname
         """
         cmd = CommandLine(command = fullpath, args=" --xml")
         ret = cmd.run()
@@ -34,6 +32,8 @@ class BRAINS4CommandLine(CommandLine):
         else:
             raise Exception(cmd.cmdline + " failed:\n%s"%ret.runtime.stderr)
         """
+        fullpath=module   ## store the full path for command processing
+        module=os.path.basename(module)  ## Overwrite module with the shortname
         p = sub.Popen([fullpath,"--xml"],stdout=sub.PIPE,stderr=sub.PIPE)
         output, errors = p.communicate()
         xmlString = output
