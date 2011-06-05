@@ -1,26 +1,22 @@
-from nipype.interfaces.base import CommandLine, CommandLineInputSpec, TraitedSpec
-import enthought.traits.api as traits
+from nipype.interfaces.base import CommandLine, CommandLineInputSpec, TraitedSpec, File, Directory, traits, isdefined
 import os
-from nipype.interfaces.base import File
-from nipype.interfaces.base import Directory
-
 
 class gtractInvertDeformationFieldInputSpec(CommandLineInputSpec):
-	baseImage = File( exists = "True",argstr = "--baseImage %s")
-	deformationImage = File( exists = "True",argstr = "--deformationImage %s")
-	outputVolume = traits.Either(traits.Bool, File, argstr = "--outputVolume %s")
-	subsamplingFactor = traits.Int( argstr = "--subsamplingFactor %d")
+    baseImage = File( exists = "True",argstr = "--baseImage %s")
+    deformationImage = File( exists = "True",argstr = "--deformationImage %s")
+    outputVolume = traits.Either(traits.Bool, File, argstr = "--outputVolume %s")
+    subsamplingFactor = traits.Int( argstr = "--subsamplingFactor %d")
 
 
 class gtractInvertDeformationFieldOutputSpec(TraitedSpec):
-	outputVolume = File(exists=True, argstr = "--outputVolume %s")
+    outputVolume = File(exists=True, argstr = "--outputVolume %s")
 
 
 class gtractInvertDeformationField(CommandLine):
 
     input_spec = gtractInvertDeformationFieldInputSpec
     output_spec = gtractInvertDeformationFieldOutputSpec
-    _cmd = "Slicer3 --launch gtractInvertDeformationField "
+    _cmd = " gtractInvertDeformationField "
     _outputs_filenames = {'outputVolume':'outputVolume.nrrd'}
 
     def _list_outputs(self):

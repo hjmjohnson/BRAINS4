@@ -1,26 +1,22 @@
-from nipype.interfaces.base import CommandLine, CommandLineInputSpec, TraitedSpec
-import enthought.traits.api as traits
+from nipype.interfaces.base import CommandLine, CommandLineInputSpec, TraitedSpec, File, Directory, traits, isdefined
 import os
-from nipype.interfaces.base import File
-from nipype.interfaces.base import Directory
-
 
 class gtractInvertBSplineTransformInputSpec(CommandLineInputSpec):
-	inputReferenceVolume = File( exists = "True",argstr = "--inputReferenceVolume %s")
-	inputTransform = File( exists = "True",argstr = "--inputTransform %s")
-	outputTransform = traits.Either(traits.Bool, File, argstr = "--outputTransform %s")
-	landmarkDensity = traits.List("traits.Int", sep = ",",argstr = "--landmarkDensity %d")
+    inputReferenceVolume = File( exists = "True",argstr = "--inputReferenceVolume %s")
+    inputTransform = File( exists = "True",argstr = "--inputTransform %s")
+    outputTransform = traits.Either(traits.Bool, File, argstr = "--outputTransform %s")
+    landmarkDensity = traits.List(traits.Int, sep = ",",argstr = "--landmarkDensity %d")
 
 
 class gtractInvertBSplineTransformOutputSpec(TraitedSpec):
-	outputTransform = File(exists=True, argstr = "--outputTransform %s")
+    outputTransform = File(exists=True, argstr = "--outputTransform %s")
 
 
 class gtractInvertBSplineTransform(CommandLine):
 
     input_spec = gtractInvertBSplineTransformInputSpec
     output_spec = gtractInvertBSplineTransformOutputSpec
-    _cmd = "Slicer3 --launch gtractInvertBSplineTransform "
+    _cmd = " gtractInvertBSplineTransform "
     _outputs_filenames = {'outputTransform':'outputTransform.mat'}
 
     def _list_outputs(self):

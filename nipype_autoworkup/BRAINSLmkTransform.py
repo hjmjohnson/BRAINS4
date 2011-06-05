@@ -1,29 +1,25 @@
-from nipype.interfaces.base import CommandLine, CommandLineInputSpec, TraitedSpec
-import enthought.traits.api as traits
+from nipype.interfaces.base import CommandLine, CommandLineInputSpec, TraitedSpec, File, Directory, traits, isdefined
 import os
-from nipype.interfaces.base import File
-from nipype.interfaces.base import Directory
-
 
 class BRAINSLmkTransformInputSpec(CommandLineInputSpec):
-	inputMovingLandmarks = File( exists = "True",argstr = "--inputMovingLandmarks %s")
-	inputFixedLandmarks = File( exists = "True",argstr = "--inputFixedLandmarks %s")
-	outputAffineTransform = traits.Either(traits.Bool, File, argstr = "--outputAffineTransform %s")
-	inputMovingVolume = File( exists = "True",argstr = "--inputMovingVolume %s")
-	inputReferenceVolume = File( exists = "True",argstr = "--inputReferenceVolume %s")
-	outputResampledVolume = traits.Either(traits.Bool, File, argstr = "--outputResampledVolume %s")
+    inputMovingLandmarks = File( exists = "True",argstr = "--inputMovingLandmarks %s")
+    inputFixedLandmarks = File( exists = "True",argstr = "--inputFixedLandmarks %s")
+    outputAffineTransform = traits.Either(traits.Bool, File, argstr = "--outputAffineTransform %s")
+    inputMovingVolume = File( exists = "True",argstr = "--inputMovingVolume %s")
+    inputReferenceVolume = File( exists = "True",argstr = "--inputReferenceVolume %s")
+    outputResampledVolume = traits.Either(traits.Bool, File, argstr = "--outputResampledVolume %s")
 
 
 class BRAINSLmkTransformOutputSpec(TraitedSpec):
-	outputAffineTransform = File(exists=True, argstr = "--outputAffineTransform %s")
-	outputResampledVolume = File(exists=True, argstr = "--outputResampledVolume %s")
+    outputAffineTransform = File(exists=True, argstr = "--outputAffineTransform %s")
+    outputResampledVolume = File(exists=True, argstr = "--outputResampledVolume %s")
 
 
 class BRAINSLmkTransform(CommandLine):
 
     input_spec = BRAINSLmkTransformInputSpec
     output_spec = BRAINSLmkTransformOutputSpec
-    _cmd = "Slicer3 --launch BRAINSLmkTransform "
+    _cmd = " BRAINSLmkTransform "
     _outputs_filenames = {'outputResampledVolume':'outputResampledVolume.nii','outputAffineTransform':'outputAffineTransform.mat'}
 
     def _list_outputs(self):

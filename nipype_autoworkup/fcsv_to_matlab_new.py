@@ -1,26 +1,22 @@
-from nipype.interfaces.base import CommandLine, CommandLineInputSpec, TraitedSpec
-import enthought.traits.api as traits
+from nipype.interfaces.base import CommandLine, CommandLineInputSpec, TraitedSpec, File, Directory, traits, isdefined
 import os
-from nipype.interfaces.base import File
-from nipype.interfaces.base import Directory
-
 
 class fcsv_to_matlab_newInputSpec(CommandLineInputSpec):
-	outputFile = traits.Either(traits.Bool, File, argstr = "----outputMatlabFile %s")
-	landmarkTypesFile = traits.Either(traits.Bool, File, argstr = "----landmarkTypesFile %s")
-	landmarkGlobPattern = traits.Str( argstr = "--landmarkGlobPattern %s")
+    outputFile = traits.Either(traits.Bool, File, argstr = "----outputMatlabFile %s")
+    landmarkTypesFile = traits.Either(traits.Bool, File, argstr = "----landmarkTypesFile %s")
+    landmarkGlobPattern = traits.Str( argstr = "--landmarkGlobPattern %s")
 
 
 class fcsv_to_matlab_newOutputSpec(TraitedSpec):
-	outputFile = File(exists=True, argstr = "----outputMatlabFile %s")
-	landmarkTypesFile = File(exists=True, argstr = "----landmarkTypesFile %s")
+    outputFile = File(exists=True, argstr = "----outputMatlabFile %s")
+    landmarkTypesFile = File(exists=True, argstr = "----landmarkTypesFile %s")
 
 
 class fcsv_to_matlab_new(CommandLine):
 
     input_spec = fcsv_to_matlab_newInputSpec
     output_spec = fcsv_to_matlab_newOutputSpec
-    _cmd = "Slicer3 --launch fcsv_to_matlab_new "
+    _cmd = " fcsv_to_matlab_new "
     _outputs_filenames = {'outputFile':'outputFile','landmarkTypesFile':'landmarkTypesFile'}
 
     def _list_outputs(self):

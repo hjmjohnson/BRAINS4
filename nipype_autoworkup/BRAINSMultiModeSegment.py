@@ -1,29 +1,25 @@
-from nipype.interfaces.base import CommandLine, CommandLineInputSpec, TraitedSpec
-import enthought.traits.api as traits
+from nipype.interfaces.base import CommandLine, CommandLineInputSpec, TraitedSpec, File, Directory, traits, isdefined
 import os
-from nipype.interfaces.base import File
-from nipype.interfaces.base import Directory
-
 
 class BRAINSMultiModeSegmentInputSpec(CommandLineInputSpec):
-	inputVolumes = File( exists = "True",argstr = "----inputVolumes %s")
-	inputMaskVolume = File( exists = "True",argstr = "----inputMaskVolume %s")
-	outputROIMaskVolume = traits.Either(traits.Bool, File, argstr = "----outputROIMaskVolume %s")
-	outputClippedVolumeROI = traits.Either(traits.Bool, File, argstr = "----outputClippedVolumeROI %s")
-	lowerThreshold = traits.List("traits.Float", sep = ",",argstr = "----lowerThreshold %f")
-	upperThreshold = traits.List("traits.Float", sep = ",",argstr = "----upperThreshold %f")
+    inputVolumes = traits.List(File(exists=True), argstr = "----inputVolumes %s...")
+    inputMaskVolume = File( exists = "True",argstr = "----inputMaskVolume %s")
+    outputROIMaskVolume = traits.Either(traits.Bool, File, argstr = "----outputROIMaskVolume %s")
+    outputClippedVolumeROI = traits.Either(traits.Bool, File, argstr = "----outputClippedVolumeROI %s")
+    lowerThreshold = traits.List(traits.Float, sep = ",",argstr = "----lowerThreshold %f")
+    upperThreshold = traits.List(traits.Float, sep = ",",argstr = "----upperThreshold %f")
 
 
 class BRAINSMultiModeSegmentOutputSpec(TraitedSpec):
-	outputROIMaskVolume = File(exists=True, argstr = "----outputROIMaskVolume %s")
-	outputClippedVolumeROI = File(exists=True, argstr = "----outputClippedVolumeROI %s")
+    outputROIMaskVolume = File(exists=True, argstr = "----outputROIMaskVolume %s")
+    outputClippedVolumeROI = File(exists=True, argstr = "----outputClippedVolumeROI %s")
 
 
 class BRAINSMultiModeSegment(CommandLine):
 
     input_spec = BRAINSMultiModeSegmentInputSpec
     output_spec = BRAINSMultiModeSegmentOutputSpec
-    _cmd = "Slicer3 --launch BRAINSMultiModeSegment "
+    _cmd = " BRAINSMultiModeSegment "
     _outputs_filenames = {'outputROIMaskVolume':'outputROIMaskVolume.nii','outputClippedVolumeROI':'outputClippedVolumeROI.nii'}
 
     def _list_outputs(self):

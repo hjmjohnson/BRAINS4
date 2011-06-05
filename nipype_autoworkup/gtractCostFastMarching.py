@@ -1,32 +1,28 @@
-from nipype.interfaces.base import CommandLine, CommandLineInputSpec, TraitedSpec
-import enthought.traits.api as traits
+from nipype.interfaces.base import CommandLine, CommandLineInputSpec, TraitedSpec, File, Directory, traits, isdefined
 import os
-from nipype.interfaces.base import File
-from nipype.interfaces.base import Directory
-
 
 class gtractCostFastMarchingInputSpec(CommandLineInputSpec):
-	inputTensorVolume = File( exists = "True",argstr = "--inputTensorVolume %s")
-	inputAnisotropyVolume = File( exists = "True",argstr = "--inputAnisotropyVolume %s")
-	inputStartingSeedsLabelMapVolume = File( exists = "True",argstr = "--inputStartingSeedsLabelMapVolume %s")
-	startingSeedsLabel = traits.Int( argstr = "--startingSeedsLabel %d")
-	outputCostVolume = traits.Either(traits.Bool, File, argstr = "--outputCostVolume %s")
-	outputSpeedVolume = traits.Either(traits.Bool, File, argstr = "--outputSpeedVolume %s")
-	anisotropyWeight = traits.Float( argstr = "--anisotropyWeight %f")
-	stoppingValue = traits.Float( argstr = "--stoppingValue %f")
-	seedThreshold = traits.Float( argstr = "--seedThreshold %f")
+    inputTensorVolume = File( exists = "True",argstr = "--inputTensorVolume %s")
+    inputAnisotropyVolume = File( exists = "True",argstr = "--inputAnisotropyVolume %s")
+    inputStartingSeedsLabelMapVolume = File( exists = "True",argstr = "--inputStartingSeedsLabelMapVolume %s")
+    startingSeedsLabel = traits.Int( argstr = "--startingSeedsLabel %d")
+    outputCostVolume = traits.Either(traits.Bool, File, argstr = "--outputCostVolume %s")
+    outputSpeedVolume = traits.Either(traits.Bool, File, argstr = "--outputSpeedVolume %s")
+    anisotropyWeight = traits.Float( argstr = "--anisotropyWeight %f")
+    stoppingValue = traits.Float( argstr = "--stoppingValue %f")
+    seedThreshold = traits.Float( argstr = "--seedThreshold %f")
 
 
 class gtractCostFastMarchingOutputSpec(TraitedSpec):
-	outputCostVolume = File(exists=True, argstr = "--outputCostVolume %s")
-	outputSpeedVolume = File(exists=True, argstr = "--outputSpeedVolume %s")
+    outputCostVolume = File(exists=True, argstr = "--outputCostVolume %s")
+    outputSpeedVolume = File(exists=True, argstr = "--outputSpeedVolume %s")
 
 
 class gtractCostFastMarching(CommandLine):
 
     input_spec = gtractCostFastMarchingInputSpec
     output_spec = gtractCostFastMarchingOutputSpec
-    _cmd = "Slicer3 --launch gtractCostFastMarching "
+    _cmd = " gtractCostFastMarching "
     _outputs_filenames = {'outputCostVolume':'outputCostVolume.nrrd','outputSpeedVolume':'outputSpeedVolume.nrrd'}
 
     def _list_outputs(self):

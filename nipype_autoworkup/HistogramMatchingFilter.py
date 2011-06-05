@@ -1,32 +1,28 @@
-from nipype.interfaces.base import CommandLine, CommandLineInputSpec, TraitedSpec
-import enthought.traits.api as traits
+from nipype.interfaces.base import CommandLine, CommandLineInputSpec, TraitedSpec, File, Directory, traits, isdefined
 import os
-from nipype.interfaces.base import File
-from nipype.interfaces.base import Directory
-
 
 class HistogramMatchingFilterInputSpec(CommandLineInputSpec):
-	inputVolume = File( exists = "True",argstr = "--inputVolume %s")
-	referenceVolume = File( exists = "True",argstr = "--referenceVolume %s")
-	outputVolume = traits.Either(traits.Bool, File, argstr = "--outputVolume %s")
-	referenceBinaryVolume = File( exists = "True",argstr = "--referenceBinaryVolume %s")
-	inputBinaryVolume = File( exists = "True",argstr = "--inputBinaryVolume %s")
-	numberOfMatchPoints = traits.Int( argstr = "--numberOfMatchPoints %d")
-	numberOfHistogramBins = traits.Int( argstr = "--numberOfHistogramBins %d")
-	writeHistogram = traits.Str( argstr = "--writeHistogram %s")
-	histogramAlgorithm = traits.Enum("OtsuHistogramMatching", argstr = "--histogramAlgorithm %s")
-	verbose = traits.Bool( argstr = "--verbose ")
+    inputVolume = File( exists = "True",argstr = "--inputVolume %s")
+    referenceVolume = File( exists = "True",argstr = "--referenceVolume %s")
+    outputVolume = traits.Either(traits.Bool, File, argstr = "--outputVolume %s")
+    referenceBinaryVolume = File( exists = "True",argstr = "--referenceBinaryVolume %s")
+    inputBinaryVolume = File( exists = "True",argstr = "--inputBinaryVolume %s")
+    numberOfMatchPoints = traits.Int( argstr = "--numberOfMatchPoints %d")
+    numberOfHistogramBins = traits.Int( argstr = "--numberOfHistogramBins %d")
+    writeHistogram = traits.Str( argstr = "--writeHistogram %s")
+    histogramAlgorithm = traits.Enum("OtsuHistogramMatching", argstr = "--histogramAlgorithm %s")
+    verbose = traits.Bool( argstr = "--verbose ")
 
 
 class HistogramMatchingFilterOutputSpec(TraitedSpec):
-	outputVolume = File(exists=True, argstr = "--outputVolume %s")
+    outputVolume = File(exists=True, argstr = "--outputVolume %s")
 
 
 class HistogramMatchingFilter(CommandLine):
 
     input_spec = HistogramMatchingFilterInputSpec
     output_spec = HistogramMatchingFilterOutputSpec
-    _cmd = "Slicer3 --launch HistogramMatchingFilter "
+    _cmd = " HistogramMatchingFilter "
     _outputs_filenames = {'outputVolume':'outputVolume.nii'}
 
     def _list_outputs(self):

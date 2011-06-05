@@ -1,26 +1,22 @@
-from nipype.interfaces.base import CommandLine, CommandLineInputSpec, TraitedSpec
-import enthought.traits.api as traits
+from nipype.interfaces.base import CommandLine, CommandLineInputSpec, TraitedSpec, File, Directory, traits, isdefined
 import os
-from nipype.interfaces.base import File
-from nipype.interfaces.base import Directory
-
 
 class gtractClipAnisotropyInputSpec(CommandLineInputSpec):
-	inputVolume = File( exists = "True",argstr = "--inputVolume %s")
-	outputVolume = traits.Either(traits.Bool, File, argstr = "--outputVolume %s")
-	clipFirstSlice = traits.Bool( argstr = "--clipFirstSlice ")
-	clipLastSlice = traits.Bool( argstr = "--clipLastSlice ")
+    inputVolume = File( exists = "True",argstr = "--inputVolume %s")
+    outputVolume = traits.Either(traits.Bool, File, argstr = "--outputVolume %s")
+    clipFirstSlice = traits.Bool( argstr = "--clipFirstSlice ")
+    clipLastSlice = traits.Bool( argstr = "--clipLastSlice ")
 
 
 class gtractClipAnisotropyOutputSpec(TraitedSpec):
-	outputVolume = File(exists=True, argstr = "--outputVolume %s")
+    outputVolume = File(exists=True, argstr = "--outputVolume %s")
 
 
 class gtractClipAnisotropy(CommandLine):
 
     input_spec = gtractClipAnisotropyInputSpec
     output_spec = gtractClipAnisotropyOutputSpec
-    _cmd = "Slicer3 --launch gtractClipAnisotropy "
+    _cmd = " gtractClipAnisotropy "
     _outputs_filenames = {'outputVolume':'outputVolume.nrrd'}
 
     def _list_outputs(self):

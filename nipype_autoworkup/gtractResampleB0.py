@@ -1,28 +1,24 @@
-from nipype.interfaces.base import CommandLine, CommandLineInputSpec, TraitedSpec
-import enthought.traits.api as traits
+from nipype.interfaces.base import CommandLine, CommandLineInputSpec, TraitedSpec, File, Directory, traits, isdefined
 import os
-from nipype.interfaces.base import File
-from nipype.interfaces.base import Directory
-
 
 class gtractResampleB0InputSpec(CommandLineInputSpec):
-	inputVolume = File( exists = "True",argstr = "--inputVolume %s")
-	inputAnatomicalVolume = File( exists = "True",argstr = "--inputAnatomicalVolume %s")
-	inputTransform = File( exists = "True",argstr = "--inputTransform %s")
-	vectorIndex = traits.Int( argstr = "--vectorIndex %d")
-	transformType = traits.Enum("Rigid","B-Spline", argstr = "--transformType %s")
-	outputVolume = traits.Either(traits.Bool, File, argstr = "--outputVolume %s")
+    inputVolume = File( exists = "True",argstr = "--inputVolume %s")
+    inputAnatomicalVolume = File( exists = "True",argstr = "--inputAnatomicalVolume %s")
+    inputTransform = File( exists = "True",argstr = "--inputTransform %s")
+    vectorIndex = traits.Int( argstr = "--vectorIndex %d")
+    transformType = traits.Enum("Rigid","B-Spline", argstr = "--transformType %s")
+    outputVolume = traits.Either(traits.Bool, File, argstr = "--outputVolume %s")
 
 
 class gtractResampleB0OutputSpec(TraitedSpec):
-	outputVolume = File(exists=True, argstr = "--outputVolume %s")
+    outputVolume = File(exists=True, argstr = "--outputVolume %s")
 
 
 class gtractResampleB0(CommandLine):
 
     input_spec = gtractResampleB0InputSpec
     output_spec = gtractResampleB0OutputSpec
-    _cmd = "Slicer3 --launch gtractResampleB0 "
+    _cmd = " gtractResampleB0 "
     _outputs_filenames = {'outputVolume':'outputVolume.nrrd'}
 
     def _list_outputs(self):

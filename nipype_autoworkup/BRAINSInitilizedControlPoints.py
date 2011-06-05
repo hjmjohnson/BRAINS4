@@ -1,27 +1,23 @@
-from nipype.interfaces.base import CommandLine, CommandLineInputSpec, TraitedSpec
-import enthought.traits.api as traits
+from nipype.interfaces.base import CommandLine, CommandLineInputSpec, TraitedSpec, File, Directory, traits, isdefined
 import os
-from nipype.interfaces.base import File
-from nipype.interfaces.base import Directory
-
 
 class BRAINSInitilizedControlPointsInputSpec(CommandLineInputSpec):
-	inputVolume = File( exists = "True",argstr = "----inputVolume %s")
-	outputVolume = traits.Either(traits.Bool, File, argstr = "----outputVolume %s")
-	splineGridSize = traits.List("traits.Int", sep = ",",argstr = "--splineGridSize %d")
-	permuteOrder = traits.List("traits.Int", sep = ",",argstr = "--permuteOrder %d")
-	outputLandmarksFile = traits.Str( argstr = "----outputLandmarksFile %s")
+    inputVolume = File( exists = "True",argstr = "----inputVolume %s")
+    outputVolume = traits.Either(traits.Bool, File, argstr = "----outputVolume %s")
+    splineGridSize = traits.List(traits.Int, sep = ",",argstr = "--splineGridSize %d")
+    permuteOrder = traits.List(traits.Int, sep = ",",argstr = "--permuteOrder %d")
+    outputLandmarksFile = traits.Str( argstr = "----outputLandmarksFile %s")
 
 
 class BRAINSInitilizedControlPointsOutputSpec(TraitedSpec):
-	outputVolume = File(exists=True, argstr = "----outputVolume %s")
+    outputVolume = File(exists=True, argstr = "----outputVolume %s")
 
 
 class BRAINSInitilizedControlPoints(CommandLine):
 
     input_spec = BRAINSInitilizedControlPointsInputSpec
     output_spec = BRAINSInitilizedControlPointsOutputSpec
-    _cmd = "Slicer3 --launch BRAINSInitilizedControlPoints "
+    _cmd = " BRAINSInitilizedControlPoints "
     _outputs_filenames = {'outputVolume':'outputVolume.nii'}
 
     def _list_outputs(self):

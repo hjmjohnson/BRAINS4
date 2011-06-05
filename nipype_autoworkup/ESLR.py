@@ -1,30 +1,26 @@
-from nipype.interfaces.base import CommandLine, CommandLineInputSpec, TraitedSpec
-import enthought.traits.api as traits
+from nipype.interfaces.base import CommandLine, CommandLineInputSpec, TraitedSpec, File, Directory, traits, isdefined
 import os
-from nipype.interfaces.base import File
-from nipype.interfaces.base import Directory
-
 
 class ESLRInputSpec(CommandLineInputSpec):
-	inputVolume = File( exists = "True",argstr = "--inputVolume %s")
-	outputVolume = traits.Either(traits.Bool, File, argstr = "--outputVolume %s")
-	low = traits.Int( argstr = "--low %d")
-	high = traits.Int( argstr = "--high %d")
-	closingSize = traits.Int( argstr = "--closingSize %d")
-	openingSize = traits.Int( argstr = "--openingSize %d")
-	safetySize = traits.Int( argstr = "--safetySize %d")
-	preserveOutside = traits.Bool( argstr = "--preserveOutside ")
+    inputVolume = File( exists = "True",argstr = "--inputVolume %s")
+    outputVolume = traits.Either(traits.Bool, File, argstr = "--outputVolume %s")
+    low = traits.Int( argstr = "--low %d")
+    high = traits.Int( argstr = "--high %d")
+    closingSize = traits.Int( argstr = "--closingSize %d")
+    openingSize = traits.Int( argstr = "--openingSize %d")
+    safetySize = traits.Int( argstr = "--safetySize %d")
+    preserveOutside = traits.Bool( argstr = "--preserveOutside ")
 
 
 class ESLROutputSpec(TraitedSpec):
-	outputVolume = File(exists=True, argstr = "--outputVolume %s")
+    outputVolume = File(exists=True, argstr = "--outputVolume %s")
 
 
 class ESLR(CommandLine):
 
     input_spec = ESLRInputSpec
     output_spec = ESLROutputSpec
-    _cmd = "Slicer3 --launch ESLR "
+    _cmd = " ESLR "
     _outputs_filenames = {'outputVolume':'outputVolume.nii'}
 
     def _list_outputs(self):

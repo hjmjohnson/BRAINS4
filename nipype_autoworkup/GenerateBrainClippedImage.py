@@ -1,25 +1,21 @@
-from nipype.interfaces.base import CommandLine, CommandLineInputSpec, TraitedSpec
-import enthought.traits.api as traits
+from nipype.interfaces.base import CommandLine, CommandLineInputSpec, TraitedSpec, File, Directory, traits, isdefined
 import os
-from nipype.interfaces.base import File
-from nipype.interfaces.base import Directory
-
 
 class GenerateBrainClippedImageInputSpec(CommandLineInputSpec):
-	inputImg = File( exists = "True",argstr = "--inputImg %s")
-	inputMsk = File( exists = "True",argstr = "--inputMsk %s")
-	outputFileName = traits.Either(traits.Bool, File, argstr = "--outputFileName %s")
+    inputImg = File( exists = "True",argstr = "--inputImg %s")
+    inputMsk = File( exists = "True",argstr = "--inputMsk %s")
+    outputFileName = traits.Either(traits.Bool, File, argstr = "--outputFileName %s")
 
 
 class GenerateBrainClippedImageOutputSpec(TraitedSpec):
-	outputFileName = File(exists=True, argstr = "--outputFileName %s")
+    outputFileName = File(exists=True, argstr = "--outputFileName %s")
 
 
 class GenerateBrainClippedImage(CommandLine):
 
     input_spec = GenerateBrainClippedImageInputSpec
     output_spec = GenerateBrainClippedImageOutputSpec
-    _cmd = "Slicer3 --launch GenerateBrainClippedImage "
+    _cmd = " GenerateBrainClippedImage "
     _outputs_filenames = {'outputFileName':'outputFileName'}
 
     def _list_outputs(self):

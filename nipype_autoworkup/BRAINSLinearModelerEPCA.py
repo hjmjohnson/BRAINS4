@@ -1,12 +1,8 @@
-from nipype.interfaces.base import CommandLine, CommandLineInputSpec, TraitedSpec
-import enthought.traits.api as traits
+from nipype.interfaces.base import CommandLine, CommandLineInputSpec, TraitedSpec, File, Directory, traits, isdefined
 import os
-from nipype.interfaces.base import File
-from nipype.interfaces.base import Directory
-
 
 class BRAINSLinearModelerEPCAInputSpec(CommandLineInputSpec):
-	inputTrainingList = File( exists = "True",argstr = "--inputTrainingList %s")
+    inputTrainingList = File( exists = "True",argstr = "--inputTrainingList %s")
 
 
 class BRAINSLinearModelerEPCAOutputSpec(TraitedSpec):
@@ -16,7 +12,7 @@ class BRAINSLinearModelerEPCA(CommandLine):
 
     input_spec = BRAINSLinearModelerEPCAInputSpec
     output_spec = BRAINSLinearModelerEPCAOutputSpec
-    _cmd = "Slicer3 --launch BRAINSLinearModelerEPCA "
+    _cmd = " BRAINSLinearModelerEPCA "
     _outputs_filenames = {}
 
     def _list_outputs(self):

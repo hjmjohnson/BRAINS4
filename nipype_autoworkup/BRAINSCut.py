@@ -1,22 +1,18 @@
-from nipype.interfaces.base import CommandLine, CommandLineInputSpec, TraitedSpec
-import enthought.traits.api as traits
+from nipype.interfaces.base import CommandLine, CommandLineInputSpec, TraitedSpec, File, Directory, traits, isdefined
 import os
-from nipype.interfaces.base import File
-from nipype.interfaces.base import Directory
-
 
 class BRAINSCutInputSpec(CommandLineInputSpec):
-	netConfiguration = File( exists = "True",argstr = "--netConfiguration %s")
-	trainModelStartIndex = traits.Int( argstr = "--trainModelStartIndex %d")
-	verbose = traits.Int( argstr = "--verbose %d")
-	multiStructureThreshold = traits.Bool( argstr = "--multiStructureThreshold ")
-	histogramEqualization = traits.Bool( argstr = "--histogramEqualization ")
-	doTest = traits.Bool( argstr = "--doTest ")
-	generateProbability = traits.Bool( argstr = "--generateProbability ")
-	createVectors = traits.Bool( argstr = "--createVectors ")
-	trainModel = traits.Bool( argstr = "--trainModel ")
-	applyModel = traits.Bool( argstr = "--applyModel ")
-	validate = traits.Bool( argstr = "--validate ")
+    netConfiguration = File( exists = "True",argstr = "--netConfiguration %s")
+    trainModelStartIndex = traits.Int( argstr = "--trainModelStartIndex %d")
+    verbose = traits.Int( argstr = "--verbose %d")
+    multiStructureThreshold = traits.Bool( argstr = "--multiStructureThreshold ")
+    histogramEqualization = traits.Bool( argstr = "--histogramEqualization ")
+    doTest = traits.Bool( argstr = "--doTest ")
+    generateProbability = traits.Bool( argstr = "--generateProbability ")
+    createVectors = traits.Bool( argstr = "--createVectors ")
+    trainModel = traits.Bool( argstr = "--trainModel ")
+    applyModel = traits.Bool( argstr = "--applyModel ")
+    validate = traits.Bool( argstr = "--validate ")
 
 
 class BRAINSCutOutputSpec(TraitedSpec):
@@ -26,7 +22,7 @@ class BRAINSCut(CommandLine):
 
     input_spec = BRAINSCutInputSpec
     output_spec = BRAINSCutOutputSpec
-    _cmd = "Slicer3 --launch BRAINSCut "
+    _cmd = " BRAINSCut "
     _outputs_filenames = {}
 
     def _list_outputs(self):

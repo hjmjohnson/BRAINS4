@@ -1,29 +1,25 @@
-from nipype.interfaces.base import CommandLine, CommandLineInputSpec, TraitedSpec
-import enthought.traits.api as traits
+from nipype.interfaces.base import CommandLine, CommandLineInputSpec, TraitedSpec, File, Directory, traits, isdefined
 import os
-from nipype.interfaces.base import File
-from nipype.interfaces.base import Directory
-
 
 class BRAINSTrimForegroundInDirectionInputSpec(CommandLineInputSpec):
-	inputVolume = File( exists = "True",argstr = "--inputVolume %s")
-	outputVolume = traits.Either(traits.Bool, File, argstr = "--outputVolume %s")
-	directionCode = traits.Int( argstr = "--directionCode %d")
-	otsuPercentileThreshold = traits.Float( argstr = "--otsuPercentileThreshold %f")
-	closingSize = traits.Int( argstr = "--closingSize %d")
-	headSizeLimit = traits.Float( argstr = "--headSizeLimit %f")
-	backgroundFillValueString = traits.Str( argstr = "--BackgroundFillValue %s")
+    inputVolume = File( exists = "True",argstr = "--inputVolume %s")
+    outputVolume = traits.Either(traits.Bool, File, argstr = "--outputVolume %s")
+    directionCode = traits.Int( argstr = "--directionCode %d")
+    otsuPercentileThreshold = traits.Float( argstr = "--otsuPercentileThreshold %f")
+    closingSize = traits.Int( argstr = "--closingSize %d")
+    headSizeLimit = traits.Float( argstr = "--headSizeLimit %f")
+    backgroundFillValueString = traits.Str( argstr = "--BackgroundFillValue %s")
 
 
 class BRAINSTrimForegroundInDirectionOutputSpec(TraitedSpec):
-	outputVolume = File(exists=True, argstr = "--outputVolume %s")
+    outputVolume = File(exists=True, argstr = "--outputVolume %s")
 
 
 class BRAINSTrimForegroundInDirection(CommandLine):
 
     input_spec = BRAINSTrimForegroundInDirectionInputSpec
     output_spec = BRAINSTrimForegroundInDirectionOutputSpec
-    _cmd = "Slicer3 --launch BRAINSTrimForegroundInDirection "
+    _cmd = " BRAINSTrimForegroundInDirection "
     _outputs_filenames = {'outputVolume':'outputVolume.nii'}
 
     def _list_outputs(self):

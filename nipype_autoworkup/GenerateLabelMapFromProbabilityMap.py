@@ -1,13 +1,9 @@
-from nipype.interfaces.base import CommandLine, CommandLineInputSpec, TraitedSpec
-import enthought.traits.api as traits
+from nipype.interfaces.base import CommandLine, CommandLineInputSpec, TraitedSpec, File, Directory, traits, isdefined
 import os
-from nipype.interfaces.base import File
-from nipype.interfaces.base import Directory
-
 
 class GenerateLabelMapFromProbabilityMapInputSpec(CommandLineInputSpec):
-	inputVolumes = File( exists = "True",argstr = "--inputVolumes %s")
-	outputLabelVolume = File( exists = "True",argstr = "--outputLabelVolume %s")
+    inputVolumes = traits.List(File(exists=True), argstr = "--inputVolumes %s...")
+    outputLabelVolume = File( exists = "True",argstr = "--outputLabelVolume %s")
 
 
 class GenerateLabelMapFromProbabilityMapOutputSpec(TraitedSpec):
@@ -17,7 +13,7 @@ class GenerateLabelMapFromProbabilityMap(CommandLine):
 
     input_spec = GenerateLabelMapFromProbabilityMapInputSpec
     output_spec = GenerateLabelMapFromProbabilityMapOutputSpec
-    _cmd = "Slicer3 --launch GenerateLabelMapFromProbabilityMap "
+    _cmd = " GenerateLabelMapFromProbabilityMap "
     _outputs_filenames = {}
 
     def _list_outputs(self):

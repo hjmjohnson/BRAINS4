@@ -1,26 +1,22 @@
-from nipype.interfaces.base import CommandLine, CommandLineInputSpec, TraitedSpec
-import enthought.traits.api as traits
+from nipype.interfaces.base import CommandLine, CommandLineInputSpec, TraitedSpec, File, Directory, traits, isdefined
 import os
-from nipype.interfaces.base import File
-from nipype.interfaces.base import Directory
-
 
 class BRAINSClipInferiorInputSpec(CommandLineInputSpec):
-	inputVolume = File( exists = "True",argstr = "--inputVolume %s")
-	outputVolume = traits.Either(traits.Bool, File, argstr = "--outputVolume %s")
-	acLowerBound = traits.Float( argstr = "--acLowerBound %f")
-	backgroundFillValueString = traits.Str( argstr = "--BackgroundFillValue %s")
+    inputVolume = File( exists = "True",argstr = "--inputVolume %s")
+    outputVolume = traits.Either(traits.Bool, File, argstr = "--outputVolume %s")
+    acLowerBound = traits.Float( argstr = "--acLowerBound %f")
+    backgroundFillValueString = traits.Str( argstr = "--BackgroundFillValue %s")
 
 
 class BRAINSClipInferiorOutputSpec(TraitedSpec):
-	outputVolume = File(exists=True, argstr = "--outputVolume %s")
+    outputVolume = File(exists=True, argstr = "--outputVolume %s")
 
 
 class BRAINSClipInferior(CommandLine):
 
     input_spec = BRAINSClipInferiorInputSpec
     output_spec = BRAINSClipInferiorOutputSpec
-    _cmd = "Slicer3 --launch BRAINSClipInferior "
+    _cmd = " BRAINSClipInferior "
     _outputs_filenames = {'outputVolume':'outputVolume.nii'}
 
     def _list_outputs(self):

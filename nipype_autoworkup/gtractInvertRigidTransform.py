@@ -1,24 +1,20 @@
-from nipype.interfaces.base import CommandLine, CommandLineInputSpec, TraitedSpec
-import enthought.traits.api as traits
+from nipype.interfaces.base import CommandLine, CommandLineInputSpec, TraitedSpec, File, Directory, traits, isdefined
 import os
-from nipype.interfaces.base import File
-from nipype.interfaces.base import Directory
-
 
 class gtractInvertRigidTransformInputSpec(CommandLineInputSpec):
-	inputTransform = File( exists = "True",argstr = "--inputTransform %s")
-	outputTransform = traits.Either(traits.Bool, File, argstr = "--outputTransform %s")
+    inputTransform = File( exists = "True",argstr = "--inputTransform %s")
+    outputTransform = traits.Either(traits.Bool, File, argstr = "--outputTransform %s")
 
 
 class gtractInvertRigidTransformOutputSpec(TraitedSpec):
-	outputTransform = File(exists=True, argstr = "--outputTransform %s")
+    outputTransform = File(exists=True, argstr = "--outputTransform %s")
 
 
 class gtractInvertRigidTransform(CommandLine):
 
     input_spec = gtractInvertRigidTransformInputSpec
     output_spec = gtractInvertRigidTransformOutputSpec
-    _cmd = "Slicer3 --launch gtractInvertRigidTransform "
+    _cmd = " gtractInvertRigidTransform "
     _outputs_filenames = {'outputTransform':'outputTransform.mat'}
 
     def _list_outputs(self):

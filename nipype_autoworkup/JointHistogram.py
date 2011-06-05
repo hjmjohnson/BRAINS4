@@ -1,15 +1,11 @@
-from nipype.interfaces.base import CommandLine, CommandLineInputSpec, TraitedSpec
-import enthought.traits.api as traits
+from nipype.interfaces.base import CommandLine, CommandLineInputSpec, TraitedSpec, File, Directory, traits, isdefined
 import os
-from nipype.interfaces.base import File
-from nipype.interfaces.base import Directory
-
 
 class JointHistogramInputSpec(CommandLineInputSpec):
-	inputVolume1 = File( exists = "True",argstr = "--inputVolume1 %s")
-	inputVolume2 = File( exists = "True",argstr = "--inputVolume2 %s")
-	outputJointHistogramImage = traits.Str( argstr = "--outputJointHistogramImage %s")
-	verbose = traits.Bool( argstr = "--verbose ")
+    inputVolume1 = File( exists = "True",argstr = "--inputVolume1 %s")
+    inputVolume2 = File( exists = "True",argstr = "--inputVolume2 %s")
+    outputJointHistogramImage = traits.Str( argstr = "--outputJointHistogramImage %s")
+    verbose = traits.Bool( argstr = "--verbose ")
 
 
 class JointHistogramOutputSpec(TraitedSpec):
@@ -19,7 +15,7 @@ class JointHistogram(CommandLine):
 
     input_spec = JointHistogramInputSpec
     output_spec = JointHistogramOutputSpec
-    _cmd = "Slicer3 --launch JointHistogram "
+    _cmd = " JointHistogram "
     _outputs_filenames = {}
 
     def _list_outputs(self):

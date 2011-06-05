@@ -1,25 +1,21 @@
-from nipype.interfaces.base import CommandLine, CommandLineInputSpec, TraitedSpec
-import enthought.traits.api as traits
+from nipype.interfaces.base import CommandLine, CommandLineInputSpec, TraitedSpec, File, Directory, traits, isdefined
 import os
-from nipype.interfaces.base import File
-from nipype.interfaces.base import Directory
-
 
 class gtractAnisotropyMapInputSpec(CommandLineInputSpec):
-	inputTensorVolume = File( exists = "True",argstr = "--inputTensorVolume %s")
-	anisotropyType = traits.Enum("ADC","FA","RA","VR","AD","RD","LI", argstr = "--anisotropyType %s")
-	outputVolume = traits.Either(traits.Bool, File, argstr = "--outputVolume %s")
+    inputTensorVolume = File( exists = "True",argstr = "--inputTensorVolume %s")
+    anisotropyType = traits.Enum("ADC","FA","RA","VR","AD","RD","LI", argstr = "--anisotropyType %s")
+    outputVolume = traits.Either(traits.Bool, File, argstr = "--outputVolume %s")
 
 
 class gtractAnisotropyMapOutputSpec(TraitedSpec):
-	outputVolume = File(exists=True, argstr = "--outputVolume %s")
+    outputVolume = File(exists=True, argstr = "--outputVolume %s")
 
 
 class gtractAnisotropyMap(CommandLine):
 
     input_spec = gtractAnisotropyMapInputSpec
     output_spec = gtractAnisotropyMapOutputSpec
-    _cmd = "Slicer3 --launch gtractAnisotropyMap "
+    _cmd = " gtractAnisotropyMap "
     _outputs_filenames = {'outputVolume':'outputVolume.nrrd'}
 
     def _list_outputs(self):

@@ -1,26 +1,22 @@
-from nipype.interfaces.base import CommandLine, CommandLineInputSpec, TraitedSpec
-import enthought.traits.api as traits
+from nipype.interfaces.base import CommandLine, CommandLineInputSpec, TraitedSpec, File, Directory, traits, isdefined
 import os
-from nipype.interfaces.base import File
-from nipype.interfaces.base import Directory
-
 
 class gtractResampleDWIInPlaceInputSpec(CommandLineInputSpec):
-	inputVolume = File( exists = "True",argstr = "--inputVolume %s")
-	inputTransform = File( exists = "True",argstr = "--inputTransform %s")
-	debugLevel = traits.Int( argstr = "----debugLevel %d")
-	outputVolume = traits.Either(traits.Bool, File, argstr = "--outputVolume %s")
+    inputVolume = File( exists = "True",argstr = "--inputVolume %s")
+    inputTransform = File( exists = "True",argstr = "--inputTransform %s")
+    debugLevel = traits.Int( argstr = "----debugLevel %d")
+    outputVolume = traits.Either(traits.Bool, File, argstr = "--outputVolume %s")
 
 
 class gtractResampleDWIInPlaceOutputSpec(TraitedSpec):
-	outputVolume = File(exists=True, argstr = "--outputVolume %s")
+    outputVolume = File(exists=True, argstr = "--outputVolume %s")
 
 
 class gtractResampleDWIInPlace(CommandLine):
 
     input_spec = gtractResampleDWIInPlaceInputSpec
     output_spec = gtractResampleDWIInPlaceOutputSpec
-    _cmd = "Slicer3 --launch gtractResampleDWIInPlace "
+    _cmd = " gtractResampleDWIInPlace "
     _outputs_filenames = {'outputVolume':'outputVolume.nii'}
 
     def _list_outputs(self):

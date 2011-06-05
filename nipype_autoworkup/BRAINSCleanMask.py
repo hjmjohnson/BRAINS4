@@ -1,24 +1,20 @@
-from nipype.interfaces.base import CommandLine, CommandLineInputSpec, TraitedSpec
-import enthought.traits.api as traits
+from nipype.interfaces.base import CommandLine, CommandLineInputSpec, TraitedSpec, File, Directory, traits, isdefined
 import os
-from nipype.interfaces.base import File
-from nipype.interfaces.base import Directory
-
 
 class BRAINSCleanMaskInputSpec(CommandLineInputSpec):
-	inputVolume = File( exists = "True",argstr = "----inputVolume %s")
-	outputVolume = traits.Either(traits.Bool, File, argstr = "----outputVolume %s")
+    inputVolume = File( exists = "True",argstr = "----inputVolume %s")
+    outputVolume = traits.Either(traits.Bool, File, argstr = "----outputVolume %s")
 
 
 class BRAINSCleanMaskOutputSpec(TraitedSpec):
-	outputVolume = File(exists=True, argstr = "----outputVolume %s")
+    outputVolume = File(exists=True, argstr = "----outputVolume %s")
 
 
 class BRAINSCleanMask(CommandLine):
 
     input_spec = BRAINSCleanMaskInputSpec
     output_spec = BRAINSCleanMaskOutputSpec
-    _cmd = "Slicer3 --launch BRAINSCleanMask "
+    _cmd = " BRAINSCleanMask "
     _outputs_filenames = {'outputVolume':'outputVolume.nii'}
 
     def _list_outputs(self):
