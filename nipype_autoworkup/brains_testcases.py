@@ -1,33 +1,26 @@
 # emacs: -*- mode: python; py-indent-offset: 4; indent-tabs-mode: nil -*-
 # vi: set ft=python sts=4 ts=4 sw=4 et:
 
-#raise RuntimeWarning, 'SEM not fully implmented'
-from BRAINSFit import *
-from BRAINSResample import *
-from BRAINSConstellationDetector import *
-from BRAINSABC import *
-
 """Import necessary modules from nipype."""
-
 import nipype.interfaces.io as nio           # Data i/o
 import nipype.interfaces.utility as util     # utility
 import nipype.pipeline.engine as pe          # pypeline engine
 import os                                    # system T1IMGtions
-
-"""
-
-Preliminaries
--------------
-
-Confirm package dependencies are installed.  (This is only for the
-tutorial, rarely would you put this in your own code.)
-"""
 from nipype.utils.misc import package_check
 
 package_check('numpy', '1.3', 'tutorial1')
 package_check('scipy', '0.7', 'tutorial1')
 package_check('networkx', '1.0', 'tutorial1')
 package_check('IPython', '0.10', 'tutorial1')
+
+#raise RuntimeWarning, 'SEM not fully implmented'
+from BRAINSFit import *
+from BRAINSResample import *
+from BRAINSConstellationDetector import *
+from BRAINSABC import *
+
+def WorkupT1T2 (ScanDir, T1Image, T2Image, Version=200, ResampleInterpolationMode=0, Mode=10)
+    
 
 # Specify the location of the data.
 
@@ -73,7 +66,11 @@ reslice = pe.Node(interface=BRAINSResample(), name="reslice")
 reslice.inputs.outputVolume = True
 
 reslice_sink = pe.Node(interface=nio.DataSink(),name='reslice_sink')
-reslice_sink.inputs.base_directory = os.path.abspath('slicer_tutorial/final_data')
+reslice_sink.inputs.base_directory = os.path.abspath('/scratch/test_output')
+reslice_sink.inputs.substitutions = [('reslice_outputVolume',''),
+                                      ('_scan_dir_..scratch..data..NAMIC_PHD..10021..100026',''),
+                                      ('outputVolume','myResliceVolume')]
+
 
 
 
