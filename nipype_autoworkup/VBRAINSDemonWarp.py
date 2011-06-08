@@ -1,40 +1,40 @@
-from nipype.interfaces.base import CommandLine, CommandLineInputSpec, TraitedSpec, File, Directory, traits, isdefined
+from nipype.interfaces.base import CommandLine, CommandLineInputSpec, TraitedSpec, File, Directory, traits, isdefined, InputMultiPath, OutputMultiPath
 import os
 
 class VBRAINSDemonWarpInputSpec(CommandLineInputSpec):
-    movingVolume = traits.List(File(exists=True), argstr = "--movingVolume %s...")
-    fixedVolume = traits.List(File(exists=True), argstr = "--fixedVolume %s...")
+    movingVolume = InputMultiPath(File(exists=True), argstr = "--movingVolume %s...")
+    fixedVolume = InputMultiPath(File(exists=True), argstr = "--fixedVolume %s...")
     inputPixelType = traits.Enum("float","short","ushort","int","uchar", argstr = "--inputPixelType %s")
-    outputVolume = traits.Either(traits.Bool, File, argstr = "--outputVolume %s")
-    outputDeformationFieldVolume = traits.Either(traits.Bool, File, argstr = "--outputDeformationFieldVolume %s")
+    outputVolume = traits.Either(traits.Bool, File(), argstr = "--outputVolume %s")
+    outputDeformationFieldVolume = traits.Either(traits.Bool, File(), argstr = "--outputDeformationFieldVolume %s")
     outputPixelType = traits.Enum("float","short","ushort","int","uchar", argstr = "--outputPixelType %s")
     interpolationMode = traits.Enum("NearestNeighbor","Linear","ResampleInPlace","BSpline","WindowedSinc", argstr = "--interpolationMode %s")
     registrationFilterType = traits.Enum("Demons","FastSymmetricForces","Diffeomorphic","LogDemons","SymmetricLogDemons", argstr = "--registrationFilterType %s")
     smoothDeformationFieldSigma = traits.Float( argstr = "--smoothDeformationFieldSigma %f")
     numberOfPyramidLevels = traits.Int( argstr = "--numberOfPyramidLevels %d")
-    minimumFixedPyramid = traits.List(traits.Int, sep = ",",argstr = "--minimumFixedPyramid %d")
-    minimumMovingPyramid = traits.List(traits.Int, sep = ",",argstr = "--minimumMovingPyramid %d")
-    arrayOfPyramidLevelIterations = traits.List(traits.Int, sep = ",",argstr = "--arrayOfPyramidLevelIterations %d")
+    minimumFixedPyramid = InputMultiPath(traits.Int, sep = ",",argstr = "--minimumFixedPyramid %s")
+    minimumMovingPyramid = InputMultiPath(traits.Int, sep = ",",argstr = "--minimumMovingPyramid %s")
+    arrayOfPyramidLevelIterations = InputMultiPath(traits.Int, sep = ",",argstr = "--arrayOfPyramidLevelIterations %s")
     histogramMatch = traits.Bool( argstr = "--histogramMatch ")
     numberOfHistogramBins = traits.Int( argstr = "--numberOfHistogramBins %d")
     numberOfMatchPoints = traits.Int( argstr = "--numberOfMatchPoints %d")
-    medianFilterSize = traits.List(traits.Int, sep = ",",argstr = "--medianFilterSize %d")
-    initializeWithDeformationField = File( exists = "True",argstr = "--initializeWithDeformationField %s")
-    initializeWithTransform = File( exists = "True",argstr = "--initializeWithTransform %s")
+    medianFilterSize = InputMultiPath(traits.Int, sep = ",",argstr = "--medianFilterSize %s")
+    initializeWithDeformationField = File( exists = True,argstr = "--initializeWithDeformationField %s")
+    initializeWithTransform = File( exists = True,argstr = "--initializeWithTransform %s")
     makeBOBF = traits.Bool( argstr = "--makeBOBF ")
-    fixedBinaryVolume = File( exists = "True",argstr = "--fixedBinaryVolume %s")
-    movingBinaryVolume = File( exists = "True",argstr = "--movingBinaryVolume %s")
+    fixedBinaryVolume = File( exists = True,argstr = "--fixedBinaryVolume %s")
+    movingBinaryVolume = File( exists = True,argstr = "--movingBinaryVolume %s")
     lowerThresholdForBOBF = traits.Int( argstr = "--lowerThresholdForBOBF %d")
     upperThresholdForBOBF = traits.Int( argstr = "--upperThresholdForBOBF %d")
     backgroundFillValue = traits.Int( argstr = "--backgroundFillValue %d")
-    seedForBOBF = traits.List(traits.Int, sep = ",",argstr = "--seedForBOBF %d")
-    neighborhoodForBOBF = traits.List(traits.Int, sep = ",",argstr = "--neighborhoodForBOBF %d")
+    seedForBOBF = InputMultiPath(traits.Int, sep = ",",argstr = "--seedForBOBF %s")
+    neighborhoodForBOBF = InputMultiPath(traits.Int, sep = ",",argstr = "--neighborhoodForBOBF %s")
     outputDisplacementFieldPrefix = traits.Str( argstr = "--outputDisplacementFieldPrefix %s")
-    outputCheckerboardVolume = traits.Either(traits.Bool, File, argstr = "--outputCheckerboardVolume %s")
-    checkerboardPatternSubdivisions = traits.List(traits.Int, sep = ",",argstr = "--checkerboardPatternSubdivisions %d")
+    outputCheckerboardVolume = traits.Either(traits.Bool, File(), argstr = "--outputCheckerboardVolume %s")
+    checkerboardPatternSubdivisions = InputMultiPath(traits.Int, sep = ",",argstr = "--checkerboardPatternSubdivisions %s")
     outputNormalized = traits.Bool( argstr = "--outputNormalized ")
     outputDebug = traits.Bool( argstr = "--outputDebug ")
-    weightFactors = traits.List(traits.Float, sep = ",",argstr = "--weightFactors %f")
+    weightFactors = InputMultiPath(traits.Float, sep = ",",argstr = "--weightFactors %s")
     gradientType = traits.Enum("0","1","2", argstr = "--gradient_type %s")
     smoothingUp = traits.Float( argstr = "--upFieldSmoothing %f")
     maxStepLength = traits.Float( argstr = "--max_step_length %f")
@@ -45,9 +45,9 @@ class VBRAINSDemonWarpInputSpec(CommandLineInputSpec):
 
 
 class VBRAINSDemonWarpOutputSpec(TraitedSpec):
-    outputVolume = File(exists=True, argstr = "--outputVolume %s")
-    outputDeformationFieldVolume = File(exists=True, argstr = "--outputDeformationFieldVolume %s")
-    outputCheckerboardVolume = File(exists=True, argstr = "--outputCheckerboardVolume %s")
+    outputVolume = File( exists = True)
+    outputDeformationFieldVolume = File( exists = True)
+    outputCheckerboardVolume = File( exists = True)
 
 
 class VBRAINSDemonWarp(CommandLine):
@@ -65,18 +65,18 @@ class VBRAINSDemonWarp(CommandLine):
                 if isinstance(coresponding_input, bool) and coresponding_input == True:
                     outputs[name] = os.path.abspath(self._outputs_filenames[name])
                 else:
-                    outputs[name] = coresponding_input
+                    if isinstance(coresponding_input, list):
+                        outputs[name] = [os.path.abspath(inp) for inp in coresponding_input]
+                    else:
+                        outputs[name] = os.path.abspath(coresponding_input)
         return outputs
 
     def _format_arg(self, name, spec, value):
         if name in self._outputs_filenames.keys():
             if isinstance(value, bool):
                 if value == True:
-                    fname = os.path.abspath(self._outputs_filenames[name])
+                    value = os.path.abspath(self._outputs_filenames[name])
                 else:
                     return ""
-            else:
-                fname = value
-            return spec.argstr % fname
         return super(VBRAINSDemonWarp, self)._format_arg(name, spec, value)
 

@@ -1,6 +1,8 @@
 #!/bin/bash -x
 
 
+export PYTHONPATH="${BASEDIR}/bin:${BASEDIR}/lib"
+
 cd @SPYDER_BINARY_DIR@
 
 ## HACK -- NEED SOME FALL_THOUGH_LOGIC to prevent re-installs

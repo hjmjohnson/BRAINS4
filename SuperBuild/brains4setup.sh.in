@@ -42,7 +42,7 @@ if [ "$launchProg" != "" ] ; then
 fi
 
 # Return variable requested 
-exeTest=`echo $0 | grep brains3_setup.sh`
+exeTest=`echo $0 | grep brains4setup.sh`
 if [ $# -gt 0 ] && [ "$exeTest" != "" ]
 then
     echo `printenv ${1}`

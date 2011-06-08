@@ -1,15 +1,15 @@
-from nipype.interfaces.base import CommandLine, CommandLineInputSpec, TraitedSpec, File, Directory, traits, isdefined
+from nipype.interfaces.base import CommandLine, CommandLineInputSpec, TraitedSpec, File, Directory, traits, isdefined, InputMultiPath, OutputMultiPath
 import os
 
 class gtractCoRegAnatomyInputSpec(CommandLineInputSpec):
-    inputVolume = File( exists = "True",argstr = "--inputVolume %s")
-    inputAnatomicalVolume = File( exists = "True",argstr = "--inputAnatomicalVolume %s")
+    inputVolume = File( exists = True,argstr = "--inputVolume %s")
+    inputAnatomicalVolume = File( exists = True,argstr = "--inputAnatomicalVolume %s")
     vectorIndex = traits.Int( argstr = "--vectorIndex %d")
-    inputRigidTransform = File( exists = "True",argstr = "--inputRigidTransform %s")
-    outputTransformName = traits.Either(traits.Bool, File, argstr = "--outputTransformName %s")
+    inputRigidTransform = File( exists = True,argstr = "--inputRigidTransform %s")
+    outputTransformName = traits.Either(traits.Bool, File(), argstr = "--outputTransformName %s")
     transformType = traits.Enum("Rigid","Bspline", argstr = "--transformType %s")
     numberOfIterations = traits.Int( argstr = "--numberOfIterations %d")
-    gridSize = traits.List(traits.Int, sep = ",",argstr = "--gridSize %d")
+    gridSize = InputMultiPath(traits.Int, sep = ",",argstr = "--gridSize %s")
     borderSize = traits.Int( argstr = "--borderSize %d")
     numberOfHistogramBins = traits.Int( argstr = "--numberOfHistogramBins %d")
     spatialScale = traits.Int( argstr = "--spatialScale %d")
@@ -27,7 +27,7 @@ class gtractCoRegAnatomyInputSpec(CommandLineInputSpec):
 
 
 class gtractCoRegAnatomyOutputSpec(TraitedSpec):
-    outputTransformName = File(exists=True, argstr = "--outputTransformName %s")
+    outputTransformName = File( exists = True)
 
 
 class gtractCoRegAnatomy(CommandLine):
@@ -45,18 +45,18 @@ class gtractCoRegAnatomy(CommandLine):
                 if isinstance(coresponding_input, bool) and coresponding_input == True:
                     outputs[name] = os.path.abspath(self._outputs_filenames[name])
                 else:
-                    outputs[name] = coresponding_input
+                    if isinstance(coresponding_input, list):
+                        outputs[name] = [os.path.abspath(inp) for inp in coresponding_input]
+                    else:
+                        outputs[name] = os.path.abspath(coresponding_input)
         return outputs
 
     def _format_arg(self, name, spec, value):
         if name in self._outputs_filenames.keys():
             if isinstance(value, bool):
                 if value == True:
-                    fname = os.path.abspath(self._outputs_filenames[name])
+                    value = os.path.abspath(self._outputs_filenames[name])
                 else:
                     return ""
-            else:
-                fname = value
-            return spec.argstr % fname
         return super(gtractCoRegAnatomy, self)._format_arg(name, spec, value)
 

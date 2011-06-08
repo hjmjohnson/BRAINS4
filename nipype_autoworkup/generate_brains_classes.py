@@ -7,6 +7,7 @@ if __name__ == "__main__":
     ## HACK:  Need arg_parse here for specifying paths.
     test_list="""    
 BRAINSFit
+BRAINSMush
 BRAINSDemonWarp
 BRAINSAlignMSP
 BRAINSCleanMask
@@ -32,9 +33,6 @@ HistogramMatchingFilter
 ImageRegionPlotter
 JointHistogram
 NeighborhoodConnectedImageFilter
-ProcessShader
-ShuffleVectorsModule
-SimpleGaussian
 SimpleGaussianFunctional
 StandardizeMaskIntensity
 VBRAINSDemonWarp
@@ -60,7 +58,8 @@ gtractTensor
 gtractTransformToDeformationField
 """
     SEM_exe=list()
-    exec_dir = '/scratch/src/BRAINS4-build/bin'
+    #exec_dir = '/scratch/src/BRAINS4-build/bin'
+    exec_dir = '/scratch/johnsonhj/src/BRAINS4-buld/bin'
     for candidate_exe in test_list.split():
         test_command=exec_dir+"/"+candidate_exe+" --xml"
         xmlReturnValue = subprocess.Popen(test_command, stdout=subprocess.PIPE, shell=True).communicate()[0]

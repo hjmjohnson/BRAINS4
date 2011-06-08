@@ -1,14 +1,14 @@
-from nipype.interfaces.base import CommandLine, CommandLineInputSpec, TraitedSpec, File, Directory, traits, isdefined
+from nipype.interfaces.base import CommandLine, CommandLineInputSpec, TraitedSpec, File, Directory, traits, isdefined, InputMultiPath, OutputMultiPath
 import os
 
 class gtractAnisotropyMapInputSpec(CommandLineInputSpec):
-    inputTensorVolume = File( exists = "True",argstr = "--inputTensorVolume %s")
+    inputTensorVolume = File( exists = True,argstr = "--inputTensorVolume %s")
     anisotropyType = traits.Enum("ADC","FA","RA","VR","AD","RD","LI", argstr = "--anisotropyType %s")
-    outputVolume = traits.Either(traits.Bool, File, argstr = "--outputVolume %s")
+    outputVolume = traits.Either(traits.Bool, File(), argstr = "--outputVolume %s")
 
 
 class gtractAnisotropyMapOutputSpec(TraitedSpec):
-    outputVolume = File(exists=True, argstr = "--outputVolume %s")
+    outputVolume = File( exists = True)
 
 
 class gtractAnisotropyMap(CommandLine):
@@ -26,18 +26,18 @@ class gtractAnisotropyMap(CommandLine):
                 if isinstance(coresponding_input, bool) and coresponding_input == True:
                     outputs[name] = os.path.abspath(self._outputs_filenames[name])
                 else:
-                    outputs[name] = coresponding_input
+                    if isinstance(coresponding_input, list):
+                        outputs[name] = [os.path.abspath(inp) for inp in coresponding_input]
+                    else:
+                        outputs[name] = os.path.abspath(coresponding_input)
         return outputs
 
     def _format_arg(self, name, spec, value):
         if name in self._outputs_filenames.keys():
             if isinstance(value, bool):
                 if value == True:
-                    fname = os.path.abspath(self._outputs_filenames[name])
+                    value = os.path.abspath(self._outputs_filenames[name])
                 else:
                     return ""
-            else:
-                fname = value
-            return spec.argstr % fname
         return super(gtractAnisotropyMap, self)._format_arg(name, spec, value)
 

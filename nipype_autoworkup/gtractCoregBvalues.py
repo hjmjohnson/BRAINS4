@@ -1,12 +1,12 @@
-from nipype.interfaces.base import CommandLine, CommandLineInputSpec, TraitedSpec, File, Directory, traits, isdefined
+from nipype.interfaces.base import CommandLine, CommandLineInputSpec, TraitedSpec, File, Directory, traits, isdefined, InputMultiPath, OutputMultiPath
 import os
 
 class gtractCoregBvaluesInputSpec(CommandLineInputSpec):
-    movingVolume = File( exists = "True",argstr = "--movingVolume %s")
-    fixedVolume = File( exists = "True",argstr = "--fixedVolume %s")
+    movingVolume = File( exists = True,argstr = "--movingVolume %s")
+    fixedVolume = File( exists = True,argstr = "--fixedVolume %s")
     fixedVolumeIndex = traits.Int( argstr = "--fixedVolumeIndex %d")
-    outputVolume = traits.Either(traits.Bool, File, argstr = "--outputVolume %s")
-    outputTransform = traits.Either(traits.Bool, File, argstr = "--outputTransform %s")
+    outputVolume = traits.Either(traits.Bool, File(), argstr = "--outputVolume %s")
+    outputTransform = traits.Either(traits.Bool, File(), argstr = "--outputTransform %s")
     eddyCurrentCorrection = traits.Bool( argstr = "--eddyCurrentCorrection ")
     numberOfIterations = traits.Int( argstr = "--numberOfIterations %d")
     numberOfSpatialSamples = traits.Int( argstr = "--numberOfSpatialSamples %d")
@@ -15,12 +15,12 @@ class gtractCoregBvaluesInputSpec(CommandLineInputSpec):
     minimumStepSize = traits.Float( argstr = "--minimumStepSize %f")
     spatialScale = traits.Float( argstr = "--spatialScale %f")
     registerB0Only = traits.Bool( argstr = "--registerB0Only ")
-    debugLevel = traits.Int( argstr = "----debugLevel %d")
+    debugLevel = traits.Int( argstr = "--debugLevel %d")
 
 
 class gtractCoregBvaluesOutputSpec(TraitedSpec):
-    outputVolume = File(exists=True, argstr = "--outputVolume %s")
-    outputTransform = File(exists=True, argstr = "--outputTransform %s")
+    outputVolume = File( exists = True)
+    outputTransform = File( exists = True)
 
 
 class gtractCoregBvalues(CommandLine):
@@ -38,18 +38,18 @@ class gtractCoregBvalues(CommandLine):
                 if isinstance(coresponding_input, bool) and coresponding_input == True:
                     outputs[name] = os.path.abspath(self._outputs_filenames[name])
                 else:
-                    outputs[name] = coresponding_input
+                    if isinstance(coresponding_input, list):
+                        outputs[name] = [os.path.abspath(inp) for inp in coresponding_input]
+                    else:
+                        outputs[name] = os.path.abspath(coresponding_input)
         return outputs
 
     def _format_arg(self, name, spec, value):
         if name in self._outputs_filenames.keys():
             if isinstance(value, bool):
                 if value == True:
-                    fname = os.path.abspath(self._outputs_filenames[name])
+                    value = os.path.abspath(self._outputs_filenames[name])
                 else:
                     return ""
-            else:
-                fname = value
-            return spec.argstr % fname
         return super(gtractCoregBvalues, self)._format_arg(name, spec, value)
 

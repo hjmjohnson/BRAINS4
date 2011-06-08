@@ -1,18 +1,18 @@
-from nipype.interfaces.base import CommandLine, CommandLineInputSpec, TraitedSpec, File, Directory, traits, isdefined
+from nipype.interfaces.base import CommandLine, CommandLineInputSpec, TraitedSpec, File, Directory, traits, isdefined, InputMultiPath, OutputMultiPath
 import os
 
 class BRAINSMultiModeSegmentInputSpec(CommandLineInputSpec):
-    inputVolumes = traits.List(File(exists=True), argstr = "----inputVolumes %s...")
-    inputMaskVolume = File( exists = "True",argstr = "----inputMaskVolume %s")
-    outputROIMaskVolume = traits.Either(traits.Bool, File, argstr = "----outputROIMaskVolume %s")
-    outputClippedVolumeROI = traits.Either(traits.Bool, File, argstr = "----outputClippedVolumeROI %s")
-    lowerThreshold = traits.List(traits.Float, sep = ",",argstr = "----lowerThreshold %f")
-    upperThreshold = traits.List(traits.Float, sep = ",",argstr = "----upperThreshold %f")
+    inputVolumes = InputMultiPath(File(exists=True), argstr = "--inputVolumes %s...")
+    inputMaskVolume = File( exists = True,argstr = "--inputMaskVolume %s")
+    outputROIMaskVolume = traits.Either(traits.Bool, File(), argstr = "--outputROIMaskVolume %s")
+    outputClippedVolumeROI = traits.Either(traits.Bool, File(), argstr = "--outputClippedVolumeROI %s")
+    lowerThreshold = InputMultiPath(traits.Float, sep = ",",argstr = "--lowerThreshold %s")
+    upperThreshold = InputMultiPath(traits.Float, sep = ",",argstr = "--upperThreshold %s")
 
 
 class BRAINSMultiModeSegmentOutputSpec(TraitedSpec):
-    outputROIMaskVolume = File(exists=True, argstr = "----outputROIMaskVolume %s")
-    outputClippedVolumeROI = File(exists=True, argstr = "----outputClippedVolumeROI %s")
+    outputROIMaskVolume = File( exists = True)
+    outputClippedVolumeROI = File( exists = True)
 
 
 class BRAINSMultiModeSegment(CommandLine):
@@ -30,18 +30,18 @@ class BRAINSMultiModeSegment(CommandLine):
                 if isinstance(coresponding_input, bool) and coresponding_input == True:
                     outputs[name] = os.path.abspath(self._outputs_filenames[name])
                 else:
-                    outputs[name] = coresponding_input
+                    if isinstance(coresponding_input, list):
+                        outputs[name] = [os.path.abspath(inp) for inp in coresponding_input]
+                    else:
+                        outputs[name] = os.path.abspath(coresponding_input)
         return outputs
 
     def _format_arg(self, name, spec, value):
         if name in self._outputs_filenames.keys():
             if isinstance(value, bool):
                 if value == True:
-                    fname = os.path.abspath(self._outputs_filenames[name])
+                    value = os.path.abspath(self._outputs_filenames[name])
                 else:
                     return ""
-            else:
-                fname = value
-            return spec.argstr % fname
         return super(BRAINSMultiModeSegment, self)._format_arg(name, spec, value)
 

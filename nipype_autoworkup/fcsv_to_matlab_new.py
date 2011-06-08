@@ -1,15 +1,15 @@
-from nipype.interfaces.base import CommandLine, CommandLineInputSpec, TraitedSpec, File, Directory, traits, isdefined
+from nipype.interfaces.base import CommandLine, CommandLineInputSpec, TraitedSpec, File, Directory, traits, isdefined, InputMultiPath, OutputMultiPath
 import os
 
 class fcsv_to_matlab_newInputSpec(CommandLineInputSpec):
-    outputFile = traits.Either(traits.Bool, File, argstr = "----outputMatlabFile %s")
-    landmarkTypesFile = traits.Either(traits.Bool, File, argstr = "----landmarkTypesFile %s")
+    outputFile = traits.Either(traits.Bool, File(), argstr = "--outputMatlabFile %s")
+    landmarkTypesFile = traits.Either(traits.Bool, File(), argstr = "--landmarkTypesFile %s")
     landmarkGlobPattern = traits.Str( argstr = "--landmarkGlobPattern %s")
 
 
 class fcsv_to_matlab_newOutputSpec(TraitedSpec):
-    outputFile = File(exists=True, argstr = "----outputMatlabFile %s")
-    landmarkTypesFile = File(exists=True, argstr = "----landmarkTypesFile %s")
+    outputFile = File( exists = True)
+    landmarkTypesFile = File( exists = True)
 
 
 class fcsv_to_matlab_new(CommandLine):
@@ -17,7 +17,7 @@ class fcsv_to_matlab_new(CommandLine):
     input_spec = fcsv_to_matlab_newInputSpec
     output_spec = fcsv_to_matlab_newOutputSpec
     _cmd = " fcsv_to_matlab_new "
-    _outputs_filenames = {'outputFile':'outputFile','landmarkTypesFile':'landmarkTypesFile'}
+    _outputs_filenames = {'outputFile':'outputFile.hdf5','landmarkTypesFile':'landmarkTypesFile.txt'}
 
     def _list_outputs(self):
         outputs = self.output_spec().get()
@@ -27,18 +27,18 @@ class fcsv_to_matlab_new(CommandLine):
                 if isinstance(coresponding_input, bool) and coresponding_input == True:
                     outputs[name] = os.path.abspath(self._outputs_filenames[name])
                 else:
-                    outputs[name] = coresponding_input
+                    if isinstance(coresponding_input, list):
+                        outputs[name] = [os.path.abspath(inp) for inp in coresponding_input]
+                    else:
+                        outputs[name] = os.path.abspath(coresponding_input)
         return outputs
 
     def _format_arg(self, name, spec, value):
         if name in self._outputs_filenames.keys():
             if isinstance(value, bool):
                 if value == True:
-                    fname = os.path.abspath(self._outputs_filenames[name])
+                    value = os.path.abspath(self._outputs_filenames[name])
                 else:
                     return ""
-            else:
-                fname = value
-            return spec.argstr % fname
         return super(fcsv_to_matlab_new, self)._format_arg(name, spec, value)
 

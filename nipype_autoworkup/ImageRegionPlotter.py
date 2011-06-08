@@ -1,11 +1,11 @@
-from nipype.interfaces.base import CommandLine, CommandLineInputSpec, TraitedSpec, File, Directory, traits, isdefined
+from nipype.interfaces.base import CommandLine, CommandLineInputSpec, TraitedSpec, File, Directory, traits, isdefined, InputMultiPath, OutputMultiPath
 import os
 
 class ImageRegionPlotterInputSpec(CommandLineInputSpec):
-    inputVolume1 = File( exists = "True",argstr = "--inputVolume1 %s")
-    inputVolume2 = File( exists = "True",argstr = "--inputVolume2 %s")
-    inputBinaryROIVolume = File( exists = "True",argstr = "--inputBinaryROIVolume %s")
-    inputLabelVolume = File( exists = "True",argstr = "--inputLabelVolume %s")
+    inputVolume1 = File( exists = True,argstr = "--inputVolume1 %s")
+    inputVolume2 = File( exists = True,argstr = "--inputVolume2 %s")
+    inputBinaryROIVolume = File( exists = True,argstr = "--inputBinaryROIVolume %s")
+    inputLabelVolume = File( exists = True,argstr = "--inputLabelVolume %s")
     numberOfHistogramBins = traits.Int( argstr = "--numberOfHistogramBins %d")
     outputJointHistogramData = traits.Str( argstr = "--outputJointHistogramData %s")
     useROIAUTO = traits.Bool( argstr = "--useROIAUTO ")
@@ -31,18 +31,18 @@ class ImageRegionPlotter(CommandLine):
                 if isinstance(coresponding_input, bool) and coresponding_input == True:
                     outputs[name] = os.path.abspath(self._outputs_filenames[name])
                 else:
-                    outputs[name] = coresponding_input
+                    if isinstance(coresponding_input, list):
+                        outputs[name] = [os.path.abspath(inp) for inp in coresponding_input]
+                    else:
+                        outputs[name] = os.path.abspath(coresponding_input)
         return outputs
 
     def _format_arg(self, name, spec, value):
         if name in self._outputs_filenames.keys():
             if isinstance(value, bool):
                 if value == True:
-                    fname = os.path.abspath(self._outputs_filenames[name])
+                    value = os.path.abspath(self._outputs_filenames[name])
                 else:
                     return ""
-            else:
-                fname = value
-            return spec.argstr % fname
         return super(ImageRegionPlotter, self)._format_arg(name, spec, value)
 

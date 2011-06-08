@@ -1,4 +1,5 @@
 from BRAINSFit import BRAINSFit
+from BRAINSMush import BRAINSMush
 from BRAINSDemonWarp import BRAINSDemonWarp
 from BRAINSAlignMSP import BRAINSAlignMSP
 from BRAINSCleanMask import BRAINSCleanMask
