@@ -18,7 +18,7 @@
 #################################################################################
 """Import necessary modules from nipype."""
 from nipype.interfaces.base import CommandLine, CommandLineInputSpec, TraitedSpec, File, Directory, traits, isdefined, BaseInterface
-from nipype.interfaces.utility import Merge, Split, Function, util
+from nipype.interfaces.utility import Merge, Split, Function, Rename
 
 import nipype.interfaces.io as nio           # Data i/o
 import nipype.pipeline.engine as pe          # pypeline engine
@@ -55,6 +55,11 @@ def extension(path):
     return splits[-1]
   else:
     return ""
+  
+def get_first_two(in_files):
+  if len(in_files)<2:
+    raise ValueError('Length of input list must be at least 2')
+  return in_files[0], in_files[1]
 
 def GetExtensionlessBaseName(filename):
   basename = os.path.basename(filename)
@@ -135,13 +140,12 @@ def WorkupT1T2(ScanDir, T1Images, T2Images, Version=110, InterpolationMode="Line
   # Run ACPC Detect on first T1 Image - Base Image
   ########################################################
   #HACK:  Only one input allowed here
-  T1_0 = pe.Node(interface=nio.DataGrabber( outfields=['T2_0_file','T1_0_file']) , name='T1_0')
+  T1_0 = pe.Node(interface=nio.DataGrabber( outfields=['T2_0_file','T1_0_file']) , name='T1T2_Raw_Inputs')
   T1_0.inputs.base_directory = os.path.dirname(T1NiftiImageList[0])
-  T1_0.inputs.template = os.path.basename(T1NiftiImageList[0])
-
-  T2_0 = pe.Node(interface=nio.DataGrabber( outfields=['T2_0_file']) , name='T2_0')
-  T2_0.inputs.base_directory = os.path.dirname(T2NiftiImageList[0])
-  T2_0.inputs.template = os.path.basename(T2NiftiImageList[0])
+  T1_0.inputs.template = '*'
+  T1_0.inputs.field_template = dict(T1_0_file=os.path.basename(T1NiftiImageList[0]),
+                                    T2_0_file=os.path.basename(T2NiftiImageList[0]))
+  T1_0.inputs.template_args =  dict(T1_0_file=[[]], T2_0_file=[[]]) #No template args to substitute
 
   ########################################################
   # Run ACPC Detect on First T1 Image
@@ -157,7 +161,7 @@ def WorkupT1T2(ScanDir, T1Images, T2Images, Version=110, InterpolationMode="Line
   BCD_T1_0.inputs.houghEyeDetectorMode = 1
   BCD_T1_0.inputs.acLowerBound = 80
   
-  #BCD_T1_0_ACPC=pe.Node(interface=util.Rename(format_string=Stage1ResultsDir + "/" + T1Basename + "_ACPC_InPlace.nii.gz"),name='BCD_T1_0_ACPC')
+  #BCD_T1_0_ACPC=pe.Node(interface=Rename(format_string=Stage1ResultsDir + "/" + T1Basename + "_ACPC_InPlace.nii.gz"),name='BCD_T1_0_ACPC')
   #(BCD_T1_0,BCD_T1_0_ACPC, [('outputVolume', 'in_file')])
   
   # Entries below are of the form:
@@ -175,7 +179,7 @@ def WorkupT1T2(ScanDir, T1Images, T2Images, Version=110, InterpolationMode="Line
   
   baw200.connect([
     (BCD_T1_0,MergeT1T2,[('outputVolume','in1')]),
-    (T2_0,MergeT1T2,[('T2_0_file','in2')])
+    (T1_0,MergeT1T2,[('T2_0_file','in2')])
   ])
   
   BAtlas = MakeAtlasNode() ## Call function to create node
@@ -192,6 +196,7 @@ def WorkupT1T2(ScanDir, T1Images, T2Images, Version=110, InterpolationMode="Line
   BABC.inputs.outputLabels = "labels.nii.gz"
   BABC.inputs.outputDirtyLabels = "DirtyLabels.nii.gz"
   BABC.inputs.posteriorTemplate = "POSTERIOR_%s.nii.gz"
+  BABC.inputs.atlasToSubjectTransform = "atlas_to_subject.mat"
   
   BABC.inputs.resamplerInterpolatorType = InterpolationMode
   ##
@@ -204,20 +209,7 @@ def WorkupT1T2(ScanDir, T1Images, T2Images, Version=110, InterpolationMode="Line
   ])
 
   """
-  SplitT1T2Corrected=pe.Node(interface=Split(),name="SplitT1T2Corrected")
-  SplitT1T2Corrected.inputs.splits = [ 1, 1 ]
- 
-  baw200.connect([
-    (BABC,SplitT1T2Corrected,[('outputVolumes','inlist')])
-  ])
-  """
-  
-  BMUSH=pe.Node(interface=BRAINSMush(),name="BMUSH")
-  BMUSH.inputs.outputVolume = "MushImage.nii.gz"
-  BMUSH.inputs.outputMask = "MushMask.nii.gz"
-  BMUSH.inputs.lowerThresholdFactor = 1.2
-  BMUSH.inputs.upperThresholdFactor = 0.55
-  
+  ##HACK: This can be one function with two returns.
   func = 'def split_outputs(listarg,index): return listarg[index]'
   
   firstArg=pe.Node(interface=Function(input_names=['listarg','index'], output_names=['value']),name="corrected_0")
@@ -226,12 +218,38 @@ def WorkupT1T2(ScanDir, T1Images, T2Images, Version=110, InterpolationMode="Line
   secondArg=pe.Node(interface=Function(input_names=['listarg','index'], output_names=['value']),name="corrected_1")
   secondArg.inputs.function_str = func
   secondArg.inputs.index = 1
+  """
+  bfc_files = pe.Node(Function(input_names=['in_files'],    
+                             output_names=['t1_corrected','t2_corrected'], 
+                             function=get_first_two), 
+                    name='bfc_files')
   
-  baw200.connect(BABC,'outputVolumes',firstArg,'listarg')
-  baw200.connect(BABC,'outputVolumes',secondArg,'listarg')
+  baw200.connect(BABC,'outputVolumes',bfc_files,'in_files')
   
-  baw200.connect(firstArg,'value',BMUSH,'inputFirstVolume')
-  baw200.connect(secondArg,'value',BMUSH,'inputSecondVolume')
+  """
+  SplitT1T2Corrected=pe.Node(interface=Split(),name="SplitT1T2Corrected")
+  SplitT1T2Corrected.inputs.splits = [ 1, 1 ]
+ 
+  baw200.connect([
+    (BABC,SplitT1T2Corrected,[('outputVolumes','inlist')])
+  ])
+  """
+  ResampleAtlasNACLabels=pe.Node(interface=BRAINSResample(),name="ResampleAtlasNACLabels")
+  ResampleAtlasNACLabels.inputs.interpolationMode = "NearestNeighbor"
+  ResampleAtlasNACLabels.inputs.outputVolume = "atlasToSubjectNACLabels.nii.gz"
+  
+  baw200.connect(BABC,'atlasToSubjectTransform',ResampleAtlasNACLabels,'warpTransform')
+  baw200.connect(bfc_files,'t1_corrected',ResampleAtlasNACLabels,'referenceVolume')
+  baw200.connect(BAtlas,'template_nac_lables',ResampleAtlasNACLabels,'inputVolume')
+  
+  BMUSH=pe.Node(interface=BRAINSMush(),name="BMUSH")
+  BMUSH.inputs.outputVolume = "MushImage.nii.gz"
+  BMUSH.inputs.outputMask = "MushMask.nii.gz"
+  BMUSH.inputs.lowerThresholdFactor = 1.2
+  BMUSH.inputs.upperThresholdFactor = 0.55
+  
+  baw200.connect(bfc_files,'t1_corrected',BMUSH,'inputFirstVolume')
+  baw200.connect(bfc_files,'t2_corrected',BMUSH,'inputSecondVolume')
   baw200.connect(BABC,'outputLabels',BMUSH,'inputMaskVolume')
   
   """
