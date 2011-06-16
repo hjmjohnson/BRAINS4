@@ -3,7 +3,7 @@ import os
 
 class BRAINSInitilizedControlPointsInputSpec(CommandLineInputSpec):
     inputVolume = File( exists = True,argstr = "--inputVolume %s")
-    outputVolume = traits.Either(traits.Bool, File(), argstr = "--outputVolume %s")
+    outputVolume = traits.Either(traits.Bool, File(), hash_files = False,argstr = "--outputVolume %s")
     splineGridSize = InputMultiPath(traits.Int, sep = ",",argstr = "--splineGridSize %s")
     permuteOrder = InputMultiPath(traits.Int, sep = ",",argstr = "--permuteOrder %s")
     outputLandmarksFile = traits.Str( argstr = "--outputLandmarksFile %s")

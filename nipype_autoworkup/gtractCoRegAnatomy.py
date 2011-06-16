@@ -6,7 +6,7 @@ class gtractCoRegAnatomyInputSpec(CommandLineInputSpec):
     inputAnatomicalVolume = File( exists = True,argstr = "--inputAnatomicalVolume %s")
     vectorIndex = traits.Int( argstr = "--vectorIndex %d")
     inputRigidTransform = File( exists = True,argstr = "--inputRigidTransform %s")
-    outputTransformName = traits.Either(traits.Bool, File(), argstr = "--outputTransformName %s")
+    outputTransformName = traits.Either(traits.Bool, File(), hash_files = False,argstr = "--outputTransformName %s")
     transformType = traits.Enum("Rigid","Bspline", argstr = "--transformType %s")
     numberOfIterations = traits.Int( argstr = "--numberOfIterations %d")
     gridSize = InputMultiPath(traits.Int, sep = ",",argstr = "--gridSize %s")

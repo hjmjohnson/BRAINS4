@@ -8,20 +8,20 @@ class BRAINSConstellationDetectorInputSpec(CommandLineInputSpec):
     inputEPCAModelMat = File( exists = True,argstr = "--inputEPCAModelMat %s")
     inputEPCAModelTxt = File( exists = True,argstr = "--inputEPCAModelTxt %s")
     inputVolume = File( exists = True,argstr = "--inputVolume %s")
-    outputVolume = traits.Either(traits.Bool, File(), argstr = "--outputVolume %s")
-    outputResampledVolume = traits.Either(traits.Bool, File(), argstr = "--outputResampledVolume %s")
-    outputTransform = traits.Either(traits.Bool, File(), argstr = "--outputTransform %s")
-    outputLandmarksInInputSpace = traits.Either(traits.Bool, File(), argstr = "--outputLandmarksInInputSpace %s")
-    outputLandmarksInACPCAlignedSpace = traits.Either(traits.Bool, File(), argstr = "--outputLandmarksInACPCAlignedSpace %s")
+    outputVolume = traits.Either(traits.Bool, File(), hash_files = False,argstr = "--outputVolume %s")
+    outputResampledVolume = traits.Either(traits.Bool, File(), hash_files = False,argstr = "--outputResampledVolume %s")
+    outputTransform = traits.Either(traits.Bool, File(), hash_files = False,argstr = "--outputTransform %s")
+    outputLandmarksInInputSpace = traits.Either(traits.Bool, File(), hash_files = False,argstr = "--outputLandmarksInInputSpace %s")
+    outputLandmarksInACPCAlignedSpace = traits.Either(traits.Bool, File(), hash_files = False,argstr = "--outputLandmarksInACPCAlignedSpace %s")
     inputLandmarksPaired = File( exists = True,argstr = "--inputLandmarksPaired %s")
-    outputLandmarksPaired = traits.Either(traits.Bool, File(), argstr = "--outputLandmarksPaired %s")
-    outputMRML = traits.Either(traits.Bool, File(), argstr = "--outputMRML %s")
-    outputVerificationScript = traits.Either(traits.Bool, File(), argstr = "--outputVerificationScript %s")
+    outputLandmarksPaired = traits.Either(traits.Bool, File(), hash_files = False,argstr = "--outputLandmarksPaired %s")
+    outputMRML = traits.Either(traits.Bool, File(), hash_files = False,argstr = "--outputMRML %s")
+    outputVerificationScript = traits.Either(traits.Bool, File(), hash_files = False,argstr = "--outputVerificationScript %s")
     mspQualityLevel = traits.Int( argstr = "--mspQualityLevel %d")
     otsuPercentileThreshold = traits.Float( argstr = "--otsuPercentileThreshold %f")
     acLowerBound = traits.Float( argstr = "--acLowerBound %f")
     cutOutHeadInOutputVolume = traits.Bool( argstr = "--cutOutHeadInOutputVolume ")
-    outputUntransformedClippedVolume = traits.Either(traits.Bool, File(), argstr = "--outputUntransformedClippedVolume %s")
+    outputUntransformedClippedVolume = traits.Either(traits.Bool, File(), hash_files = False,argstr = "--outputUntransformedClippedVolume %s")
     rescaleIntensities = traits.Bool( argstr = "--rescaleIntensities ")
     trimRescaledIntensities = traits.Float( argstr = "--trimRescaledIntensities %f")
     rescaleIntensitiesOutputRange = InputMultiPath(traits.Int, sep = ",",argstr = "--rescaleIntensitiesOutputRange %s")
@@ -39,8 +39,8 @@ class BRAINSConstellationDetectorInputSpec(CommandLineInputSpec):
     radiusVN4 = traits.Float( argstr = "--rVN4 %f")
     debug = traits.Bool( argstr = "--debug ")
     verbose = traits.Bool( argstr = "--verbose ")
-    writeBranded2DImage = traits.Either(traits.Bool, File(), argstr = "--writeBranded2DImage %s")
-    resultsDir = traits.Either(traits.Bool, File(), argstr = "--resultsDir %s")
+    writeBranded2DImage = traits.Either(traits.Bool, File(), hash_files = False,argstr = "--writeBranded2DImage %s")
+    resultsDir = traits.Either(traits.Bool, File(), hash_files = False,argstr = "--resultsDir %s")
     writedebuggingImagesLevel = traits.Int( argstr = "--writedebuggingImagesLevel %d")
 
 
@@ -63,7 +63,7 @@ class BRAINSConstellationDetector(CommandLine):
     input_spec = BRAINSConstellationDetectorInputSpec
     output_spec = BRAINSConstellationDetectorOutputSpec
     _cmd = " BRAINSConstellationDetector "
-    _outputs_filenames = {'outputVolume':'outputVolume.nii.gz','outputResampledVolume':'outputResampledVolume.nii.gz','outputMRML':'outputMRML.mrml','outputLandmarksPaired':'outputLandmarksPaired.fcsv','resultsDir':'resultsDir','outputTransform':'outputTransform.mat','writeBranded2DImage':'writeBranded2DImage.png','outputLandmarksInACPCAlignedSpace':'outputLandmarksInACPCAlignedSpace.fcsv','outputLandmarksInInputSpace':'outputLandmarksInInputSpace.fcsv','outputUntransformedClippedVolume':'outputUntransformedClippedVolume.nii.gz','outputVerificationScript':'outputVerificationScript.sh'}
+    _outputs_filenames = {'outputVolume':'outputVolume.nii','outputResampledVolume':'outputResampledVolume.nii','outputMRML':'outputMRML','outputLandmarksPaired':'outputLandmarksPaired','resultsDir':'resultsDir','outputTransform':'outputTransform.mat','writeBranded2DImage':'writeBranded2DImage','outputLandmarksInACPCAlignedSpace':'outputLandmarksInACPCAlignedSpace','outputLandmarksInInputSpace':'outputLandmarksInInputSpace','outputUntransformedClippedVolume':'outputUntransformedClippedVolume.nii','outputVerificationScript':'outputVerificationScript'}
 
     def _list_outputs(self):
         outputs = self.output_spec().get()

@@ -4,10 +4,10 @@ import os
 class BRAINSLmkTransformInputSpec(CommandLineInputSpec):
     inputMovingLandmarks = File( exists = True,argstr = "--inputMovingLandmarks %s")
     inputFixedLandmarks = File( exists = True,argstr = "--inputFixedLandmarks %s")
-    outputAffineTransform = traits.Either(traits.Bool, File(), argstr = "--outputAffineTransform %s")
+    outputAffineTransform = traits.Either(traits.Bool, File(), hash_files = False,argstr = "--outputAffineTransform %s")
     inputMovingVolume = File( exists = True,argstr = "--inputMovingVolume %s")
     inputReferenceVolume = File( exists = True,argstr = "--inputReferenceVolume %s")
-    outputResampledVolume = traits.Either(traits.Bool, File(), argstr = "--outputResampledVolume %s")
+    outputResampledVolume = traits.Either(traits.Bool, File(), hash_files = False,argstr = "--outputResampledVolume %s")
 
 
 class BRAINSLmkTransformOutputSpec(TraitedSpec):

@@ -3,7 +3,7 @@ import os
 
 class gtractInvertRigidTransformInputSpec(CommandLineInputSpec):
     inputTransform = File( exists = True,argstr = "--inputTransform %s")
-    outputTransform = traits.Either(traits.Bool, File(), argstr = "--outputTransform %s")
+    outputTransform = traits.Either(traits.Bool, File(), hash_files = False,argstr = "--outputTransform %s")
 
 
 class gtractInvertRigidTransformOutputSpec(TraitedSpec):

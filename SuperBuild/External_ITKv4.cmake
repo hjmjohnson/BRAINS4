@@ -24,7 +24,8 @@ if(NOT DEFINED ITK_DIR)
   set(proj ITK)  ## Use ITKv4 convention of calling it ITK
   set(ITK_REPOSITORY git://itk.org/ITK.git)
   set(ITK_DIR ${CMAKE_INSTALL_PREFIX}/lib/cmake/ITK-4.0)
-  set(ITK_TAG_COMMAND GIT_TAG 0d025b7545894990b03c478e3165e2461f56a2a4)
+  #  set(ITK_TAG_COMMAND GIT_TAG 0d025b7545894990b03c478e3165e2461f56a2a4)
+  set(ITK_TAG_COMMAND GIT_TAG 0dad9c659e0f8e249b7a7a236613613ce265b0d9)
   set(WrapITK_DIR ${CMAKE_INSTALL_PREFIX}/lib/cmake/ITK-4.0/WrapITK)
   message(STATUS "ITK_WRAPPING=${ITK_WRAPPING}")
   ExternalProject_Add(${proj}

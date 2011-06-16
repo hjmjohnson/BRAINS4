@@ -4,7 +4,7 @@ import os
 class gtractCopyImageOrientationInputSpec(CommandLineInputSpec):
     inputVolume = File( exists = True,argstr = "--inputVolume %s")
     inputReferenceVolume = File( exists = True,argstr = "--inputReferenceVolume %s")
-    outputVolume = traits.Either(traits.Bool, File(), argstr = "--outputVolume %s")
+    outputVolume = traits.Either(traits.Bool, File(), hash_files = False,argstr = "--outputVolume %s")
 
 
 class gtractCopyImageOrientationOutputSpec(TraitedSpec):

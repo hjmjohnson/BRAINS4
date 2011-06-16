@@ -3,7 +3,7 @@ import os
 
 class gtractConcatDwiInputSpec(CommandLineInputSpec):
     inputVolume = InputMultiPath(File(exists=True), argstr = "--inputVolume %s...")
-    outputVolume = traits.Either(traits.Bool, File(), argstr = "--outputVolume %s")
+    outputVolume = traits.Either(traits.Bool, File(), hash_files = False,argstr = "--outputVolume %s")
 
 
 class gtractConcatDwiOutputSpec(TraitedSpec):

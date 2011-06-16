@@ -4,7 +4,7 @@ import os
 class HistogramMatchingFilterInputSpec(CommandLineInputSpec):
     inputVolume = File( exists = True,argstr = "--inputVolume %s")
     referenceVolume = File( exists = True,argstr = "--referenceVolume %s")
-    outputVolume = traits.Either(traits.Bool, File(), argstr = "--outputVolume %s")
+    outputVolume = traits.Either(traits.Bool, File(), hash_files = False,argstr = "--outputVolume %s")
     referenceBinaryVolume = File( exists = True,argstr = "--referenceBinaryVolume %s")
     inputBinaryVolume = File( exists = True,argstr = "--inputBinaryVolume %s")
     numberOfMatchPoints = traits.Int( argstr = "--numberOfMatchPoints %d")

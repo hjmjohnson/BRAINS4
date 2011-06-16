@@ -5,9 +5,9 @@ class BRAINSMushInputSpec(CommandLineInputSpec):
     inputFirstVolume = File( exists = True,argstr = "--inputFirstVolume %s")
     inputSecondVolume = File( exists = True,argstr = "--inputSecondVolume %s")
     inputMaskVolume = File( exists = True,argstr = "--inputMaskVolume %s")
-    outputWeightsFile = traits.Either(traits.Bool, File(), argstr = "--outputWeightsFile %s")
-    outputVolume = traits.Either(traits.Bool, File(), argstr = "--outputVolume %s")
-    outputMask = traits.Either(traits.Bool, File(), argstr = "--outputMask %s")
+    outputWeightsFile = traits.Either(traits.Bool, File(), hash_files = False,argstr = "--outputWeightsFile %s")
+    outputVolume = traits.Either(traits.Bool, File(), hash_files = False,argstr = "--outputVolume %s")
+    outputMask = traits.Either(traits.Bool, File(), hash_files = False,argstr = "--outputMask %s")
     seed = InputMultiPath(traits.Int, sep = ",",argstr = "--seed %s")
     desiredMean = traits.Float( argstr = "--desiredMean %f")
     desiredVariance = traits.Float( argstr = "--desiredVariance %f")
@@ -30,7 +30,7 @@ class BRAINSMush(CommandLine):
     input_spec = BRAINSMushInputSpec
     output_spec = BRAINSMushOutputSpec
     _cmd = " BRAINSMush "
-    _outputs_filenames = {'outputMask':'outputMask.nii.gz','outputWeightsFile':'outputWeightsFile.txt','outputVolume':'outputVolume.nii.gz'}
+    _outputs_filenames = {'outputMask':'outputMask.nii','outputWeightsFile':'outputWeightsFile','outputVolume':'outputVolume.nii'}
 
     def _list_outputs(self):
         outputs = self.output_spec().get()

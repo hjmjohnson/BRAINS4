@@ -3,9 +3,9 @@ import os
 
 class BRAINSAlignMSPInputSpec(CommandLineInputSpec):
     inputVolume = File( exists = True,argstr = "--inputVolume %s")
-    resampleMSP = traits.Either(traits.Bool, File(), argstr = "--OutputresampleMSP %s")
+    resampleMSP = traits.Either(traits.Bool, File(), hash_files = False,argstr = "--OutputresampleMSP %s")
     verbose = traits.Bool( argstr = "--verbose ")
-    resultsDir = traits.Either(traits.Bool, File(), argstr = "--resultsDir %s")
+    resultsDir = traits.Either(traits.Bool, File(), hash_files = False,argstr = "--resultsDir %s")
     writedebuggingImagesLevel = traits.Int( argstr = "--writedebuggingImagesLevel %d")
     mspQualityLevel = traits.Int( argstr = "--mspQualityLevel %d")
     rescaleIntensities = traits.Bool( argstr = "--rescaleIntensities ")
@@ -25,7 +25,7 @@ class BRAINSAlignMSP(CommandLine):
     input_spec = BRAINSAlignMSPInputSpec
     output_spec = BRAINSAlignMSPOutputSpec
     _cmd = " BRAINSAlignMSP "
-    _outputs_filenames = {'resampleMSP':'resampleMSP.nii','resultsDir':'resultsDir'}
+    _outputs_filenames = {'resampleMSP':'resampleMSP','resultsDir':'resultsDir'}
 
     def _list_outputs(self):
         outputs = self.output_spec().get()

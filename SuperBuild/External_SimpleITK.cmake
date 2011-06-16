@@ -22,7 +22,8 @@ ExternalProject_add(SimpleITK
   SOURCE_DIR SimpleITK
   BINARY_DIR SimpleITK-build
   GIT_REPOSITORY https://github.com/hjmjohnson/SimpleITK.git
-  GIT_TAG NeverBranchFromThisTest
+  #  GIT_TAG NeverBranchFromThisTest
+  GIT_TAG 20110613_next
   #GIT_TAG master
   UPDATE_COMMAND ""
   CMAKE_ARGS
@@ -33,7 +34,7 @@ ExternalProject_add(SimpleITK
   -DITK_DIR:PATH=${ITK_DIR}
   -DBUILD_EXAMPLES:BOOL=ON
   -DBUILD_TESTING:BOOL=ON
-  -DBUILD_DOXYGEN:BOOL=ON
+  -DBUILD_DOXYGEN:BOOL=OFF
   -DWRAP_PYTHON:BOOL=ON
   -DWRAP_TCL:BOOL=OFF
   -DWRAP_JAVA:BOOL=OFF

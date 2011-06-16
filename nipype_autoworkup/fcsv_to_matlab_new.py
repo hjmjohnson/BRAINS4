@@ -2,8 +2,8 @@ from nipype.interfaces.base import CommandLine, CommandLineInputSpec, TraitedSpe
 import os
 
 class fcsv_to_matlab_newInputSpec(CommandLineInputSpec):
-    outputFile = traits.Either(traits.Bool, File(), argstr = "--outputMatlabFile %s")
-    landmarkTypesFile = traits.Either(traits.Bool, File(), argstr = "--landmarkTypesFile %s")
+    outputFile = traits.Either(traits.Bool, File(), hash_files = False,argstr = "--outputMatlabFile %s")
+    landmarkTypesFile = traits.Either(traits.Bool, File(), hash_files = False,argstr = "--landmarkTypesFile %s")
     landmarkGlobPattern = traits.Str( argstr = "--landmarkGlobPattern %s")
 
 
@@ -17,7 +17,7 @@ class fcsv_to_matlab_new(CommandLine):
     input_spec = fcsv_to_matlab_newInputSpec
     output_spec = fcsv_to_matlab_newOutputSpec
     _cmd = " fcsv_to_matlab_new "
-    _outputs_filenames = {'outputFile':'outputFile.hdf5','landmarkTypesFile':'landmarkTypesFile.txt'}
+    _outputs_filenames = {'outputFile':'outputFile','landmarkTypesFile':'landmarkTypesFile'}
 
     def _list_outputs(self):
         outputs = self.output_spec().get()

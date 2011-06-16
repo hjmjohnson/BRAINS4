@@ -5,7 +5,7 @@ class extractNrrdVectorIndexInputSpec(CommandLineInputSpec):
     inputVolume = File( exists = True,argstr = "--inputVolume %s")
     vectorIndex = traits.Int( argstr = "--vectorIndex %d")
     setImageOrientation = traits.Enum("AsAcquired","Axial","Coronal","Sagittal", argstr = "--setImageOrientation %s")
-    outputVolume = traits.Either(traits.Bool, File(), argstr = "--outputVolume %s")
+    outputVolume = traits.Either(traits.Bool, File(), hash_files = False,argstr = "--outputVolume %s")
 
 
 class extractNrrdVectorIndexOutputSpec(TraitedSpec):

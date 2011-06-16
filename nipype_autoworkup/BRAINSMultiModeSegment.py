@@ -4,8 +4,8 @@ import os
 class BRAINSMultiModeSegmentInputSpec(CommandLineInputSpec):
     inputVolumes = InputMultiPath(File(exists=True), argstr = "--inputVolumes %s...")
     inputMaskVolume = File( exists = True,argstr = "--inputMaskVolume %s")
-    outputROIMaskVolume = traits.Either(traits.Bool, File(), argstr = "--outputROIMaskVolume %s")
-    outputClippedVolumeROI = traits.Either(traits.Bool, File(), argstr = "--outputClippedVolumeROI %s")
+    outputROIMaskVolume = traits.Either(traits.Bool, File(), hash_files = False,argstr = "--outputROIMaskVolume %s")
+    outputClippedVolumeROI = traits.Either(traits.Bool, File(), hash_files = False,argstr = "--outputClippedVolumeROI %s")
     lowerThreshold = InputMultiPath(traits.Float, sep = ",",argstr = "--lowerThreshold %s")
     upperThreshold = InputMultiPath(traits.Float, sep = ",",argstr = "--upperThreshold %s")
 

@@ -4,10 +4,10 @@ import os
 class BRAINSConstellationModelerInputSpec(CommandLineInputSpec):
     verbose = traits.Bool( argstr = "--verbose ")
     inputTrainingList = File( exists = True,argstr = "--inputTrainingList %s")
-    outputModel = traits.Either(traits.Bool, File(), argstr = "--outputModel %s")
+    outputModel = traits.Either(traits.Bool, File(), hash_files = False,argstr = "--outputModel %s")
     saveOptimizedLandmarks = traits.Bool( argstr = "--saveOptimizedLandmarks ")
     optimizedLandmarksFilenameExtender = traits.Str( argstr = "--optimizedLandmarksFilenameExtender %s")
-    resultsDir = traits.Either(traits.Bool, File(), argstr = "--resultsDir %s")
+    resultsDir = traits.Either(traits.Bool, File(), hash_files = False,argstr = "--resultsDir %s")
     mspQualityLevel = traits.Int( argstr = "--mspQualityLevel %d")
     rescaleIntensities = traits.Bool( argstr = "--rescaleIntensities ")
     trimRescaledIntensities = traits.Float( argstr = "--trimRescaledIntensities %f")
@@ -26,7 +26,7 @@ class BRAINSConstellationModeler(CommandLine):
     input_spec = BRAINSConstellationModelerInputSpec
     output_spec = BRAINSConstellationModelerOutputSpec
     _cmd = " BRAINSConstellationModeler "
-    _outputs_filenames = {'outputModel':'outputModel.mdl','resultsDir':'resultsDir'}
+    _outputs_filenames = {'outputModel':'outputModel','resultsDir':'resultsDir'}
 
     def _list_outputs(self):
         outputs = self.output_spec().get()

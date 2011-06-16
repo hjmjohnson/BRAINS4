@@ -3,7 +3,7 @@ import os
 
 class BRAINSTrimForegroundInDirectionInputSpec(CommandLineInputSpec):
     inputVolume = File( exists = True,argstr = "--inputVolume %s")
-    outputVolume = traits.Either(traits.Bool, File(), argstr = "--outputVolume %s")
+    outputVolume = traits.Either(traits.Bool, File(), hash_files = False,argstr = "--outputVolume %s")
     directionCode = traits.Int( argstr = "--directionCode %d")
     otsuPercentileThreshold = traits.Float( argstr = "--otsuPercentileThreshold %f")
     closingSize = traits.Int( argstr = "--closingSize %d")

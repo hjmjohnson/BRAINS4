@@ -4,7 +4,7 @@ import os
 class gtractTransformToDeformationFieldInputSpec(CommandLineInputSpec):
     inputTransform = File( exists = True,argstr = "--inputTransform %s")
     inputReferenceVolume = File( exists = True,argstr = "--inputReferenceVolume %s")
-    outputDeformationFieldVolume = traits.Either(traits.Bool, File(), argstr = "--outputDeformationFieldVolume %s")
+    outputDeformationFieldVolume = traits.Either(traits.Bool, File(), hash_files = False,argstr = "--outputDeformationFieldVolume %s")
 
 
 class gtractTransformToDeformationFieldOutputSpec(TraitedSpec):

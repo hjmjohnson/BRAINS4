@@ -6,7 +6,7 @@ class gtractResampleAnisotropyInputSpec(CommandLineInputSpec):
     inputAnatomicalVolume = File( exists = True,argstr = "--inputAnatomicalVolume %s")
     inputTransform = File( exists = True,argstr = "--inputTransform %s")
     transformType = traits.Enum("Rigid","B-Spline", argstr = "--transformType %s")
-    outputVolume = traits.Either(traits.Bool, File(), argstr = "--outputVolume %s")
+    outputVolume = traits.Either(traits.Bool, File(), hash_files = False,argstr = "--outputVolume %s")
 
 
 class gtractResampleAnisotropyOutputSpec(TraitedSpec):

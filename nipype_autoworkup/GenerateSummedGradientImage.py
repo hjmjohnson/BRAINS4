@@ -4,7 +4,7 @@ import os
 class GenerateSummedGradientImageInputSpec(CommandLineInputSpec):
     inputVolume1 = File( exists = True,argstr = "--inputVolume1 %s")
     inputVolume2 = File( exists = True,argstr = "--inputVolume2 %s")
-    outputFileName = traits.Either(traits.Bool, File(), argstr = "--outputFileName %s")
+    outputFileName = traits.Either(traits.Bool, File(), hash_files = False,argstr = "--outputFileName %s")
     MaximumGradient = traits.Bool( argstr = "--MaximumGradient ")
 
 

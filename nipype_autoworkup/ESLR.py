@@ -3,7 +3,7 @@ import os
 
 class ESLRInputSpec(CommandLineInputSpec):
     inputVolume = File( exists = True,argstr = "--inputVolume %s")
-    outputVolume = traits.Either(traits.Bool, File(), argstr = "--outputVolume %s")
+    outputVolume = traits.Either(traits.Bool, File(), hash_files = False,argstr = "--outputVolume %s")
     low = traits.Int( argstr = "--low %d")
     high = traits.Int( argstr = "--high %d")
     closingSize = traits.Int( argstr = "--closingSize %d")
@@ -21,7 +21,7 @@ class ESLR(CommandLine):
     input_spec = ESLRInputSpec
     output_spec = ESLROutputSpec
     _cmd = " ESLR "
-    _outputs_filenames = {'outputVolume':'outputVolume.nii.gz'}
+    _outputs_filenames = {'outputVolume':'outputVolume.nii'}
 
     def _list_outputs(self):
         outputs = self.output_spec().get()

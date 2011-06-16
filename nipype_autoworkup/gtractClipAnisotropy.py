@@ -3,7 +3,7 @@ import os
 
 class gtractClipAnisotropyInputSpec(CommandLineInputSpec):
     inputVolume = File( exists = True,argstr = "--inputVolume %s")
-    outputVolume = traits.Either(traits.Bool, File(), argstr = "--outputVolume %s")
+    outputVolume = traits.Either(traits.Bool, File(), hash_files = False,argstr = "--outputVolume %s")
     clipFirstSlice = traits.Bool( argstr = "--clipFirstSlice ")
     clipLastSlice = traits.Bool( argstr = "--clipLastSlice ")
 

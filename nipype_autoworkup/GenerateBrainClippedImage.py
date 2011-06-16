@@ -4,7 +4,7 @@ import os
 class GenerateBrainClippedImageInputSpec(CommandLineInputSpec):
     inputImg = File( exists = True,argstr = "--inputImg %s")
     inputMsk = File( exists = True,argstr = "--inputMsk %s")
-    outputFileName = traits.Either(traits.Bool, File(), argstr = "--outputFileName %s")
+    outputFileName = traits.Either(traits.Bool, File(), hash_files = False,argstr = "--outputFileName %s")
 
 
 class GenerateBrainClippedImageOutputSpec(TraitedSpec):

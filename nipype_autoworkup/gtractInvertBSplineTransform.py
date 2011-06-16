@@ -4,7 +4,7 @@ import os
 class gtractInvertBSplineTransformInputSpec(CommandLineInputSpec):
     inputReferenceVolume = File( exists = True,argstr = "--inputReferenceVolume %s")
     inputTransform = File( exists = True,argstr = "--inputTransform %s")
-    outputTransform = traits.Either(traits.Bool, File(), argstr = "--outputTransform %s")
+    outputTransform = traits.Either(traits.Bool, File(), hash_files = False,argstr = "--outputTransform %s")
     landmarkDensity = InputMultiPath(traits.Int, sep = ",",argstr = "--landmarkDensity %s")
 
 

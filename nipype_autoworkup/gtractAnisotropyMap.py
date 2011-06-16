@@ -4,7 +4,7 @@ import os
 class gtractAnisotropyMapInputSpec(CommandLineInputSpec):
     inputTensorVolume = File( exists = True,argstr = "--inputTensorVolume %s")
     anisotropyType = traits.Enum("ADC","FA","RA","VR","AD","RD","LI", argstr = "--anisotropyType %s")
-    outputVolume = traits.Either(traits.Bool, File(), argstr = "--outputVolume %s")
+    outputVolume = traits.Either(traits.Bool, File(), hash_files = False,argstr = "--outputVolume %s")
 
 
 class gtractAnisotropyMapOutputSpec(TraitedSpec):

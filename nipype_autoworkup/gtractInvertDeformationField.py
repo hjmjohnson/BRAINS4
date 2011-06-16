@@ -4,7 +4,7 @@ import os
 class gtractInvertDeformationFieldInputSpec(CommandLineInputSpec):
     baseImage = File( exists = True,argstr = "--baseImage %s")
     deformationImage = File( exists = True,argstr = "--deformationImage %s")
-    outputVolume = traits.Either(traits.Bool, File(), argstr = "--outputVolume %s")
+    outputVolume = traits.Either(traits.Bool, File(), hash_files = False,argstr = "--outputVolume %s")
     subsamplingFactor = traits.Int( argstr = "--subsamplingFactor %d")
 
 

@@ -3,7 +3,7 @@ import os
 
 class gtractAverageBvaluesInputSpec(CommandLineInputSpec):
     inputVolume = File( exists = True,argstr = "--inputVolume %s")
-    outputVolume = traits.Either(traits.Bool, File(), argstr = "--outputVolume %s")
+    outputVolume = traits.Either(traits.Bool, File(), hash_files = False,argstr = "--outputVolume %s")
     directionsTolerance = traits.Float( argstr = "--directionsTolerance %f")
     averageB0only = traits.Bool( argstr = "--averageB0only ")
 
