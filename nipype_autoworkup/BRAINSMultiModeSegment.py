@@ -8,6 +8,7 @@ class BRAINSMultiModeSegmentInputSpec(CommandLineInputSpec):
     outputClippedVolumeROI = traits.Either(traits.Bool, File(), hash_files = False,argstr = "--outputClippedVolumeROI %s")
     lowerThreshold = InputMultiPath(traits.Float, sep = ",",argstr = "--lowerThreshold %s")
     upperThreshold = InputMultiPath(traits.Float, sep = ",",argstr = "--upperThreshold %s")
+    numberOfThreads = traits.Int( argstr = "--numberOfThreads %d")
 
 
 class BRAINSMultiModeSegmentOutputSpec(TraitedSpec):

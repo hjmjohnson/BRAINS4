@@ -10,6 +10,7 @@ class BRAINSROIAutoInputSpec(CommandLineInputSpec):
     closingSize = traits.Float( argstr = "--closingSize %f")
     ROIAutoDilateSize = traits.Float( argstr = "--ROIAutoDilateSize %f")
     outputVolumePixelType = traits.Enum("float","short","ushort","int","uint","uchar", argstr = "--outputVolumePixelType %s")
+    numberOfThreads = traits.Int( argstr = "--numberOfThreads %d")
 
 
 class BRAINSROIAutoOutputSpec(TraitedSpec):

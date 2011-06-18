@@ -13,6 +13,7 @@ class BRAINSCutInputSpec(CommandLineInputSpec):
     trainModel = traits.Bool( argstr = "--trainModel ")
     applyModel = traits.Bool( argstr = "--applyModel ")
     validate = traits.Bool( argstr = "--validate ")
+    numberOfThreads = traits.Int( argstr = "--numberOfThreads %d")
 
 
 class BRAINSCutOutputSpec(TraitedSpec):

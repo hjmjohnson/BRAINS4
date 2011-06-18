@@ -352,8 +352,7 @@ list(APPEND ${CMAKE_PROJECT_NAME}_DEPENDENCIES ${GenerateCLP_DEPEND} NIPYPE)
 #------------------------------------------------------------------------------
 # OpenCV
 #------------------------------------------------------------------------------
-set(Build_OpenCV ON CACHE BOOL
-"Set ON to build OpenCV for use with BRAINSCut")
+set(Build_OpenCV ON CACHE BOOL "Set ON to build OpenCV for use with BRAINSCut")
 
 if(Build_OpenCV)
 include(External_OpenCV)

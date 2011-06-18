@@ -6,6 +6,7 @@ class gtractClipAnisotropyInputSpec(CommandLineInputSpec):
     outputVolume = traits.Either(traits.Bool, File(), hash_files = False,argstr = "--outputVolume %s")
     clipFirstSlice = traits.Bool( argstr = "--clipFirstSlice ")
     clipLastSlice = traits.Bool( argstr = "--clipLastSlice ")
+    numberOfThreads = traits.Int( argstr = "--numberOfThreads %d")
 
 
 class gtractClipAnisotropyOutputSpec(TraitedSpec):

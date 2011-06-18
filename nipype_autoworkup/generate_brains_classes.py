@@ -59,7 +59,8 @@ gtractTransformToDeformationField
 """
     SEM_exe=list()
     #exec_dir = '/scratch/src/BRAINS4-build/bin'
-    exec_dir = '/scratch/johnsonhj/src/BRAINS4-buld/bin'
+    #exec_dir = '/scratch/johnsonhj/src/BRAINS4-buld/bin'
+    exec_dir = '/Users/johnsonhj/src/BRAINS4-build/bin'
     for candidate_exe in test_list.split():
         test_command=exec_dir+"/"+candidate_exe+" --xml"
         xmlReturnValue = subprocess.Popen(test_command, stdout=subprocess.PIPE, shell=True).communicate()[0]

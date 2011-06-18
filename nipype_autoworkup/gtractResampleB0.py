@@ -8,6 +8,7 @@ class gtractResampleB0InputSpec(CommandLineInputSpec):
     vectorIndex = traits.Int( argstr = "--vectorIndex %d")
     transformType = traits.Enum("Rigid","B-Spline", argstr = "--transformType %s")
     outputVolume = traits.Either(traits.Bool, File(), hash_files = False,argstr = "--outputVolume %s")
+    numberOfThreads = traits.Int( argstr = "--numberOfThreads %d")
 
 
 class gtractResampleB0OutputSpec(TraitedSpec):

@@ -8,7 +8,6 @@ from BRAINSConstellationDetector import BRAINSConstellationDetector
 from BRAINSConstellationModeler import BRAINSConstellationModeler
 from BRAINSCut import BRAINSCut
 from BRAINSABC import BRAINSABC
-from BRAINSInitilizedControlPoints import BRAINSInitilizedControlPoints
 from BRAINSLinearModelerEPCA import BRAINSLinearModelerEPCA
 from BRAINSLmkTransform import BRAINSLmkTransform
 from BRAINSMultiModeSegment import BRAINSMultiModeSegment

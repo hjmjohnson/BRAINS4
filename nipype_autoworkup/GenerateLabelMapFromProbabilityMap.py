@@ -4,6 +4,7 @@ import os
 class GenerateLabelMapFromProbabilityMapInputSpec(CommandLineInputSpec):
     inputVolumes = InputMultiPath(File(exists=True), argstr = "--inputVolumes %s...")
     outputLabelVolume = File( exists = True,argstr = "--outputLabelVolume %s")
+    numberOfThreads = traits.Int( argstr = "--numberOfThreads %d")
 
 
 class GenerateLabelMapFromProbabilityMapOutputSpec(TraitedSpec):

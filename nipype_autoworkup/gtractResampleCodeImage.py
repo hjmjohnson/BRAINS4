@@ -7,6 +7,7 @@ class gtractResampleCodeImageInputSpec(CommandLineInputSpec):
     inputTransform = File( exists = True,argstr = "--inputTransform %s")
     transformType = traits.Enum("Rigid","Affine","B-Spline","Inverse-B-Spline","None", argstr = "--transformType %s")
     outputVolume = traits.Either(traits.Bool, File(), hash_files = False,argstr = "--outputVolume %s")
+    numberOfThreads = traits.Int( argstr = "--numberOfThreads %d")
 
 
 class gtractResampleCodeImageOutputSpec(TraitedSpec):

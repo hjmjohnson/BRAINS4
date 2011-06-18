@@ -6,6 +6,7 @@ class gtractAverageBvaluesInputSpec(CommandLineInputSpec):
     outputVolume = traits.Either(traits.Bool, File(), hash_files = False,argstr = "--outputVolume %s")
     directionsTolerance = traits.Float( argstr = "--directionsTolerance %f")
     averageB0only = traits.Bool( argstr = "--averageB0only ")
+    numberOfThreads = traits.Int( argstr = "--numberOfThreads %d")
 
 
 class gtractAverageBvaluesOutputSpec(TraitedSpec):

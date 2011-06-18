@@ -50,7 +50,7 @@ class BRAINSFitInputSpec(CommandLineInputSpec):
     maximumStepLength = traits.Float( argstr = "--maximumStepLength %f")
     failureExitCode = traits.Int( argstr = "--failureExitCode %d")
     writeTransformOnFailure = traits.Bool( argstr = "--writeTransformOnFailure ")
-    debugNumberOfThreads = traits.Int( argstr = "--debugNumberOfThreads %d")
+    numberOfThreads = traits.Int( argstr = "--numberOfThreads %d")
     debugLevel = traits.Int( argstr = "--debugLevel %d")
     costFunctionConvergenceFactor = traits.Float( argstr = "--costFunctionConvergenceFactor %f")
     projectedGradientTolerance = traits.Float( argstr = "--projectedGradientTolerance %f")

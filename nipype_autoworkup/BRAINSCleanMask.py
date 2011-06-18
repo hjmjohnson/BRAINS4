@@ -4,6 +4,7 @@ import os
 class BRAINSCleanMaskInputSpec(CommandLineInputSpec):
     inputVolume = File( exists = True,argstr = "--inputVolume %s")
     outputVolume = traits.Either(traits.Bool, File(), hash_files = False,argstr = "--outputVolume %s")
+    numberOfThreads = traits.Int( argstr = "--numberOfThreads %d")
 
 
 class BRAINSCleanMaskOutputSpec(TraitedSpec):
@@ -15,7 +16,7 @@ class BRAINSCleanMask(CommandLine):
     input_spec = BRAINSCleanMaskInputSpec
     output_spec = BRAINSCleanMaskOutputSpec
     _cmd = " BRAINSCleanMask "
-    _outputs_filenames = {'outputVolume':'outputVolume.nii'}
+    _outputs_filenames = {'outputVolume':'outputVolume.nii.gz'}
 
     def _list_outputs(self):
         outputs = self.output_spec().get()

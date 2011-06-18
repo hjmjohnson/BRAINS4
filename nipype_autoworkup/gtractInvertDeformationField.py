@@ -6,6 +6,7 @@ class gtractInvertDeformationFieldInputSpec(CommandLineInputSpec):
     deformationImage = File( exists = True,argstr = "--deformationImage %s")
     outputVolume = traits.Either(traits.Bool, File(), hash_files = False,argstr = "--outputVolume %s")
     subsamplingFactor = traits.Int( argstr = "--subsamplingFactor %d")
+    numberOfThreads = traits.Int( argstr = "--numberOfThreads %d")
 
 
 class gtractInvertDeformationFieldOutputSpec(TraitedSpec):

@@ -6,6 +6,7 @@ class extractNrrdVectorIndexInputSpec(CommandLineInputSpec):
     vectorIndex = traits.Int( argstr = "--vectorIndex %d")
     setImageOrientation = traits.Enum("AsAcquired","Axial","Coronal","Sagittal", argstr = "--setImageOrientation %s")
     outputVolume = traits.Either(traits.Bool, File(), hash_files = False,argstr = "--outputVolume %s")
+    numberOfThreads = traits.Int( argstr = "--numberOfThreads %d")
 
 
 class extractNrrdVectorIndexOutputSpec(TraitedSpec):

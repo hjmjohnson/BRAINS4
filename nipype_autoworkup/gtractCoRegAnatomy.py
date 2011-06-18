@@ -24,6 +24,7 @@ class gtractCoRegAnatomyInputSpec(CommandLineInputSpec):
     useMomentsAlign = traits.Bool( argstr = "--useMomentsAlign ")
     useGeometryAlign = traits.Bool( argstr = "--useGeometryAlign ")
     useCenterOfHeadAlign = traits.Bool( argstr = "--useCenterOfHeadAlign ")
+    numberOfThreads = traits.Int( argstr = "--numberOfThreads %d")
 
 
 class gtractCoRegAnatomyOutputSpec(TraitedSpec):

@@ -17,6 +17,7 @@ class BRAINSMushInputSpec(CommandLineInputSpec):
     upperThresholdFactor = traits.Float( argstr = "--upperThresholdFactor %f")
     boundingBoxSize = InputMultiPath(traits.Int, sep = ",",argstr = "--boundingBoxSize %s")
     boundingBoxStart = InputMultiPath(traits.Int, sep = ",",argstr = "--boundingBoxStart %s")
+    numberOfThreads = traits.Int( argstr = "--numberOfThreads %d")
 
 
 class BRAINSMushOutputSpec(TraitedSpec):
@@ -30,7 +31,7 @@ class BRAINSMush(CommandLine):
     input_spec = BRAINSMushInputSpec
     output_spec = BRAINSMushOutputSpec
     _cmd = " BRAINSMush "
-    _outputs_filenames = {'outputMask':'outputMask.nii','outputWeightsFile':'outputWeightsFile','outputVolume':'outputVolume.nii'}
+    _outputs_filenames = {'outputMask':'outputMask.nii.gz','outputWeightsFile':'outputWeightsFile.txt','outputVolume':'outputVolume.nii.gz'}
 
     def _list_outputs(self):
         outputs = self.output_spec().get()

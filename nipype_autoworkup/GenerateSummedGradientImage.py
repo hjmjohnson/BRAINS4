@@ -6,6 +6,7 @@ class GenerateSummedGradientImageInputSpec(CommandLineInputSpec):
     inputVolume2 = File( exists = True,argstr = "--inputVolume2 %s")
     outputFileName = traits.Either(traits.Bool, File(), hash_files = False,argstr = "--outputFileName %s")
     MaximumGradient = traits.Bool( argstr = "--MaximumGradient ")
+    numberOfThreads = traits.Int( argstr = "--numberOfThreads %d")
 
 
 class GenerateSummedGradientImageOutputSpec(TraitedSpec):

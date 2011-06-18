@@ -5,7 +5,7 @@ class BRAINSAlignMSPInputSpec(CommandLineInputSpec):
     inputVolume = File( exists = True,argstr = "--inputVolume %s")
     resampleMSP = traits.Either(traits.Bool, File(), hash_files = False,argstr = "--OutputresampleMSP %s")
     verbose = traits.Bool( argstr = "--verbose ")
-    resultsDir = traits.Either(traits.Bool, File(), hash_files = False,argstr = "--resultsDir %s")
+    resultsDir = traits.Either(traits.Bool, Directory(), hash_files = False,argstr = "--resultsDir %s")
     writedebuggingImagesLevel = traits.Int( argstr = "--writedebuggingImagesLevel %d")
     mspQualityLevel = traits.Int( argstr = "--mspQualityLevel %d")
     rescaleIntensities = traits.Bool( argstr = "--rescaleIntensities ")
@@ -17,7 +17,7 @@ class BRAINSAlignMSPInputSpec(CommandLineInputSpec):
 
 class BRAINSAlignMSPOutputSpec(TraitedSpec):
     resampleMSP = File( exists = True)
-    resultsDir = File( exists = True)
+    resultsDir = Directory( exists = True)
 
 
 class BRAINSAlignMSP(CommandLine):
@@ -25,7 +25,7 @@ class BRAINSAlignMSP(CommandLine):
     input_spec = BRAINSAlignMSPInputSpec
     output_spec = BRAINSAlignMSPOutputSpec
     _cmd = " BRAINSAlignMSP "
-    _outputs_filenames = {'resampleMSP':'resampleMSP','resultsDir':'resultsDir'}
+    _outputs_filenames = {'resampleMSP':'resampleMSP.nii','resultsDir':'resultsDir'}
 
     def _list_outputs(self):
         outputs = self.output_spec().get()

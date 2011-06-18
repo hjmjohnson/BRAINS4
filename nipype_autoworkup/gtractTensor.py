@@ -13,6 +13,7 @@ class gtractTensorInputSpec(CommandLineInputSpec):
     b0Index = traits.Int( argstr = "--b0Index %d")
     applyMeasurementFrame = traits.Bool( argstr = "--applyMeasurementFrame ")
     ignoreIndex = InputMultiPath(traits.Int, sep = ",",argstr = "--ignoreIndex %s")
+    numberOfThreads = traits.Int( argstr = "--numberOfThreads %d")
 
 
 class gtractTensorOutputSpec(TraitedSpec):

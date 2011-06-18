@@ -10,6 +10,7 @@ class ESLRInputSpec(CommandLineInputSpec):
     openingSize = traits.Int( argstr = "--openingSize %d")
     safetySize = traits.Int( argstr = "--safetySize %d")
     preserveOutside = traits.Bool( argstr = "--preserveOutside ")
+    numberOfThreads = traits.Int( argstr = "--numberOfThreads %d")
 
 
 class ESLROutputSpec(TraitedSpec):
@@ -21,7 +22,7 @@ class ESLR(CommandLine):
     input_spec = ESLRInputSpec
     output_spec = ESLROutputSpec
     _cmd = " ESLR "
-    _outputs_filenames = {'outputVolume':'outputVolume.nii'}
+    _outputs_filenames = {'outputVolume':'outputVolume.nii.gz'}
 
     def _list_outputs(self):
         outputs = self.output_spec().get()

@@ -5,6 +5,7 @@ class gtractImageConformityInputSpec(CommandLineInputSpec):
     inputVolume = File( exists = True,argstr = "--inputVolume %s")
     inputReferenceVolume = File( exists = True,argstr = "--inputReferenceVolume %s")
     outputVolume = traits.Either(traits.Bool, File(), hash_files = False,argstr = "--outputVolume %s")
+    numberOfThreads = traits.Int( argstr = "--numberOfThreads %d")
 
 
 class gtractImageConformityOutputSpec(TraitedSpec):

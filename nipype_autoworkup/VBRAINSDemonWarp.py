@@ -42,6 +42,7 @@ class VBRAINSDemonWarpInputSpec(CommandLineInputSpec):
     UseDebugImageViewer = traits.Bool( argstr = "--gui ")
     PromptAfterImageSend = traits.Bool( argstr = "--promptUser ")
     numberOfBCHApproximationTerms = traits.Int( argstr = "--numberOfBCHApproximationTerms %d")
+    numberOfThreads = traits.Int( argstr = "--numberOfThreads %d")
 
 
 class VBRAINSDemonWarpOutputSpec(TraitedSpec):

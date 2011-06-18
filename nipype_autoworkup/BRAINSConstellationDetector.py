@@ -40,7 +40,7 @@ class BRAINSConstellationDetectorInputSpec(CommandLineInputSpec):
     debug = traits.Bool( argstr = "--debug ")
     verbose = traits.Bool( argstr = "--verbose ")
     writeBranded2DImage = traits.Either(traits.Bool, File(), hash_files = False,argstr = "--writeBranded2DImage %s")
-    resultsDir = traits.Either(traits.Bool, File(), hash_files = False,argstr = "--resultsDir %s")
+    resultsDir = traits.Either(traits.Bool, Directory(), hash_files = False,argstr = "--resultsDir %s")
     writedebuggingImagesLevel = traits.Int( argstr = "--writedebuggingImagesLevel %d")
 
 
@@ -55,7 +55,7 @@ class BRAINSConstellationDetectorOutputSpec(TraitedSpec):
     outputVerificationScript = File( exists = True)
     outputUntransformedClippedVolume = File( exists = True)
     writeBranded2DImage = File( exists = True)
-    resultsDir = File( exists = True)
+    resultsDir = Directory( exists = True)
 
 
 class BRAINSConstellationDetector(CommandLine):
@@ -63,7 +63,7 @@ class BRAINSConstellationDetector(CommandLine):
     input_spec = BRAINSConstellationDetectorInputSpec
     output_spec = BRAINSConstellationDetectorOutputSpec
     _cmd = " BRAINSConstellationDetector "
-    _outputs_filenames = {'outputVolume':'outputVolume.nii','outputResampledVolume':'outputResampledVolume.nii','outputMRML':'outputMRML','outputLandmarksPaired':'outputLandmarksPaired','resultsDir':'resultsDir','outputTransform':'outputTransform.mat','writeBranded2DImage':'writeBranded2DImage','outputLandmarksInACPCAlignedSpace':'outputLandmarksInACPCAlignedSpace','outputLandmarksInInputSpace':'outputLandmarksInInputSpace','outputUntransformedClippedVolume':'outputUntransformedClippedVolume.nii','outputVerificationScript':'outputVerificationScript'}
+    _outputs_filenames = {'outputVolume':'outputVolume.nii.gz','outputResampledVolume':'outputResampledVolume.nii.gz','outputMRML':'outputMRML.mrml','outputLandmarksPaired':'outputLandmarksPaired.fcsv','resultsDir':'resultsDir','outputTransform':'outputTransform.mat','writeBranded2DImage':'writeBranded2DImage.png','outputLandmarksInACPCAlignedSpace':'outputLandmarksInACPCAlignedSpace.fcsv','outputLandmarksInInputSpace':'outputLandmarksInInputSpace.fcsv','outputUntransformedClippedVolume':'outputUntransformedClippedVolume.nii.gz','outputVerificationScript':'outputVerificationScript.sh'}
 
     def _list_outputs(self):
         outputs = self.output_spec().get()

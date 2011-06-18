@@ -4,6 +4,7 @@ import os
 class gtractConcatDwiInputSpec(CommandLineInputSpec):
     inputVolume = InputMultiPath(File(exists=True), argstr = "--inputVolume %s...")
     outputVolume = traits.Either(traits.Bool, File(), hash_files = False,argstr = "--outputVolume %s")
+    numberOfThreads = traits.Int( argstr = "--numberOfThreads %d")
 
 
 class gtractConcatDwiOutputSpec(TraitedSpec):

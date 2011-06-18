@@ -75,7 +75,7 @@ def ConstellationBasename(image):
 def count_files(list_of_files):
   return range(len(list_of_files))
 
-def MakeAtlasNode(atlasDirectory='/scratch/johnsonhj/src/BRAINS4-buld/bin/Atlas/Atlas_20110607'):
+def MakeAtlasNode(atlasDirectory):
     """Gererate an DataGrabber node that creates outputs for all the
     elements of the atlas.
     """
@@ -182,7 +182,10 @@ def WorkupT1T2(ScanDir, T1Images, T2Images, Version=110, InterpolationMode="Line
     (T1_0,MergeT1T2,[('T2_0_file','in2')])
   ])
   
-  BAtlas = MakeAtlasNode() ## Call function to create node
+  #AtlasNode='/scratch/johnsonhj/src/BRAINS4-build/bin/Atlas/Atlas_20110607'
+  #HACK:  Needs to be a config file
+  AtlasNode='/Users/johnsonhj/src/BRAINS4-build/bin/Atlas/Atlas_20110607'
+  BAtlas = MakeAtlasNode(AtlasNode) ## Call function to create node
   
   BABC= pe.Node(interface=BRAINSABC(), name="BABC")
   BABC.inputs.debuglevel = 0
@@ -272,8 +275,11 @@ if __name__ == "__main__":
     #T1s=[os.path.realpath(sys.argv[2]) ]
     #T2s=[os.path.realpath(sys.argv[3]) ]
     OUTDIR=os.path.realpath('/scratch/data')
-    T1s=[OUTDIR+"/t1.nii.gz"]
-    T2s=[OUTDIR+"/t2.nii.gz"]
+    #ext='.nrrd'
+    ext='.nii.gz'
+    T1s=[OUTDIR+"/t1"+ext]
+    T2s=[OUTDIR+"/t2"+ext]
+
 
     WorkupT1T2(OUTDIR,T1s,T2s)
     

@@ -11,6 +11,7 @@ class BRAINSResampleInputSpec(CommandLineInputSpec):
     interpolationMode = traits.Enum("NearestNeighbor","Linear","ResampleInPlace","BSpline","WindowedSinc", argstr = "--interpolationMode %s")
     defaultValue = traits.Float( argstr = "--defaultValue %f")
     gridSpacing = InputMultiPath(traits.Int, sep = ",",argstr = "--gridSpacing %s")
+    numberOfThreads = traits.Int( argstr = "--numberOfThreads %d")
 
 
 class BRAINSResampleOutputSpec(TraitedSpec):

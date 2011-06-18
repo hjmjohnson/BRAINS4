@@ -3,11 +3,16 @@ import os
 
 class BRAINSABCInputSpec(CommandLineInputSpec):
     inputVolumes = InputMultiPath(File(exists=True), argstr = "--inputVolumes %s...")
-    atlasDef = File( exists = True,argstr = "--atlasDefinition %s")
+    atlasDefinition = File( exists = True,argstr = "--atlasDefinition %s")
     inputVolumeTypes = InputMultiPath(traits.Str, sep = ",",argstr = "--inputVolumeTypes %s")
     outputDir = traits.Either(traits.Bool, Directory(), hash_files = False,argstr = "--outputDir %s")
     atlasToSubjectTransformType = traits.Enum("ID","Rigid","Affine","BSpline", argstr = "--atlasToSubjectTransformType %s")
+    atlasToSubjectTransform = traits.Either(traits.Bool, File(), hash_files = False,argstr = "--atlasToSubjectTransform %s")
     subjectIntermodeTransformType = traits.Enum("ID","Rigid","Affine","BSpline", argstr = "--subjectIntermodeTransformType %s")
+    outputVolumes = traits.Either(traits.Bool, InputMultiPath(File(),), hash_files = False,argstr = "--outputVolumes %s...")
+    outputLabels = traits.Either(traits.Bool, File(), hash_files = False,argstr = "--outputLabels %s")
+    outputDirtyLabels = traits.Either(traits.Bool, File(), hash_files = False,argstr = "--outputDirtyLabels %s")
+    posteriorTemplate = traits.Str( argstr = "--posteriorTemplate %s")
     outputFormat = traits.Enum("NIFTI","Meta","Nrrd", argstr = "--outputFormat %s")
     resamplerInterpolatorType = traits.Enum("BSpline","NearestNeighbor","WindowedSinc","Linear","ResampleInPlace", argstr = "--interpolationMode %s")
     maxIterations = traits.Int( argstr = "--maxIterations %d")
@@ -21,10 +26,15 @@ class BRAINSABCInputSpec(CommandLineInputSpec):
     defaultSuffix = traits.Str( argstr = "--defaultSuffix %s")
     debuglevel = traits.Int( argstr = "--debuglevel %d")
     writeLess = traits.Bool( argstr = "--writeLess ")
+    numberOfThreads = traits.Int( argstr = "--numberOfThreads %d")
 
 
 class BRAINSABCOutputSpec(TraitedSpec):
     outputDir = Directory( exists = True)
+    atlasToSubjectTransform = File( exists = True)
+    outputVolumes = OutputMultiPath(File(exists=True), exists = True)
+    outputLabels = File( exists = True)
+    outputDirtyLabels = File( exists = True)
 
 
 class BRAINSABC(CommandLine):
@@ -32,7 +42,7 @@ class BRAINSABC(CommandLine):
     input_spec = BRAINSABCInputSpec
     output_spec = BRAINSABCOutputSpec
     _cmd = " BRAINSABC "
-    _outputs_filenames = {'outputDir':'outputDir'}
+    _outputs_filenames = {'outputVolumes':'outputVolumes.nii.gz','outputLabels':'outputLabels.nii.gz','outputDirtyLabels':'outputDirtyLabels.nii.gz','outputDir':'outputDir','atlasToSubjectTransform':'atlasToSubjectTransform.mat'}
 
     def _list_outputs(self):
         outputs = self.output_spec().get()

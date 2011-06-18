@@ -17,7 +17,7 @@ class fcsv_to_matlab_new(CommandLine):
     input_spec = fcsv_to_matlab_newInputSpec
     output_spec = fcsv_to_matlab_newOutputSpec
     _cmd = " fcsv_to_matlab_new "
-    _outputs_filenames = {'outputFile':'outputFile','landmarkTypesFile':'landmarkTypesFile'}
+    _outputs_filenames = {'outputFile':'outputFile.hdf5','landmarkTypesFile':'landmarkTypesFile.txt'}
 
     def _list_outputs(self):
         outputs = self.output_spec().get()

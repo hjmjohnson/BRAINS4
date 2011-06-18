@@ -6,6 +6,7 @@ class gtractInvertBSplineTransformInputSpec(CommandLineInputSpec):
     inputTransform = File( exists = True,argstr = "--inputTransform %s")
     outputTransform = traits.Either(traits.Bool, File(), hash_files = False,argstr = "--outputTransform %s")
     landmarkDensity = InputMultiPath(traits.Int, sep = ",",argstr = "--landmarkDensity %s")
+    numberOfThreads = traits.Int( argstr = "--numberOfThreads %d")
 
 
 class gtractInvertBSplineTransformOutputSpec(TraitedSpec):

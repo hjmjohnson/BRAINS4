@@ -4,6 +4,7 @@ import os
 class gtractInvertRigidTransformInputSpec(CommandLineInputSpec):
     inputTransform = File( exists = True,argstr = "--inputTransform %s")
     outputTransform = traits.Either(traits.Bool, File(), hash_files = False,argstr = "--outputTransform %s")
+    numberOfThreads = traits.Int( argstr = "--numberOfThreads %d")
 
 
 class gtractInvertRigidTransformOutputSpec(TraitedSpec):

@@ -16,6 +16,7 @@ class gtractCoregBvaluesInputSpec(CommandLineInputSpec):
     spatialScale = traits.Float( argstr = "--spatialScale %f")
     registerB0Only = traits.Bool( argstr = "--registerB0Only ")
     debugLevel = traits.Int( argstr = "--debugLevel %d")
+    numberOfThreads = traits.Int( argstr = "--numberOfThreads %d")
 
 
 class gtractCoregBvaluesOutputSpec(TraitedSpec):

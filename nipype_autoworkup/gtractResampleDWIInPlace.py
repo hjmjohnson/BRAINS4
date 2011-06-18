@@ -6,6 +6,7 @@ class gtractResampleDWIInPlaceInputSpec(CommandLineInputSpec):
     inputTransform = File( exists = True,argstr = "--inputTransform %s")
     debugLevel = traits.Int( argstr = "--debugLevel %d")
     outputVolume = traits.Either(traits.Bool, File(), hash_files = False,argstr = "--outputVolume %s")
+    numberOfThreads = traits.Int( argstr = "--numberOfThreads %d")
 
 
 class gtractResampleDWIInPlaceOutputSpec(TraitedSpec):
