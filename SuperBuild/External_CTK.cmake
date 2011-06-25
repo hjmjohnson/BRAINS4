@@ -43,13 +43,13 @@ if(NOT DEFINED CTK_DIR)
       -DCTK_PLUGIN_org.commontk.eventbus:BOOL=OFF
       -DGIT_EXECUTABLE:FILEPATH=${GIT_EXECUTABLE}
     INSTALL_COMMAND ""
-    DEPENDS 
+    DEPENDS
       ${CTK_DEPENDENCIES}
     )
   set(CTK_DIR ${CMAKE_BINARY_DIR}/${proj}-build)
-  
+
 else()
-  # The project is provided using CTK_DIR, nevertheless since other project may depend on CTK, 
+  # The project is provided using CTK_DIR, nevertheless since other project may depend on CTK,
   # let's add an 'empty' one
   SlicerMacroEmptyExternalProject(${proj} "${CTK_DEPENDENCIES}")
 endif()

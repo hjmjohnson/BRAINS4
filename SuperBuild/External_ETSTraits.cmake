@@ -1,4 +1,4 @@
-# The Numpy external project 
+# The Numpy external project
 
 set(ETSTraits_binary "${CMAKE_CURRENT_BINARY_DIR}/ETSTraits/")
 set(ETSTraits_url https://svn.enthought.com/svn/enthought/Traits/tags/3.6.0/)
@@ -11,7 +11,7 @@ configure_file(
   SuperBuild/ETSTraits_configure_step.cmake.in
   ${CMAKE_CURRENT_BINARY_DIR}/ETSTraits_configure_step.cmake @ONLY)
 # to build ETSTraits we also run a cmake -P script.
-# the script will set LD_LIBRARY_PATH so that 
+# the script will set LD_LIBRARY_PATH so that
 # python can run after it is built on linux
 configure_file(
   SuperBuild/ETSTraits_make_step.cmake.in

@@ -1,6 +1,6 @@
 
 #-----------------------------------------------------------------------------
-# Get and build OpenIGTLink 
+# Get and build OpenIGTLink
 
 set(proj OpenIGTLink)
 
@@ -17,7 +17,7 @@ ExternalProject_Add(${proj}
     -DOpenIGTLink_DIR:FILEPATH=${CMAKE_BINARY_DIR}/OpenIGTLink-build
     -DOpenIGTLink_PROTOCOL_VERSION_2:BOOL=ON
   INSTALL_COMMAND ""
-  DEPENDS 
+  DEPENDS
     ${OpenIGTLink_DEPENDENCIES}
 )
 

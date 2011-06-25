@@ -1,4 +1,4 @@
-# The Numpy external project 
+# The Numpy external project
 
 set(NUMPY_binary "${CMAKE_CURRENT_BINARY_DIR}/NUMPY/")
 set(numpy_url http://svn.slicer.org/Slicer3-lib-mirrors/trunk/numpy-1.4.1.tar.gz)
@@ -12,7 +12,7 @@ configure_file(
   SuperBuild/NUMPY_configure_step.cmake.in
   ${CMAKE_CURRENT_BINARY_DIR}/NUMPY_configure_step.cmake @ONLY)
 # to build numpy we also run a cmake -P script.
-# the script will set LD_LIBRARY_PATH so that 
+# the script will set LD_LIBRARY_PATH so that
 # python can run after it is built on linux
 configure_file(
   SuperBuild/NUMPY_make_step.cmake.in
@@ -32,6 +32,6 @@ ExternalProject_Add(NUMPY
     -P ${CMAKE_CURRENT_BINARY_DIR}/NUMPY_make_step.cmake
   UPDATE_COMMAND ""
   INSTALL_COMMAND ""
-  DEPENDS 
+  DEPENDS
     ${NUMPY_DEPENDENCIES}
   )

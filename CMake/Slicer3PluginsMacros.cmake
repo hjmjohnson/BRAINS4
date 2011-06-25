@@ -1,21 +1,21 @@
 #-----------------------------------------------------------------------------
 # Set the default output paths for one or more plugins/CLP
-# 
+#
 macro(slicer3_set_plugins_output_path)
   set_target_properties(${ARGN}
-    PROPERTIES 
-    RUNTIME_OUTPUT_DIRECTORY 
+    PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY
     "${CMAKE_BINARY_DIR}/${Slicer3_INSTALL_PLUGINS_BIN_DIR}"
-    LIBRARY_OUTPUT_DIRECTORY 
+    LIBRARY_OUTPUT_DIRECTORY
     "${CMAKE_BINARY_DIR}/${Slicer3_INSTALL_PLUGINS_LIB_DIR}"
-    ARCHIVE_OUTPUT_DIRECTORY 
+    ARCHIVE_OUTPUT_DIRECTORY
     "${CMAKE_BINARY_DIR}/${Slicer3_INSTALL_PLUGINS_LIB_DIR}"
     )
 endmacro(slicer3_set_plugins_output_path)
 
 #-----------------------------------------------------------------------------
 # Install one or more plugins to the default plugin location
-# 
+#
 macro(slicer3_install_plugins)
   install(TARGETS ${ARGN}
     RUNTIME DESTINATION ${Slicer3_INSTALL_PLUGINS_BIN_DIR} COMPONENT RuntimeLibraries
@@ -27,10 +27,10 @@ endmacro(slicer3_install_plugins)
 # Enable plugin testing
 #
 # function to turn generator name into a version string
-# like vs7 vs71 vs8 vs9 
+# like vs7 vs71 vs8 vs9
 # Lifted from CMake's CTest.cmake
 function(GET_VS_VERSION_STRING generator var)
-  string(REGEX REPLACE "Visual Studio ([0-9][0-9]?)($|.*)" "\\1" NUMBER "${generator}") 
+  string(REGEX REPLACE "Visual Studio ([0-9][0-9]?)($|.*)" "\\1" NUMBER "${generator}")
   if("${generator}" MATCHES "Visual Studio 7 .NET 2003")
     set(ver_string "vs71")
   else("${generator}" MATCHES "Visual Studio 7 .NET 2003")
@@ -70,8 +70,8 @@ macro(slicer3_enable_plugins_testing)
   # just use that, it would be confusing on the dashboard: is it a Slicer3
   # submission or just a plugins submission? Try to help by qualifying the
   # build name with the project name. One way is to set BUILDNAME first, but
-  # that would override's CTestConfig.cmake own BUILDNAME which uses info 
-  # about platform and OS. Oh well, we need to duplicate code from  
+  # that would override's CTestConfig.cmake own BUILDNAME which uses info
+  # about platform and OS. Oh well, we need to duplicate code from
   # CTestConfig.cmake *again* since there is no way to preprend a string.
 
   if(NOT BUILDNAME)
@@ -94,10 +94,10 @@ macro(slicer3_enable_plugins_testing)
       endif(WIN32)
     endif(NOT BUILD_NAME_SYSTEM_NAME)
     if(UNIX OR BORLAND)
-      get_filename_component(DART_CXX_NAME 
+      get_filename_component(DART_CXX_NAME
         "${CMAKE_CXX_COMPILER}" ${DART_NAME_COMPONENT})
     else(UNIX OR BORLAND)
-      get_filename_component(DART_CXX_NAME 
+      get_filename_component(DART_CXX_NAME
         "${CMAKE_BUILD_TOOL}" ${DART_NAME_COMPONENT})
     endif(UNIX OR BORLAND)
     if(DART_CXX_NAME MATCHES "msdev")
@@ -119,7 +119,7 @@ endmacro(slicer3_enable_plugins_testing)
 #-----------------------------------------------------------------------------
 # Test a plugin
 #
-IF (Slicer3_USE_KWWIDGETS)
+if(Slicer3_USE_KWWIDGETS)
   include("${KWWidgets_CMAKE_DIR}/KWWidgetsTestingMacros.cmake")
   macro(slicer3_add_plugins_test test_name clp_to_test)
     set(build_type ".")
@@ -132,4 +132,4 @@ IF (Slicer3_USE_KWWIDGETS)
     endif(WIN32 AND CMAKE_CONFIGURATION_TYPES)
     add_test(${test_name} ${Slicer3_DIR}/Slicer3 --launch ${CMAKE_BINARY_DIR}/${Slicer3_INSTALL_PLUGINS_BIN_DIR}/${build_type}/${clp_to_test} ${ARGN})
   endmacro(slicer3_add_plugins_test)
-ENDIF (Slicer3_USE_KWWIDGETS)
+endif(Slicer3_USE_KWWIDGETS)

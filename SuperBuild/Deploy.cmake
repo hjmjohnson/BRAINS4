@@ -83,7 +83,7 @@ endforeach(setup_ext)
 
 #
 # create a tar file for distribution
-set(TAR_NAME 
+set(TAR_NAME
 "${Deploy_DIR}/BRAINS4-${DEPLOY_SYSTEM_NAME}.tar.gz")
 message("Creating ${TAR_NAME}")
 

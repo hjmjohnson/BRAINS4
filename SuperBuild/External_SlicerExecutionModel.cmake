@@ -29,7 +29,7 @@ set(proj SlicerExecutionModel)
     )
     set(GenerateCLP_DIR ${CMAKE_INSTALL_PREFIX}/lib/GenerateCLP)
     set(GenerateCLP_DEPEND "${proj}")
-    set(ModuleDescriptionParser_DIR 
+    set(ModuleDescriptionParser_DIR
       ${CMAKE_INSTALL_PREFIX}/lib/ModuleDescriptionParser)
     message(STATUS "GenerateCLP_DIR=${GenerateCLP_DIR}")
     set(SlicerExecutionModel_DEPEND "${proj}")

@@ -1,4 +1,4 @@
-# The Numpy external project 
+# The Numpy external project
 
 set(IPYTHON_binary "${CMAKE_CURRENT_BINARY_DIR}/IPYTHON/")
 set(IPYTHON_url https://github.com/ipython/ipython.git)
@@ -12,7 +12,7 @@ configure_file(
   SuperBuild/IPYTHON_configure_step.cmake.in
   ${CMAKE_CURRENT_BINARY_DIR}/IPYTHON_configure_step.cmake @ONLY)
 # to build IPYTHON we also run a cmake -P script.
-# the script will set LD_LIBRARY_PATH so that 
+# the script will set LD_LIBRARY_PATH so that
 # python can run after it is built on linux
 configure_file(
   SuperBuild/IPYTHON_make_step.cmake.in
@@ -32,6 +32,6 @@ ExternalProject_Add(IPYTHON
     -P ${CMAKE_CURRENT_BINARY_DIR}/IPYTHON_make_step.cmake
   UPDATE_COMMAND ""
   INSTALL_COMMAND ""
-  DEPENDS 
+  DEPENDS
     ${IPYTHON_DEPENDENCIES}
   )

@@ -1,4 +1,4 @@
-# The Numpy external project 
+# The Numpy external project
 
 set(NIBABEL_binary "${CMAKE_CURRENT_BINARY_DIR}/NIBABEL/")
 set(NIBABEL_url http://github.com/nipy/nibabel.git)
@@ -11,7 +11,7 @@ configure_file(
   SuperBuild/NIBABEL_configure_step.cmake.in
   ${CMAKE_CURRENT_BINARY_DIR}/NIBABEL_configure_step.cmake @ONLY)
 # to build NIBABEL we also run a cmake -P script.
-# the script will set LD_LIBRARY_PATH so that 
+# the script will set LD_LIBRARY_PATH so that
 # python can run after it is built on linux
 configure_file(
   SuperBuild/NIBABEL_make_step.cmake.in

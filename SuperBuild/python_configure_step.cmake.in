@@ -20,7 +20,7 @@ if(UNIX)
     set(LIBTYPE_BUILD_FLAGS --enable-shared)
   endif(APPLE)
 
-  EXECUTE_PROCESS(
+  execute_process(
     COMMAND sh configure --prefix=@CMAKE_CURRENT_BINARY_DIR@ ${with_tcl_param} --enable-unicode=ucs2 ${LIBTYPE_BUILD_FLAGS}
     WORKING_DIRECTORY "@python_base@"
     RESULT_VARIABLE rv

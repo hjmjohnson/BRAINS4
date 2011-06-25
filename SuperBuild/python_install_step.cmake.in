@@ -9,18 +9,18 @@ if(UNIX)
     set(PYTHON_INSTALL_CMD install)
   endif(APPLE)
 
-  EXECUTE_PROCESS(
+  execute_process(
     COMMAND make install
     WORKING_DIRECTORY "@python_base@"
     )
   if(APPLE)
-    EXECUTE_PROCESS(
+    execute_process(
       COMMAND make frameworkinstall
       WORKING_DIRECTORY "@python_base@"
       )
   endif()
 
-  EXECUTE_PROCESS(
+  execute_process(
     COMMAND @CMAKE_CURRENT_BINARY_DIR@/python-build/bin/python setup.py install
     WORKING_DIRECTORY "@python_base@"
     RESULT_VARIABLE rv

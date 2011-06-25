@@ -1,4 +1,4 @@
-# The Numpy external project 
+# The Numpy external project
 
 set(SIMPLEJSON_binary "${CMAKE_CURRENT_BINARY_DIR}/SIMPLEJSON/")
 set(SIMPLEJSON_url http://pypi.python.org/packages/source/s/simplejson/simplejson-2.0.9.tar.gz)
@@ -12,7 +12,7 @@ configure_file(
   SuperBuild/SIMPLEJSON_configure_step.cmake.in
   ${CMAKE_CURRENT_BINARY_DIR}/SIMPLEJSON_configure_step.cmake @ONLY)
 # to build SIMPLEJSON we also run a cmake -P script.
-# the script will set LD_LIBRARY_PATH so that 
+# the script will set LD_LIBRARY_PATH so that
 # python can run after it is built on linux
 configure_file(
   SuperBuild/SIMPLEJSON_make_step.cmake.in
@@ -32,6 +32,6 @@ ExternalProject_Add(SIMPLEJSON
     -P ${CMAKE_CURRENT_BINARY_DIR}/SIMPLEJSON_make_step.cmake
   UPDATE_COMMAND ""
   INSTALL_COMMAND ""
-  DEPENDS 
+  DEPENDS
     ${SIMPLEJSON_DEPENDENCIES}
   )

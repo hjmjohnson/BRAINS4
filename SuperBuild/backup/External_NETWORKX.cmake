@@ -1,4 +1,4 @@
-# The Numpy external project 
+# The Numpy external project
 
 set(NETWORKX_binary "${CMAKE_CURRENT_BINARY_DIR}/NETWORKX/")
 set(NETWORKX_url http://networkx.lanl.gov/download/networkx/networkx-1.4rc1.tar.gz)
@@ -12,7 +12,7 @@ configure_file(
   SuperBuild/NETWORKX_configure_step.cmake.in
   ${CMAKE_CURRENT_BINARY_DIR}/NETWORKX_configure_step.cmake @ONLY)
 # to build NETWORKX we also run a cmake -P script.
-# the script will set LD_LIBRARY_PATH so that 
+# the script will set LD_LIBRARY_PATH so that
 # python can run after it is built on linux
 configure_file(
   SuperBuild/NETWORKX_make_step.cmake.in
@@ -32,6 +32,6 @@ ExternalProject_Add(NETWORKX
     -P ${CMAKE_CURRENT_BINARY_DIR}/NETWORKX_make_step.cmake
   UPDATE_COMMAND ""
   INSTALL_COMMAND ""
-  DEPENDS 
+  DEPENDS
     ${NETWORKX_DEPENDENCIES}
   )

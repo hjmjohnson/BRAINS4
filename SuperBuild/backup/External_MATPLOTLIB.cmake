@@ -1,4 +1,4 @@
-# The Numpy external project 
+# The Numpy external project
 
 set(MATPLOTLIB_binary "${CMAKE_CURRENT_BINARY_DIR}/MATPLOTLIB/")
 set(MATPLOTLIB_url https://github.com/matplotlib/matplotlib.git)
@@ -11,7 +11,7 @@ configure_file(
   SuperBuild/MATPLOTLIB_configure_step.cmake.in
   ${CMAKE_CURRENT_BINARY_DIR}/MATPLOTLIB_configure_step.cmake @ONLY)
 # to build MATPLOTLIB we also run a cmake -P script.
-# the script will set LD_LIBRARY_PATH so that 
+# the script will set LD_LIBRARY_PATH so that
 # python can run after it is built on linux
 configure_file(
   SuperBuild/MATPLOTLIB_make_step.cmake.in
@@ -31,6 +31,6 @@ ExternalProject_Add(MATPLOTLIB
     -P ${CMAKE_CURRENT_BINARY_DIR}/MATPLOTLIB_make_step.cmake
   UPDATE_COMMAND ""
   INSTALL_COMMAND ""
-  DEPENDS 
+  DEPENDS
     ${MATPLOTLIB_DEPENDENCIES}
   )

@@ -1,4 +1,4 @@
-# The Numpy external project 
+# The Numpy external project
 
 set(PYTHONSETUPTOOLS_binary "${CMAKE_CURRENT_BINARY_DIR}/PYTHONSETUPTOOLS/")
 set(PYTHONSETUPTOOLS_url http://svn.python.org/projects/sandbox/branches/setuptools-0.6)
@@ -12,7 +12,7 @@ configure_file(
   SuperBuild/PYTHONSETUPTOOLS_configure_step.cmake.in
   ${CMAKE_CURRENT_BINARY_DIR}/PYTHONSETUPTOOLS_configure_step.cmake @ONLY)
 # to build PYTHONSETUPTOOLS we also run a cmake -P script.
-# the script will set LD_LIBRARY_PATH so that 
+# the script will set LD_LIBRARY_PATH so that
 # python can run after it is built on linux
 configure_file(
   SuperBuild/PYTHONSETUPTOOLS_make_step.cmake.in
@@ -32,6 +32,6 @@ ExternalProject_Add(PYTHONSETUPTOOLS
     -P ${CMAKE_CURRENT_BINARY_DIR}/PYTHONSETUPTOOLS_make_step.cmake
   UPDATE_COMMAND ""
   INSTALL_COMMAND ""
-  DEPENDS 
+  DEPENDS
     ${PYTHONSETUPTOOLS_DEPENDENCIES}
   )

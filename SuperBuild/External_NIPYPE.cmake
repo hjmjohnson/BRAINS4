@@ -1,4 +1,4 @@
-# The Numpy external project 
+# The Numpy external project
 
 set(NIPYPE_binary "${CMAKE_CURRENT_BINARY_DIR}/NIPYPE/")
 #set(NIPYPE_url https://github.com/chrisfilo/nipype.git)
@@ -12,7 +12,7 @@ configure_file(
   SuperBuild/NIPYPE_configure_step.cmake.in
   ${CMAKE_CURRENT_BINARY_DIR}/NIPYPE_configure_step.cmake @ONLY)
 # to build NIPYPE we also run a cmake -P script.
-# the script will set LD_LIBRARY_PATH so that 
+# the script will set LD_LIBRARY_PATH so that
 # python can run after it is built on linux
 configure_file(
   SuperBuild/NIPYPE_make_step.cmake.in

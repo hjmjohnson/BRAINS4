@@ -42,8 +42,8 @@ ExternalProject_Add(${proj}
     -DTeem_PNG_DLLCONF_IPATH:PATH=${VTK_DIR}/Utilities
     -DPNG_LIBRARY:FILEPATH=${teem_PNG_LIBRARY}
   INSTALL_COMMAND ""
-  DEPENDS 
+  DEPENDS
     ${teem_DEPENDENCIES}
 )
 
-SET(Teem_DIR ${CMAKE_BINARY_DIR}/teem-build)
+set(Teem_DIR ${CMAKE_BINARY_DIR}/teem-build)

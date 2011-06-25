@@ -21,7 +21,7 @@ enable_language(CXX)
 # See http://cmake.org/cmake/help/cmake-2-8-docs.html#section_Policies for details
 #-----------------------------------------------------------------------------
 
-SET(project_policies
+set(project_policies
   #CMP0001 # NEW: CMAKE_BACKWARDS_COMPATIBILITY should no longer be used.
   #CMP0002 # NEW: Logical target names must be globally unique.
   CMP0003 # NEW: Libraries linked via full path no longer produce linker search paths.
@@ -37,11 +37,11 @@ SET(project_policies
   #CMP0013 # NEW: Duplicate binary directories are not allowed.
   #CMP0014 # NEW: Input directories must have CMakeLists.txt
   )
-FOREACH(policy ${project_policies})
-  IF(POLICY ${policy})
-    CMAKE_POLICY(SET ${policy} NEW)
-  ENDIF()
-ENDFOREACH()
+foreach(policy ${project_policies})
+  if(POLICY ${policy})
+    cmake_policy(SET ${policy} NEW)
+  endif()
+endforeach()
 
 if(NOT SETIFEMPTY)
 macro(SETIFEMPTY)
@@ -172,10 +172,10 @@ if(QT4_FOUND)
   endif()
 
   # Enable modules
-  SET(QT_USE_QTNETWORK ON)
+  set(QT_USE_QTNETWORK ON)
 
   # Includes Qt headers
-  INCLUDE(${QT_USE_FILE})
+  include(${QT_USE_FILE})
 
   option(${CMAKE_PROJECT_NAME}_USE_PYTHONQT "Integrate a python-QT interpreter into BRAINS4." ON)
 endif()
@@ -317,7 +317,7 @@ include(External_NIPYPE)
 #------------------------------------------------------------------------------
 set(git_protocol "git")
 set(${CMAKE_PROJECT_NAME}_VTK_GIT_REPOSITORY "github.com/Slicer/VTK.git" CACHE STRING "repository from which to get VTK")
-MARK_AS_ADVANCED(${CMAKE_PROJECT_NAME}_VTK_GIT_REPOSITORY)
+mark_as_advanced(${CMAKE_PROJECT_NAME}_VTK_GIT_REPOSITORY)
 include(External_VTK)
 
 # if(${CMAKE_PROJECT_NAME}_USE_QT)
@@ -431,7 +431,7 @@ set(SRCCMDS
       SVN_PASSWORD "slicer"
       SOURCE_DIR ${PROJECT_EXTERNAL_SHARED_SOURCE_TREE}/${PackageName}
 )
-MESSAGE("BRAINS4 Dependancies:  ${${CMAKE_PROJECT_NAME}_DEPENDENCIES} ")
+message("BRAINS4 Dependancies:  ${${CMAKE_PROJECT_NAME}_DEPENDENCIES} ")
 set(proj BRAINS4)
 ExternalProject_Add(${proj}
   ${SRCCMDS}
